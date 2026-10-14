@@ -16,8 +16,9 @@ Guilherme está começando em programação e GitHub: explicar passos em linguag
 - Layout refeito com as fotos reais de 2026-10 (enviadas no chat, não estão no repositório). Os nomes das paredes no código vêm do layout antigo; hoje todas são creme:
   - `cinza` (z = -Z): gaveteiros no canto, armário 37-48, bancada branca da eletrônica, banner ODS, coração de fios, coluna turquesa, mesa de projetos, painéis de ferramentas com letras UVA, bancada azul (Fercar) com Bambu Lab A1 e impressora de perfis pretos, armário 25-36 e coluna rosa no canto.
   - `janela` (x = +X): coluna rosa, janela para o corredor e bancada com computadores e a cortadora NEJE; ar-condicionado de teto.
-  - `azul` (z = +Z): porta dupla de vidro com película "UVA MAKER HACKER SPACE" (sala A109), split, prateleiras brancas da vitrine, coluna amarela e computadores.
-  - `quadro` (x = -X): quadro branco.
+  - `azul` (z = +Z): porta dupla de vidro com película "UVA MAKER HACKER SPACE" (sala A109; de dentro aparece espelhada) e letras UVA acima, split, prateleiras brancas da vitrine, armário baixo branco, coluna amarela, 3 computadores e, no canto da janela, a bancada dos materiais.
+  - `quadro` (x = -X): quadro branco, tela de projeção (projetor no teto) e painel de chaveiros perto da porta.
+  - Centro: mesas brancas com cadeiras coloridas e um balcão branco com portas na ponta perto da janela. Coluna turquesa é redonda.
 - Piso vinílico xadrez azul/branco/cinza; cadeiras plásticas coloridas; corredor de ladrilhos sextavados do lado de fora.
 - Os armários têm nomes de pessoas nas portas: no site só aparecem os números.
 - **Estimativas pelas fotos:** painéis de ferramentas com 0,92 x 0,56 m cada, base a 1,25 m do chão.

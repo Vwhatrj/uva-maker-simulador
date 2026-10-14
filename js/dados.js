@@ -390,7 +390,7 @@ window.UVA_DATA = {
     },
     {
       id: 'banner-uva-maker', modelo: 'poster', opcoes: { titulo: 'UVA MAKER: FORMAÇÃO DE PROFISSIONAIS ENGAJADOS COM OS OBJETIVOS DO DESENVOLVIMENTO SUSTENTÁVEL' },
-      pos: [-3.77, 1.2, 2.1], parede: 'quadro', fixo: true,
+      pos: [-3.77, 1.2, 1.95], parede: 'quadro', fixo: true,
       zona: 'vitrine', nome: 'Banner: UVA Maker e os ODS', icone: '📜',
       descricao: 'Banner de pesquisa sobre o UVA Maker e a formação de profissionais engajados com o desenvolvimento sustentável.',
       aprender: 'Mostra como a cultura maker, com Feira Maker, oficinas e projetos, aproxima a formação acadêmica dos desafios da sociedade.',
@@ -411,20 +411,27 @@ window.UVA_DATA = {
     { id: 'cola-quente', tipo: 'colaQuente', pos: [-3.55, 0.64, -1.97], parede: 'quadro', sobre: 'gaveteiro-colas' },
     { id: 'post-its', tipo: 'blocoPostit', pos: [-3.55, 0.64, -1.55], parede: 'quadro', sobre: 'gaveteiro-postits' },
     { id: 'coleta-seletiva', tipo: 'lixeiras', pos: [-3.65, 0, 2.0], parede: 'quadro' },
+    { id: 'tela-projecao', modelo: 'telaProjecao', opcoes: { w: 1.5, h: 0.9 }, pos: [-3.77, 2.95, 0.3], parede: 'quadro', fixo: true },
+    { id: 'projetor', modelo: 'projetor', pos: [-1.2, 3.0, 0.3], rot: -Math.PI / 2, fixo: true },
+    { id: 'painel-chaveiros', modelo: 'painelChaveiros', pos: [-3.77, 1.3, 2.45], parede: 'quadro', fixo: true },
+    { id: 'caixas-armario-1', modelo: 'generico', opcoes: { cor: '#c49a6c', tamanho: [0.45, 0.35, 0.4] }, pos: [-3.05, 1.9, -2.42], sobre: 'armario-37', preso: true },
+    { id: 'caixas-armario-2', modelo: 'generico', opcoes: { cor: '#b98d5f', tamanho: [0.38, 0.45, 0.38] }, pos: [-2.62, 1.9, -2.42], sobre: 'armario-37', preso: true },
 
-    // ---------- Mesas e computadores da parede azul ----------
-    { id: 'mesa-pc-2', tipo: 'mesaComputador', pos: [-0.875, 0, 2.345], parede: 'azul' },
-    { id: 'mesa-pc-3', tipo: 'mesaComputador', pos: [0.175, 0, 2.345], parede: 'azul' },
+    // ---------- Parede azul (da porta): armário baixo, computadores e, no canto da janela, materiais ----------
+    { id: 'armario-baixo', modelo: 'armarioBaixo', opcoes: { w: 1.0, h: 0.8, d: 0.5 }, base: [1.0, 0.5], apoio: 'chao', superficie: 0.8, pos: [-0.95, 0, 2.395], parede: 'azul' },
+    { id: 'mesa-pc-3', tipo: 'mesaComputador', opcoes: { w: 1.42 }, base: [1.42, 0.6], pos: [0.07, 0, 2.345], parede: 'azul' },
     { id: 'mesa-pc-4', tipo: 'mesaComputador', pos: [1.675, 0, 2.345], parede: 'azul' },
     { id: 'mesa-pc-5', tipo: 'mesaComputador', pos: [2.725, 0, 2.345], parede: 'azul' },
-    { id: 'computador-2', tipo: 'computador', pos: [-0.875, 0.74, 2.345], parede: 'azul', sobre: 'mesa-pc-2' },
-    { id: 'computador-3', tipo: 'computador', pos: [0.175, 0.74, 2.345], parede: 'azul', sobre: 'mesa-pc-3' },
+    { id: 'computador-2', tipo: 'computador', pos: [-0.3, 0.74, 2.345], parede: 'azul', sobre: 'mesa-pc-3' },
+    { id: 'computador-3', tipo: 'computador', pos: [0.42, 0.74, 2.345], parede: 'azul', sobre: 'mesa-pc-3' },
     { id: 'computador-4', tipo: 'computador', pos: [1.675, 0.74, 2.345], parede: 'azul', sobre: 'mesa-pc-4' },
-    { id: 'computador-5', tipo: 'computador', pos: [2.725, 0.74, 2.345], parede: 'azul', sobre: 'mesa-pc-5' },
-    { id: 'cadeira-pc-2', tipo: 'cadeiraAzul', pos: [-0.875, 0, 1.8] },
-    { id: 'cadeira-pc-3', tipo: 'cadeiraAzul', pos: [0.175, 0, 1.8] },
-    { id: 'cadeira-pc-4', tipo: 'cadeiraAzul', pos: [1.675, 0, 1.8] },
-    { id: 'cadeira-pc-5', tipo: 'cadeiraAzul', pos: [2.725, 0, 1.8] },
+    { id: 'cadeira-pc-2', tipo: 'cadeiraAzul', pos: [-0.3, 0, 1.8] },
+    { id: 'cadeira-pc-3', tipo: 'cadeiraAzul', pos: [0.42, 0, 1.8] },
+    { id: 'cadeira-pc-4', tipo: 'cadeiraPreta', opcoes: { cor: '#d8442c' }, pos: [1.675, 0, 1.8] },
+    { id: 'cadeira-pc-5', tipo: 'cadeiraPreta', opcoes: { cor: '#d8442c' }, pos: [2.725, 0, 1.8] },
+    { id: 'insumos-caixa', modelo: 'generico', opcoes: { cor: '#c49a6c', tamanho: [0.5, 0.3, 0.4] }, pos: [2.95, 0.74, 2.4], parede: 'azul', sobre: 'mesa-pc-5', fixo: true },
+    { id: 'insumos-sacola', modelo: 'generico', opcoes: { cor: '#e4e9ee', tamanho: [0.35, 0.25, 0.3] }, pos: [2.45, 0.74, 2.42], parede: 'azul', sobre: 'mesa-pc-5', fixo: true },
+    { id: 'balcao-centro', modelo: 'armarioBaixo', opcoes: { w: 1.0, h: 0.9, d: 0.7 }, base: [1.0, 0.7], apoio: 'chao', superficie: 0.9, pos: [2.3, 0, -0.2] },
 
     // ---------- Bancada embaixo da janela (para o corredor) ----------
     { id: 'mesa-pc-7', tipo: 'mesaComputador', pos: [3.47, 0, -1.6], parede: 'janela' },
@@ -433,8 +440,8 @@ window.UVA_DATA = {
     { id: 'cortadora-laser', tipo: 'laser', pos: [3.47, 0.74, -1.75], parede: 'janela', sobre: 'mesa-pc-7' },
     { id: 'computador-6', tipo: 'computador', pos: [3.47, 0.74, -0.55], parede: 'janela', sobre: 'mesa-pc-6' },
     { id: 'computador-1', tipo: 'computador', pos: [3.47, 0.74, 0.5], parede: 'janela', sobre: 'mesa-pc-1' },
-    { id: 'cadeira-pc-6', tipo: 'cadeiraAzul', pos: [2.85, 0, -0.55], rot: Math.PI / 2 },
-    { id: 'cadeira-pc-1', tipo: 'cadeiraAzul', pos: [2.85, 0, 0.5], rot: Math.PI / 2 },
+    { id: 'cadeira-pc-6', tipo: 'cadeiraAzul', pos: [3.0, 0, -0.55], rot: Math.PI / 2 },
+    { id: 'cadeira-pc-1', tipo: 'cadeiraPreta', pos: [3.0, 0, 0.5], rot: Math.PI / 2 },
 
     // ---------- Centro da sala: mesas colaborativas e cadeiras (cada peça se move sozinha) ----------
     { id: 'mesa-central-1', tipo: 'mesaColaborativa', pos: [-0.55, 0, -0.575] },

@@ -238,7 +238,7 @@ window.UVA_MODELOS = function (THREE) {
     nova('quadro', 2 * Z, creme, V(-X, 0, 0), Math.PI / 2, V(-1, 0, 0));
 
     // colunas pintadas: azul-turquesa (atrás da mesa de projetos), amarela (entre as prateleiras) e rosa (canto da janela)
-    cinza.grupo.add(caixa(0.3, H, 0.2, '#5ec4dc', -0.75, 0, 0.1));
+    cinza.grupo.add(em(cilindro(0.2, 0.2, H, '#5ec4dc', 32), -0.75, H / 2, 0.12));
     azul.grupo.add(caixa(0.32, H, 0.25, '#f2c94c', -0.95, 0, 0.125));
     janela.grupo.add(caixa(0.3, H, 0.3, '#e0568c', -2.47, 0, 0.15));
 
@@ -260,11 +260,10 @@ window.UVA_MODELOS = function (THREE) {
     // Porta dupla de vidro com película: folha clara com "UVA MAKER HACKER SPACE" e folha azul com "UVA".
     // No grupo da parede azul, +z aponta para dentro da sala e -z para o corredor.
     const px = -PORTA.centro, fw = PORTA.w / 2 - 0.03, fh = 1.7;
-    const pelicula = (clara, comTexto) => textura(256, 512, (c, w, h) => {
+    const pelicula = (clara) => textura(256, 512, (c, w, h) => {
       const grad = c.createLinearGradient(0, 0, 0, h);
       if (clara) { grad.addColorStop(0, '#e9f1ee'); grad.addColorStop(1, '#a9c9da'); } else { grad.addColorStop(0, '#4f8ccc'); grad.addColorStop(1, '#1f4f8c'); }
       c.fillStyle = grad; c.fillRect(0, 0, w, h);
-      if (!comTexto) return;
       if (clara) {
         c.fillStyle = '#f2d43a'; c.beginPath(); c.arc(0, h * 0.62, 80, 0, Math.PI * 2); c.fill();
         c.fillStyle = '#2f5a94'; c.font = 'bold 30px Arial, sans-serif';
@@ -277,16 +276,19 @@ window.UVA_MODELOS = function (THREE) {
     const detalhesPorta = new THREE.Group();
     detalhesPorta.add(caixa(PORTA.w, 0.06, E + 0.02, '#e2e2dc', px, PORTA.h - 0.06, -E / 2));
     [-1, 1].forEach((s) => detalhesPorta.add(caixa(0.05, PORTA.h, E + 0.02, '#e2e2dc', px + s * (PORTA.w / 2 - 0.025), 0, -E / 2)));
-    // folha da esquerda para quem olha do corredor = +x local
+    // folha da esquerda para quem olha do corredor = +x local. A película é uma só (dos dois lados):
+    // do corredor se lê "UVA"; de dentro da sala ela aparece espelhada ("AVU"), como na foto.
     [[1, true], [-1, false]].forEach(([s, clara]) => {
       const cx = px + s * (fw / 2 + 0.005);
       const vidro = caixa(fw, PORTA.h - 0.08, 0.012, '#d9ecf5', cx, 0.02, -E / 2, { transparent: true, opacity: 0.25, roughness: 0.1 });
       vidro.castShadow = false;
       detalhesPorta.add(vidro);
-      const fora = em(plano(fw, fh, pelicula(clara, true)), cx, 0.02 + fh / 2, -E / 2 - 0.008);
-      fora.rotation.y = Math.PI;
-      detalhesPorta.add(fora, em(plano(fw, fh, pelicula(clara, false)), cx, 0.02 + fh / 2, -E / 2 + 0.008));
+      const filme = em(plano(fw, fh, pelicula(clara), { side: THREE.DoubleSide }), cx, 0.02 + fh / 2, -E / 2 - 0.008);
+      filme.rotation.y = Math.PI;
+      detalhesPorta.add(filme);
     });
+    // letras UVA azuis acima da porta, do lado de dentro
+    detalhesPorta.add(em(plano(0.5, 0.18, texturaTexto('UVA', { fundo: creme, cor: '#1f4fae', w: 256, h: 92, px: 78 })), px, PORTA.h + 0.25, 0.004));
     [-1, 1].forEach((lado) => {
       const z = lado * (E / 2 + 0.01) - E / 2;
       detalhesPorta.add(em(esfera(0.035, '#c98a2e'), px + 0.07, 1.0, z));            // puxador de madeira
@@ -1007,6 +1009,47 @@ window.UVA_MODELOS = function (THREE) {
     }
     return { grupo: g };
   }
+  // Armário baixo branco de duas portas (embaixo das prateleiras e na ponta das mesas do centro).
+  function armarioBaixo(op) {
+    const g = new THREE.Group(), w = op.w || 1.0, h = op.h || 0.8, d = op.d || 0.5;
+    g.add(caixa(w, h - 0.03, d, '#e9e9e4', 0, 0, 0));
+    g.add(caixa(w + 0.02, 0.03, d + 0.02, '#f4f4f0', 0, h - 0.03, 0));
+    [-1, 1].forEach((s) => {
+      g.add(caixa(w / 2 - 0.02, h - 0.1, 0.012, '#f1f1ec', s * w / 4, 0.04, d / 2 + 0.006));
+      g.add(caixa(0.015, 0.12, 0.02, '#9aa0a6', s * 0.04, h - 0.3, d / 2 + 0.02, { metalness: 0.6 }));
+    });
+    return { grupo: g };
+  }
+  // Painelzinho preto com chaveiros impressos em 3D e cortados a laser (ao lado da porta).
+  function painelChaveiros() {
+    const g = new THREE.Group();
+    g.add(caixa(0.3, 0.36, 0.015, '#1e1f22', 0, 0, 0.008));
+    [[-0.08, 0.26, '#2563d9', 0.035], [0.05, 0.24, '#c99a68', 0.03], [-0.04, 0.12, '#2563d9', 0.045], [0.09, 0.1, '#c99a68', 0.03], [-0.1, 0.06, '#f2c200', 0.025]]
+      .forEach(([x, y, cor, r]) => {
+        const ch = em(cilindro(r, r, 0.006, cor, 18), x, y, 0.03);
+        ch.rotation.x = Math.PI / 2;
+        g.add(ch);
+      });
+    return { grupo: g };
+  }
+  // Projetor pendurado no teto por uma haste (a origem é o topo da haste, no teto).
+  function projetor() {
+    const g = new THREE.Group();
+    g.add(em(cilindro(0.012, 0.012, 0.25, '#2a2c30', 8), 0, -0.125, 0));
+    g.add(caixa(0.3, 0.1, 0.25, '#1e1f22', 0, -0.35, 0));
+    const lente = em(cilindro(0.03, 0.03, 0.02, '#3d4a5c', 16), 0.06, -0.3, 0.13);
+    lente.rotation.x = Math.PI / 2;
+    g.add(lente);
+    return { grupo: g };
+  }
+  // Tela de projeção enrolável presa no alto da parede (a origem é o topo do estojo).
+  function telaProjecao(op) {
+    const g = new THREE.Group(), w = op.w || 1.5, h = op.h || 0.9;
+    g.add(caixa(w + 0.1, 0.07, 0.08, '#2a2c30', 0, -0.07, 0.06));
+    g.add(caixa(w, h, 0.004, '#fbfbf8', 0, -0.07 - h, 0.06));
+    g.add(caixa(w, 0.025, 0.02, '#2a2c30', 0, -0.07 - h - 0.02, 0.06));
+    return { grupo: g };
+  }
   // Coração de fios vermelhos esticados entre preguinhos (arte em fios, low-poly), na parede.
   function coracaoFios() {
     const g = new THREE.Group();
@@ -1393,6 +1436,7 @@ window.UVA_MODELOS = function (THREE) {
     letreiroUVA, poster, quadroBranco, painelPerfurado, arCondicionado,
     portaArmario, lixeiras, martelo, chaveFenda,
     impressora3d, impressoraGrande, laser, caneta3d, computador, mesaVitrine, coracaoFios,
+    armarioBaixo, painelChaveiros, projetor, telaProjecao,
     arduino, protoboard, kit, drone, oculosVR, cameraFoto, tablet,
     colaBranca, colaQuente, blocoPostit,
     lhama, raposa, potesLuz, relogio, porquinho, triangulos, vaso, luminaria, telaTripe,
