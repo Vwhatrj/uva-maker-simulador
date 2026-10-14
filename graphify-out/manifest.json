@@ -1,0 +1,32 @@
+{
+  "js/app.js": {
+    "mtime": 1791993068.688754,
+    "seen": 1791993214.578142,
+    "ast_hash": "a5948e50781de7d5e4b1cb866df1b697",
+    "semantic_hash": ""
+  },
+  "js/dados.js": {
+    "mtime": 1791993162.6681094,
+    "seen": 1791993214.578142,
+    "ast_hash": "7d42ddaea6b3d17100bc236cf0cfb05e",
+    "semantic_hash": ""
+  },
+  "js/modelos.js": {
+    "mtime": 1791993162.6713505,
+    "seen": 1791993214.578142,
+    "ast_hash": "ffce3406bba82fce5dda70933c0c7ea0",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1791993208.896922,
+    "seen": 1791993214.578142,
+    "ast_hash": "43c3ae655e47e19dc5851cf0ffa5aaa3",
+    "semantic_hash": ""
+  },
+  "index.html": {
+    "mtime": 1791992928.8144991,
+    "seen": 1791993214.578142,
+    "ast_hash": "023ca58cd38ff51b6a053c80d74fe52b",
+    "semantic_hash": ""
+  }
+}

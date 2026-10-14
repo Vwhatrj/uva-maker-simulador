@@ -1,0 +1,95 @@
+<title>UVA Maker Hacker Space</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilo.css">
+
+<div id="palco"></div>
+
+<header class="topo">
+  <div class="marca">
+    <div class="logo" aria-hidden="true"></div>
+    <div>
+      <h1><span class="marca-uva">UVA</span> Maker Hacker Space</h1>
+      <p>Simulador interativo do laboratório</p>
+    </div>
+  </div>
+  <nav id="zonas" class="zonas" aria-label="Estações do laboratório"></nav>
+</header>
+
+<aside id="painel" class="painel" hidden aria-live="polite">
+  <button id="painel-fechar" class="fechar" aria-label="Fechar">×</button>
+  <div id="painel-conteudo"></div>
+</aside>
+
+<div id="barra-edicao" class="barra-edicao" hidden>
+  <div class="be-info">
+    <b id="be-nome">Nenhum móvel selecionado</b>
+    <span id="be-pos">Clique e arraste um móvel pelo chão.</span>
+  </div>
+  <div class="be-acoes">
+    <button id="be-girar-esq" class="btn" disabled>⟲ 90°</button>
+    <button id="be-girar-dir" class="btn" disabled>⟳ 90°</button>
+    <button id="be-original" class="btn" disabled>Voltar ao lugar original</button>
+    <button id="be-resetar" class="btn">Restaurar tudo</button>
+    <button id="be-concluir" class="btn primario">Concluir</button>
+  </div>
+  <p id="be-status" class="be-status" role="status"></p>
+</div>
+
+<footer class="rodape">
+  <div class="progresso">
+    <span id="progresso-texto">0 explorados</span>
+    <div class="barra"><div id="progresso-barra"></div></div>
+  </div>
+  <div class="acoes">
+    <button id="btn-trilha" class="btn primario">🧭 Trilha guiada</button>
+    <button id="btn-geral" class="btn">🏠 Visão geral</button>
+    <button id="btn-medidas" class="btn">📏 Medidas</button>
+    <button id="btn-editar" class="btn" hidden>✥ Editar layout</button>
+    <button id="btn-ajuda" class="btn" aria-label="Ajuda">?</button>
+  </div>
+</footer>
+
+<div id="dica-flutuante" class="dica-flutuante" hidden></div>
+<div id="aviso" class="aviso" role="status"></div>
+<div id="carregando" class="carregando">Carregando o laboratório…</div>
+
+<div id="boas-vindas" class="modal">
+  <div class="modal-caixa">
+    <div class="logo grande" aria-hidden="true"></div>
+    <h2>Bem-vindo ao UVA Maker Hacker Space!</h2>
+    <p>Explore, em escala real (7,54 × 5,29 m), o laboratório onde ideias e materiais reaproveitados viram protótipos de verdade.</p>
+    <ul>
+      <li><b>🖱️ Arraste</b> para girar a sala; use a <b>rolagem</b> (ou pinça) para aproximar. A parede da frente abaixa para você ver dentro.</li>
+      <li><b>👆 Clique</b> em qualquer objeto, até nas portas dos armários, para descobrir para que serve e o que se aprende com ele.</li>
+      <li><b>▶ Simule</b> a impressora 3D, a cortadora a laser, a caneta 3D, o Arduino e o drone.</li>
+    </ul>
+    <div class="modal-acoes">
+      <button id="bv-trilha" class="btn primario">🧭 Começar trilha guiada</button>
+      <button id="bv-explorar" class="btn">Explorar livremente</button>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts clássicos: funcionam abrindo o arquivo direto no navegador (sem servidor). -->
+<script src="js/dados.js"></script>
+<script src="js/modelos.js"></script>
+<script src="js/app.js"></script>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+</script>
+<script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+  window.UVA_APP(THREE, OrbitControls, CSS2DRenderer, CSS2DObject);
+</script>
