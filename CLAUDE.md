@@ -14,6 +14,8 @@ Guilherme está começando em programação e GitHub: explicar passos em linguag
 - Sala: 7,54 x 5,29 m (informado pelo Thiago). Abertura/janela de 2,31 x 1,90 m na parede menor.
 - **Estimativas a confirmar:** pé-direito 2,80 m, peitoril 0,80 m, posição e medida da porta, conteúdo de cada porta do armário.
 - As imagens de referência mostram um layout antigo do laboratório.
+- Fotos reais de 2026-10 (enviadas no chat, não estão no repositório): impressora **Bambu Lab A1**, cortadora **NEJE** e os painéis de ferramentas. Esses modelos 3D foram refeitos em tamanho real (sem `escala`).
+- **Estimativas pelas fotos:** painéis de ferramentas com 0,92 x 0,56 m cada, base a 1,25 m do chão; tampo das bancadas azul.
 
 ## Como o código está organizado
 - `js/dados.js`: `zonas`, `catalogo` (tipos: modelo, `base` [w, d] em metros, `apoio`, `superficie`, card) e `objetos` (instâncias: `id`, `tipo` ou `modelo`, `pos` no mundo, `parede`, `rot`, `sobre`, `preso`, `fixo`). Campos da instância sobrescrevem os do catálogo.

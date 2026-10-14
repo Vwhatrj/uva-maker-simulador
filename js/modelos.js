@@ -280,7 +280,7 @@ window.UVA_MODELOS = function (THREE) {
     g.add(caixa(w - 0.04, 0.05, 0.02, azul, 0, 0.02, zf));
     g.add(caixa(w - 0.04, 0.03, 0.02, azul, 0, h - 0.09, zf));
     for (let i = 0; i <= 3; i++) g.add(caixa(0.03, h - 0.1, 0.02, azul, -(w - 0.04) / 2 + i * (w - 0.04) / 3, 0.04, zf));
-    g.add(caixa(w, 0.05, d, '#b9bcc0', 0, h - 0.05, 0, { roughness: 0.5 }));
+    g.add(caixa(w, 0.05, d, '#2560ad', 0, h - 0.05, 0, { roughness: 0.45 }));   // tampo azul (bancada Fercar das fotos)
     return { grupo: g };
   }
   let ventilacao = null;
@@ -367,18 +367,59 @@ window.UVA_MODELOS = function (THREE) {
   }
 
   // ---------- Itens de parede ----------
-  function logoUVA() {
-    const g = new THREE.Group();
-    const bola = esfera(0.3, '#2fd13c', { roughness: 0.45 });
-    bola.scale.z = 0.45;
-    g.add(em(bola, 0, 0, 0.06));
-    const tex = textura(1024, 380, (c) => {
-      c.font = '900 330px "Arial Black", Arial, sans-serif';
-      c.textBaseline = 'middle';
-      c.fillStyle = '#072a63'; c.fillText('UVA', 26, 206);
-      c.fillStyle = '#0d47a1'; c.fillText('UVA', 10, 190);
+  // Sobre os painéis de ferramentas (fotos de 2026-10): duas treliças de MDF, um painel voronoi,
+  // a plaquinha azul "UVA" e as letras UVA de metal. A origem é o centro do topo dos painéis.
+  function letreiroUVA() {
+    const g = new THREE.Group(), mdf = '#c99a68';
+    const recorte = (tex) => new THREE.MeshStandardMaterial({ map: tex, alphaTest: 0.5, side: THREE.DoubleSide, roughness: 0.85 });
+    const trelica = textura(256, 256, (c, w) => {
+      c.strokeStyle = mdf; c.lineWidth = 8;
+      c.strokeRect(6, 6, w - 12, w - 12);
+      [44, 212].forEach((p) => {
+        c.beginPath(); c.moveTo(p, 6); c.lineTo(p, w - 6); c.stroke();
+        c.beginPath(); c.moveTo(6, p); c.lineTo(w - 6, p); c.stroke();
+      });
+      c.beginPath(); c.arc(128, 128, 42, 0, Math.PI * 2); c.stroke();
+      [[128, 44, 128, 86], [128, 170, 128, 212], [44, 128, 86, 128], [170, 128, 212, 128]].forEach(([a, b, x, y]) => {
+        c.beginPath(); c.moveTo(a, b); c.lineTo(x, y); c.stroke();
+      });
     });
-    g.add(em(plano(1.25, 0.46, tex, { transparent: true }), 0.95, -0.02, 0.03));
+    [-0.72, -0.34].forEach((x) => g.add(em(new THREE.Mesh(new THREE.PlaneGeometry(0.34, 0.34), recorte(trelica)), x, 0.185, 0.008)));
+    // painel voronoi: pontos fixos (sementes) e a linha onde duas células se encontram
+    const voronoi = textura(256, 128, (c, w, h) => {
+      let s = 7;
+      const aleatorio = () => (s = (s * 16807) % 2147483647) / 2147483647;
+      const pts = Array.from({ length: 34 }, () => [aleatorio() * w, aleatorio() * h]);
+      const img = c.createImageData(w, h);
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          let d1 = 1e9, d2 = 1e9;
+          pts.forEach(([px, py]) => {
+            const d = Math.hypot(x - px, y - py);
+            if (d < d1) { d2 = d1; d1 = d; } else if (d < d2) d2 = d;
+          });
+          const borda = x < 5 || y < 5 || x > w - 6 || y > h - 6;
+          if (borda || d2 - d1 < 3.2) { const i = (y * w + x) * 4; img.data.set([201, 154, 104, 255], i); }
+        }
+      }
+      c.putImageData(img, 0, 0);
+    });
+    g.add(em(new THREE.Mesh(new THREE.PlaneGeometry(0.39, 0.2), recorte(voronoi)), 0.06, 0.105, 0.008));
+    // plaquinha azul em leque
+    const leque = textura(256, 160, (c, w, h) => {
+      c.fillStyle = '#1f3f8f';
+      c.beginPath(); c.moveTo(20, 10); c.quadraticCurveTo(w / 2, -10, w - 20, 10); c.lineTo(w / 2 + 12, h - 6); c.lineTo(w / 2 - 12, h - 6); c.closePath(); c.fill();
+      c.fillStyle = '#ffffff'; c.font = 'bold 44px Arial, sans-serif'; c.textAlign = 'center'; c.fillText('UVA', w / 2 - 12, 62);
+      c.fillStyle = '#f5c400'; c.beginPath(); c.arc(w / 2 + 56, 47, 12, 0, Math.PI * 2); c.fill();
+    });
+    g.add(em(new THREE.Mesh(new THREE.PlaneGeometry(0.17, 0.106), recorte(leque)), -0.4, 0.03, 0.03));
+    // letras UVA de metal escuro
+    const letras = textura(512, 200, (c) => {
+      c.font = '900 190px "Arial Black", Arial, sans-serif'; c.textBaseline = 'alphabetic';
+      c.fillStyle = '#1f2226'; c.fillText('UVA', 14, 186);
+      c.fillStyle = '#4a4f57'; c.fillText('UVA', 6, 180);
+    });
+    g.add(em(new THREE.Mesh(new THREE.PlaneGeometry(0.42, 0.164), recorte(letras)), 0.48, 0.082, 0.012));
     return { grupo: g };
   }
   function poster(op) {
@@ -394,22 +435,95 @@ window.UVA_MODELOS = function (THREE) {
     g.add(caixa(w * 0.6, 0.03, 0.07, '#c0c4c8', 0, -0.05, 0.05));
     return { grupo: g };
   }
+  // Dois painéis perfurados cinza-escuros (0,92 x 0,56 m cada, medida estimada pelas fotos),
+  // com as ferramentas na posição das fotos. Origem: centro da borda de baixo dos painéis.
   function painelPerfurado() {
-    const g = new THREE.Group();
-    const tela = textura(192, 120, (c, w, h) => {
-      c.fillStyle = '#4f535a'; c.fillRect(0, 0, w, h);
-      c.fillStyle = '#a3a9b1';
-      for (let y = 0; y < h; y += 6) for (let x = (y / 6) % 2 ? 3 : 0; x < w; x += 6) c.fillRect(x, y, 3, 3);
+    const g = new THREE.Group(), W = 0.92, H = 0.56, z = 0.03;
+    const metal = { metalness: 0.65, roughness: 0.35 };
+    const furos = textura(32, 32, (c, w, h) => {
+      c.fillStyle = '#4b4f56'; c.fillRect(0, 0, w, h);
+      c.fillStyle = '#23262b'; c.beginPath(); c.arc(w / 2, h / 2, 5, 0, Math.PI * 2); c.fill();
     });
-    [-0.4, 0.4].forEach((x) => g.add(caixa(0.75, 0.45, 0.02, '#ffffff', x, 0, 0.01, { map: tela })));
-    // potes, frascos e suportes pendurados
-    [[-0.35, 0.22], [-0.25, 0.22], [-0.35, 0.1], [-0.25, 0.1]].forEach(([x, y]) => {
-      const pote = em(cilindro(0.04, 0.04, 0.06, '#8d939b', 16, { metalness: 0.6, roughness: 0.35 }), x, y, 0.05);
-      pote.rotation.x = Math.PI / 2;
-      g.add(pote);
+    furos.wrapS = furos.wrapT = THREE.RepeatWrapping;
+    furos.repeat.set(W / 0.025, H / 0.025);
+    [-(W / 2 + 0.01), W / 2 + 0.01].forEach((x) => g.add(caixa(W, H, 0.018, '#ffffff', x, 0, 0.009, { map: furos })));
+
+    // tesouras
+    [[-0.87, '#2b4f9e'], [-0.79, '#1e1f22']].forEach(([x, cor]) => {
+      const t = new THREE.Group();
+      [-1, 1].forEach((s) => {
+        const lamina = caixa(0.01, 0.11, 0.004, '#c9ced4', 0, 0.04, 0, metal);
+        lamina.rotation.z = s * 0.07;
+        t.add(lamina);
+        t.add(em(new THREE.Mesh(new THREE.TorusGeometry(0.016, 0.005, 6, 16), material(cor)), s * 0.014, 0.025, 0));
+      });
+      g.add(em(t, x, 0.34, z));
     });
-    ['#3a5a98', '#3a5a98', '#3a5a98'].forEach((cor, i) => g.add(em(cilindro(0.015, 0.015, 0.07, cor, 10), 0.6 + i * 0.04, 0.38, 0.03)));
-    [-0.62, -0.56].forEach((x) => g.add(caixa(0.035, 0.12, 0.03, '#f1f3f5', x, 0.27, 0.03)));
+    // alicates
+    [[-0.82, '#2f5fbf'], [-0.74, '#1e1f22'], [-0.66, '#c0392b']].forEach(([x, cor]) => {
+      const a = new THREE.Group();
+      a.add(caixa(0.02, 0.035, 0.008, '#8e949b', 0, 0.075, 0, metal));
+      [-1, 1].forEach((s) => {
+        const cabo = caixa(0.011, 0.08, 0.008, cor, s * 0.01, 0, 0);
+        cabo.rotation.z = -s * 0.14;
+        a.add(cabo);
+      });
+      g.add(em(a, x, 0.2, z));
+    });
+    // suportes laranja impressos (formato de tronco de pirâmide)
+    [[0.37, 0.16], [0.02, 0.22]].forEach(([y, h]) => {
+      const cone = poli(new THREE.CylinderGeometry(0.03, 0.055, h, 4, 1), '#f07a1a');
+      cone.rotation.y = Math.PI / 4;
+      cone.scale.z = 0.45;
+      g.add(em(cone, -0.47, y + h / 2, z + 0.005));
+    });
+    // grampos C
+    [[-0.31, '#c62828'], [-0.21, '#1e1f22'], [-0.11, '#c62828']].forEach(([x, cor]) => {
+      const c = new THREE.Group();
+      const arco = new THREE.Mesh(new THREE.TorusGeometry(0.035, 0.007, 8, 20, Math.PI * 1.4), material(cor));
+      arco.rotation.z = Math.PI * 0.3;
+      c.add(arco);
+      c.add(em(cilindro(0.004, 0.004, 0.08, '#b9bec5', 8, metal), 0.022, 0, 0));
+      g.add(em(c, x, 0.46, z));
+    });
+    // rolo de arame
+    [0.045, 0.038].forEach((r) => g.add(em(new THREE.Mesh(new THREE.TorusGeometry(r, 0.0035, 6, 32), material('#a7adb4', metal)), -0.13, 0.3, z)));
+    // prateleirinha laranja com chaves amarelas
+    g.add(caixa(0.11, 0.02, 0.05, '#f07a1a', -0.32, 0.15, 0.04));
+    [-0.355, -0.33, -0.305, -0.28].forEach((x) => g.add(em(cilindro(0.007, 0.007, 0.05, '#f2c200', 8), x, 0.195, 0.04)));
+    // grampos de barra (preto e laranja)
+    [0.38, 0.21].forEach((y) => {
+      g.add(caixa(0.26, 0.014, 0.01, '#1e1f22', 0.1, y, z));
+      g.add(caixa(0.022, 0.06, 0.022, '#f07a1a', -0.02, y - 0.045, z));
+      g.add(caixa(0.022, 0.06, 0.022, '#f07a1a', 0.12, y - 0.045, z));
+      g.add(caixa(0.03, 0.07, 0.022, '#1e1f22', 0.155, y - 0.07, z));
+    });
+    // cartaz da Feira Maker e fotos
+    const cartaz = textura(160, 230, (c, w, h) => {
+      c.fillStyle = '#ffffff'; c.fillRect(0, 0, w, h);
+      c.fillStyle = '#4d7cc0'; c.fillRect(8, 8, w - 16, 70);
+      const grad = c.createLinearGradient(0, 80, 0, 200);
+      grad.addColorStop(0, '#1b8f8a'); grad.addColorStop(1, '#2fb34a');
+      c.fillStyle = grad; c.fillRect(8, 82, w - 16, 120);
+      c.fillStyle = '#ffffff'; c.textAlign = 'center';
+      c.font = 'bold 22px Arial, sans-serif'; c.fillText('FEIRA MAKER', w / 2, 112);
+      c.font = '10px Arial, sans-serif'; c.fillText('VIRTUAL E PRESENCIAL', w / 2, 128);
+      c.fillStyle = 'rgba(255,255,255,0.75)'; for (let i = 0; i < 4; i++) c.fillRect(24, 140 + i * 9, w - 48, 3);
+      c.fillStyle = '#ffffff'; c.font = 'bold 16px Arial, sans-serif'; c.fillText('UVA', w / 2 - 20, 194);
+    });
+    g.add(em(plano(0.12, 0.17, cartaz), 0.38, 0.33, 0.02));
+    [[0.47, 0.44, '#7b5e57'], [0.49, 0.32, '#8a6f9e'], [0.47, 0.22, '#b5654a']].forEach(([x, y, cor]) => g.add(caixa(0.05, 0.065, 0.004, cor, x, y, 0.02)));
+    // amostra vermelha impressa (grade de texturas)
+    const grade = textura(64, 64, (c, w, h) => {
+      c.fillStyle = '#c8232c'; c.fillRect(0, 0, w, h);
+      c.fillStyle = '#8f141b'; for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) c.fillRect(4 + i * 15, 4 + j * 15, 11, 11);
+    });
+    g.add(caixa(0.12, 0.1, 0.012, '#ffffff', 0.33, 0.06, 0.02, { map: grade }));
+    // cabo enrolado, cordões azuis e escova
+    g.add(em(new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.005, 6, 24), material('#151619')), 0.62, 0.45, z));
+    for (let i = 0; i < 5; i++) g.add(caixa(0.012, 0.28 - i * 0.02, 0.004, i % 2 ? '#2a4fb3' : '#1d3a8a', 0.72 + i * 0.014, 0.25 + i * 0.02, 0.025));
+    g.add(caixa(0.02, 0.1, 0.02, '#8e949b', 0.67, 0.04, z));
+    g.add(caixa(0.07, 0.05, 0.03, '#1e1f22', 0.67, -0.01, z));
     return { grupo: g };
   }
   function arCondicionado() {
@@ -522,83 +636,197 @@ window.UVA_MODELOS = function (THREE) {
   }
 
   // ---------- Ferramentas ----------
+  // Ferramentas de parede: frente para +z, pendurados no painel. Medidas reais, em metros.
   function martelo() {
-    const g = new THREE.Group();
-    g.add(caixa(0.8, 0.08, 0.1, '#bc6c25', 0, 0, 0));
-    g.add(caixa(0.14, 0.14, 0.4, '#6c757d', 0.4, 0, 0, { metalness: 0.5, roughness: 0.4 }));
+    const g = new THREE.Group(), metal = { metalness: 0.65, roughness: 0.35 };
+    [-0.055, 0.055].forEach((x) => {
+      g.add(caixa(0.024, 0.19, 0.024, '#1e1f22', x, 0, 0.035));              // cabo emborrachado
+      g.add(caixa(0.014, 0.06, 0.014, '#b9bec5', x, 0.19, 0.035, metal));     // haste
+      g.add(caixa(0.1, 0.026, 0.026, '#8e949b', x - 0.012, 0.24, 0.035, metal)); // cabeça
+      const unha = caixa(0.035, 0.02, 0.022, '#8e949b', x + 0.05, 0.245, 0.035, metal);
+      unha.rotation.z = -0.35;
+      g.add(unha);
+    });
     return { grupo: g };
   }
   function chaveFenda() {
-    const g = new THREE.Group();
-    [['#e63946', 0], ['#ffd166', 0.22]].forEach(([cor, z]) => {
-      const cabo = em(cilindro(0.06, 0.06, 0.3, cor, 12), -0.15, 0.06, z); cabo.rotation.z = Math.PI / 2;
-      const haste = em(cilindro(0.018, 0.018, 0.4, '#adb5bd', 8, { metalness: 0.6, roughness: 0.3 }), 0.2, 0.06, z); haste.rotation.z = Math.PI / 2;
-      g.add(cabo, haste);
+    const g = new THREE.Group(), metal = { metalness: 0.65, roughness: 0.3 };
+    g.add(caixa(0.3, 0.035, 0.05, '#f07a1a', 0, 0.09, 0.03));   // suporte laranja impresso
+    ['#f2c200', '#f2c200', '#1e1f22', '#1e1f22', '#1e1f22', '#1e1f22', '#1e1f22'].forEach((cor, i) => {
+      const x = -0.12 + i * 0.04;
+      g.add(em(cilindro(0.011, 0.013, 0.09, cor, 10), x, 0.17, 0.035));
+      g.add(em(cilindro(0.003, 0.003, 0.11, '#c3c8ce', 6, metal), x, 0.07, 0.035));
     });
     return { grupo: g };
   }
 
   // ---------- Fabricação digital ----------
+  // Bambu Lab A1 (fotos de 2026-10), em tamanho real: mesa que anda para frente e para trás (eixo Y),
+  // pórtico prateado que sobe (Z) com a cabeça que anda para os lados (X), bobina azul em cima e tela na frente.
   function impressora3d() {
     const g = new THREE.Group();
-    g.add(caixa(1.3, 0.18, 1.1, '#24262b'));
-    g.add(caixa(1.0, 0.05, 0.9, '#3a3d45', 0, 0.18, 0));
-    g.add(caixa(0.1, 1.5, 0.1, '#2f3238', -0.6, 0.18, -0.4));
-    g.add(caixa(0.1, 1.5, 0.1, '#2f3238', 0.6, 0.18, -0.4));
-    g.add(caixa(1.3, 0.1, 0.1, '#2f3238', 0, 1.68, -0.4));
-    g.add(em(new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.09, 12, 24), material('#2fd13c')), 0.88, 1.3, -0.4));
+    const branco = '#eceef1', aluminio = { metalness: 0.6, roughness: 0.35 };
+    const V = (x, y, z) => new THREE.Vector3(x, y, z);
+    // base, colunas e barra de cima
+    g.add(caixa(0.3, 0.075, 0.38, branco, 0, 0, 0.02, { roughness: 0.5 }));
+    [-0.175, 0.175].forEach((x) => g.add(caixa(0.045, 0.34, 0.045, '#b4b9c0', x, 0, -0.13, aluminio)));
+    g.add(caixa(0.395, 0.04, 0.05, '#b4b9c0', 0, 0.335, -0.13, aluminio));
+    g.add(caixa(0.06, 0.06, 0.07, '#6c727a', -0.175, 0, -0.1));               // motor do eixo Z
+    // mesa com chapa texturizada (PEI)
+    const mesa = new THREE.Group();
+    mesa.position.y = 0.075;
+    mesa.add(caixa(0.26, 0.012, 0.26, '#d9dce0'));
+    mesa.add(caixa(0.256, 0.003, 0.256, '#6b5238', 0, 0.012, 0, { roughness: 0.9 }));
+    g.add(mesa);
+    const TOPO = 0.09, ALTURA_PECA = 0.1;
+    const perfil = [[0, 0], [0.032, 0], [0.04, 0.018], [0.027, 0.054], [0.022, 0.076], [0.031, 0.1]].map(([x, y]) => new THREE.Vector2(x, y));
+    const peca = sombra(new THREE.Mesh(new THREE.LatheGeometry(perfil, 28), material('#2563d9', { side: THREE.DoubleSide })));
+    peca.position.y = TOPO - mesa.position.y;
+    mesa.add(peca);
+    // pórtico (sobe e desce) e cabeça de impressão (anda em X); a origem do pórtico é a ponta do bico
     const portico = new THREE.Group();
-    portico.add(caixa(1.15, 0.06, 0.06, '#adb5bd', 0, 0, -0.4, { metalness: 0.5 }));
-    const carro = new THREE.Group();
-    carro.add(caixa(0.22, 0.2, 0.5, '#1d1f23', 0, -0.1, -0.2));
-    carro.add(em(cilindro(0.05, 0.012, 0.12, '#ffd166', 12), 0, -0.16, 0));
-    portico.add(carro);
+    portico.add(caixa(0.35, 0.03, 0.03, '#c9cdd2', 0, 0.06, -0.07, aluminio));
+    portico.add(caixa(0.05, 0.05, 0.06, branco, 0.2, 0.05, -0.1));
+    portico.add(caixa(0.04, 0.045, 0.05, '#7d838b', -0.19, 0.05, -0.1));
+    const cabeca = new THREE.Group();
+    cabeca.add(em(cilindro(0.009, 0.003, 0.014, '#c47a2c', 12, { metalness: 0.7, roughness: 0.3 }), 0, 0.007, 0));
+    cabeca.add(caixa(0.03, 0.012, 0.03, '#3a3d42', 0, 0.012, 0));
+    cabeca.add(caixa(0.06, 0.085, 0.075, branco, 0, 0.024, -0.0175));
+    const ventoinha = em(cilindro(0.014, 0.014, 0.004, '#c8ccd1', 20), 0, 0.07, 0.021);
+    ventoinha.rotation.x = Math.PI / 2;
+    cabeca.add(ventoinha);
+    portico.add(cabeca);
     g.add(portico);
-    const perfil = [[0, 0], [0.18, 0], [0.22, 0.1], [0.15, 0.3], [0.12, 0.42], [0.17, 0.55]].map(([x, y]) => new THREE.Vector2(x, y));
-    const peca = sombra(new THREE.Mesh(new THREE.LatheGeometry(perfil, 28), material('#2fd13c', { side: THREE.DoubleSide })));
-    peca.position.y = 0.23;
-    g.add(peca);
+    // tela de toque na frente, à direita
+    const tela = textura(128, 96, (c, w, h) => {
+      c.fillStyle = '#14171c'; c.fillRect(0, 0, w, h);
+      c.fillStyle = '#2fd1c5'; [[8, 8], [8, 40], [8, 72]].forEach(([x, y]) => c.fillRect(x, y, 16, 16));
+      c.fillStyle = '#e8eaee'; c.font = 'bold 15px Arial, sans-serif';
+      c.fillText('220 °C', 40, 22); c.fillText('65 °C', 40, 54); c.fillText('100 %', 40, 86);
+    });
+    const painel = new THREE.Group();
+    painel.position.set(0.2, 0.06, 0.16);
+    painel.rotation.x = -0.5;
+    painel.add(caixa(0.085, 0.065, 0.012, branco));
+    painel.add(em(plano(0.072, 0.052, tela), 0, 0.0325, 0.0065));
+    g.add(painel);
+    // suporte da bobina e bobina de filamento azul
+    g.add(caixa(0.03, 0.13, 0.03, branco, 0.06, 0.375, -0.13));
+    const eixo = em(cilindro(0.012, 0.012, 0.09, branco, 12), 0.105, 0.47, -0.13);
+    eixo.rotation.z = Math.PI / 2;
+    g.add(eixo);
+    const bobina = new THREE.Group();
+    [-0.033, 0.033].forEach((x) => bobina.add(em(cilindro(0.1, 0.1, 0.006, '#1b1c1f', 32), x, 0, 0)));
+    bobina.add(cilindro(0.085, 0.085, 0.06, '#2563d9', 32));
+    bobina.rotation.z = Math.PI / 2;
+    g.add(em(bobina, 0.12, 0.47, -0.13));
+    // suporte azul impresso na barra de cima
+    g.add(caixa(0.025, 0.16, 0.025, '#2563d9', -0.11, 0.375, -0.13));
+    [0.44, 0.52].forEach((y) => {
+      const braco = em(cilindro(0.011, 0.011, 0.17, '#2563d9', 10), -0.11, y, -0.13);
+      braco.rotation.z = Math.PI / 2;
+      g.add(braco);
+    });
+    // tubo de filamento (branco) e cabo (preto): acompanham a cabeça
+    const flexivel = (cor, r) => {
+      const m = new THREE.Mesh(new THREE.BufferGeometry(), material(cor, { roughness: 0.5 }));
+      m.userData.r = r;
+      g.add(m);
+      return m;
+    };
+    const tuboFilamento = flexivel('#eef3f8', 0.003), cabo = flexivel('#18191c', 0.0035);
+    const curvar = (m, pts) => {
+      m.geometry.dispose();
+      m.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 24, m.userData.r, 6, false);
+    };
+    let ultimo = '';
     return {
       grupo: g,
       atualizar(t, p) {
         const prog = p == null ? 1 : p;
         peca.scale.y = Math.max(0.02, prog);
-        portico.position.y = 0.23 + 0.55 * prog + 0.22;
-        carro.position.x = p == null ? 0 : Math.sin(t * 9) * 0.17;
-        carro.position.z = p == null ? 0 : Math.cos(t * 7) * 0.08;
+        portico.position.y = TOPO + ALTURA_PECA * prog + 0.006;
+        cabeca.position.x = p == null ? 0 : Math.sin(t * 9) * 0.035;
+        mesa.position.z = p == null ? 0 : -Math.cos(t * 7) * 0.035;   // a peça vai junto com a mesa
+        const cx = cabeca.position.x, cy = portico.position.y, chave = `${cx.toFixed(3)}|${cy.toFixed(3)}`;
+        if (chave === ultimo) return;
+        ultimo = chave;
+        curvar(tuboFilamento, [V(0.075, 0.5, -0.115), V(0.05, 0.49, -0.04), V(cx + 0.01, cy + 0.2, -0.02), V(cx, cy + 0.11, -0.02)]);
+        curvar(cabo, [V(-0.14, 0.355, -0.11), V(-0.12, 0.46, -0.05), V(cx - 0.02, cy + 0.24, -0.035), V(cx - 0.015, cy + 0.11, -0.035)]);
       }
     };
   }
+  // Mini gravadora/cortadora a laser NEJE (fotos de 2026-10), em tamanho real: caixa de acrílico preto
+  // com janela verde (filtra a luz do laser). A mesa anda para frente e para trás e o laser anda para os lados.
   function laser() {
     const g = new THREE.Group();
-    g.add(caixa(1.7, 0.35, 1.2, '#264653'));
-    g.add(caixa(1.3, 0.02, 0.9, '#e9c46a', 0, 0.35, 0));
-    const tampa = caixa(1.7, 0.4, 1.2, '#f77f00', 0, 0.35, 0, { transparent: true, opacity: 0.28, roughness: 0.2 });
-    tampa.castShadow = false;
-    g.add(tampa);
+    const W = 0.16, H = 0.2, D = 0.155, preto = '#121316', acr = { roughness: 0.18, metalness: 0.1 };
+    const zf = D / 2, xs = W / 2;
+    g.add(caixa(W, 0.008, D, preto, 0, 0, 0, acr));
+    g.add(caixa(W, 0.008, D, preto, 0, H - 0.008, 0, acr));
+    g.add(caixa(W, H, 0.006, preto, 0, 0, -zf + 0.003, acr));
+    // laterais vazadas
+    [-1, 1].forEach((s) => {
+      const x = s * (xs - 0.003);
+      g.add(caixa(0.006, 0.05, D, preto, x, 0, 0, acr));
+      g.add(caixa(0.006, 0.03, D, preto, x, H - 0.03, 0, acr));
+      g.add(caixa(0.006, H, 0.025, preto, x, 0, zf - 0.0125, acr));
+      g.add(caixa(0.006, H, 0.025, preto, x, 0, -zf + 0.0125, acr));
+    });
+    // frente: moldura preta, janela verde, etiqueta de aviso e a marca
+    g.add(caixa(W, 0.045, 0.006, preto, 0, 0, zf - 0.003, acr));
+    g.add(caixa(W, 0.018, 0.006, preto, 0, H - 0.018, zf - 0.003, acr));
+    [-1, 1].forEach((s) => g.add(caixa(0.014, H, 0.006, preto, s * (xs - 0.007), 0, zf - 0.003, acr)));
+    const janela = caixa(W - 0.028, H - 0.063, 0.003, '#6dff2e', 0, 0.045, zf + 0.002, { transparent: true, opacity: 0.42, roughness: 0.1 });
+    janela.castShadow = false;
+    g.add(janela);
+    g.add(em(plano(0.07, 0.02, texturaTexto('NEJE', { fundo: preto, cor: '#e8e8e8', w: 256, h: 72, px: 56 })), 0, 0.022, zf + 0.001));
+    g.add(em(plano(0.06, 0.014, texturaTexto('⚠ LASER', { fundo: '#f4d03f', cor: '#222222', w: 256, h: 60, px: 34 })), 0.02, H - 0.04, zf + 0.0045));
+    g.add(em(cilindro(0.008, 0.008, 0.006, '#d62828', 16), 0.05, H + 0.003, -0.04));   // botão vermelho
+    // mecânica: guia da mesa, placa verde e trilho do laser
+    g.add(caixa(0.1, 0.012, 0.11, '#2b2d31', 0, 0.048, 0));
+    g.add(caixa(0.11, 0.06, 0.004, '#2e7d32', 0, 0.12, -zf + 0.01));
+    const trilho = em(cilindro(0.002, 0.002, 0.12, '#b0b5bb', 8, { metalness: 0.7 }), 0, 0.165, -0.015);
+    trilho.rotation.z = Math.PI / 2;
+    g.add(trilho);
+    // mesa móvel com uma chapa de MDF
+    const mesa = new THREE.Group();
+    mesa.position.y = 0.06;
+    mesa.add(caixa(0.095, 0.004, 0.095, '#c4562f'));
+    mesa.add(caixa(0.08, 0.003, 0.08, '#d6b48a', 0, 0.004, 0));
+    g.add(mesa);
     const pts = [];
     for (let i = 0; i <= 10; i++) {
-      const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 === 0 ? 0.32 : 0.13;
-      pts.push(new THREE.Vector3(Math.cos(a) * r, 0.385, Math.sin(a) * r));
+      const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 === 0 ? 0.03 : 0.012;
+      pts.push(new THREE.Vector3(Math.cos(a) * r, 0.0075, Math.sin(a) * r));
     }
     const caminho = new THREE.CurvePath();
     for (let i = 0; i < 10; i++) caminho.add(new THREE.LineCurve3(pts[i], pts[i + 1]));
-    const tubo = new THREE.TubeGeometry(caminho, 300, 0.014, 6, false);
-    g.add(new THREE.Mesh(tubo, material('#3b2412', { roughness: 1 })));
+    const tubo = new THREE.TubeGeometry(caminho, 300, 0.0012, 6, false);
+    mesa.add(new THREE.Mesh(tubo, material('#3b2412', { roughness: 1 })));
     const total = tubo.index.count;
-    const cabeca = caixa(0.14, 0.1, 0.14, '#adb5bd', 0, 0, 0, { metalness: 0.5 });
+    // módulo do laser
+    const Y_LASER = 0.125, Y_MDF = 0.0675;
+    const cabeca = new THREE.Group();
+    cabeca.add(caixa(0.022, 0.04, 0.022, '#1d1e22'));
+    cabeca.add(em(cilindro(0.005, 0.005, 0.006, '#9aa0a8', 10, { metalness: 0.7 }), 0, -0.003, 0));
+    cabeca.position.y = Y_LASER;
     g.add(cabeca);
-    const feixe = semDestaque(new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.15, 6), new THREE.MeshBasicMaterial({ color: '#ff1e1e', toneMapped: false })));
-    g.add(feixe);
+    const luz = new THREE.MeshBasicMaterial({ color: '#7f6bff', toneMapped: false });
+    const feixe = semDestaque(new THREE.Mesh(new THREE.CylinderGeometry(0.0008, 0.0008, Y_LASER - Y_MDF, 6), luz));
+    const ponto = semDestaque(new THREE.Mesh(new THREE.SphereGeometry(0.0025, 8, 6), luz));
+    g.add(feixe, ponto);
     return {
       grupo: g,
       atualizar(t, p) {
         tubo.setDrawRange(0, p == null ? total : Math.floor(p * total / 6) * 6);
-        feixe.visible = p != null;
-        if (p == null) { cabeca.position.set(0.55, 0.57, -0.4); return; }
+        feixe.visible = ponto.visible = p != null;
+        if (p == null) { cabeca.position.x = 0.035; mesa.position.z = 0; return; }
         const pt = caminho.getPointAt(Math.min(p, 0.999));
-        cabeca.position.set(pt.x, 0.57, pt.z);
-        feixe.position.set(pt.x, 0.445, pt.z);
+        cabeca.position.x = pt.x;
+        mesa.position.z = -pt.z;                      // a mesa traz o ponto da estrela para baixo do laser
+        feixe.position.set(pt.x, (Y_LASER + Y_MDF) / 2, 0);
+        ponto.position.set(pt.x, Y_MDF, 0);
       }
     };
   }
@@ -966,7 +1194,7 @@ window.UVA_MODELOS = function (THREE) {
   return {
     SALA, JANELA, PORTA,
     sala, balcao, armario, gaveteiro, cadeira, mesaColaborativa, mesaComputador, planta, prateleiraParede,
-    logoUVA, poster, quadroBranco, painelPerfurado, arCondicionado,
+    letreiroUVA, poster, quadroBranco, painelPerfurado, arCondicionado,
     portaArmario, lixeiras, martelo, chaveFenda,
     impressora3d, laser, caneta3d, computador,
     arduino, protoboard, kit, drone, oculosVR, cameraFoto, tablet,

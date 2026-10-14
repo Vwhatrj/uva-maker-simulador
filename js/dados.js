@@ -26,8 +26,8 @@ window.UVA_DATA = {
     },
     {
       id: 'ferramentas', nome: 'Ferramentas Manuais e Marcenaria', curto: 'Ferramentas',
-      icone: '🔨', cor: '#e76f51', parede: 'cinza', centro: [0.45, 1.2, -2.5], rotulo: [-0.05, 1.78, -2.5],
-      descricao: 'Painéis perfurados com ferramentas manuais para ajuste, montagem e acabamento dos protótipos.',
+      icone: '🔨', cor: '#e76f51', parede: 'cinza', centro: [0.45, 1.5, -2.5], rotulo: [-0.05, 2.35, -2.5],
+      descricao: 'Painéis perfurados com tesouras, alicates, grampos, chaves de fenda e martelos para ajuste, montagem e acabamento dos protótipos. Os suportes laranja foram impressos no próprio laboratório.',
       objetivo: 'Desenvolver habilidades manuais, noção de medida e precisão, e o cuidado com a segurança no trabalho físico.'
     },
     {
@@ -105,10 +105,10 @@ window.UVA_DATA = {
 
     // ---------- Equipamentos ----------
     impressora3d: {
-      categoria: 'Equipamentos', nome: 'Impressora 3D', icone: '🖨️',
-      modelo: 'impressora3d', escala: 0.3, base: [0.39, 0.33], apoio: 'ambos',
+      categoria: 'Equipamentos', nome: 'Impressora 3D Bambu Lab A1', icone: '🖨️',
+      modelo: 'impressora3d', base: [0.46, 0.4], apoio: 'ambos',
       zona: 'fabricacao',
-      descricao: 'Constrói objetos camada por camada derretendo filamento plástico (PLA).',
+      descricao: 'Constrói objetos camada por camada derretendo filamento plástico (PLA). Nesta impressora a mesa anda para frente e para trás enquanto a cabeça anda para os lados.',
       aprender: 'Do modelo digital ao objeto físico: o estudante aprende modelagem 3D, fatiamento e geometria, e conhece as limitações reais da fabricação (suportes, preenchimento, tempo).',
       dica: 'Prefira o PLA, um plástico de origem vegetal, e reaproveite impressões que falharam como material de teste.',
       sim: {
@@ -117,10 +117,10 @@ window.UVA_DATA = {
       }
     },
     laser: {
-      categoria: 'Equipamentos', nome: 'Mini cortadora a laser', icone: '✨',
-      modelo: 'laser', escala: 0.24, base: [0.41, 0.29], apoio: 'ambos',
+      categoria: 'Equipamentos', nome: 'Mini cortadora a laser NEJE', icone: '✨',
+      modelo: 'laser', base: [0.17, 0.16], apoio: 'ambos',
       zona: 'fabricacao',
-      descricao: 'Corta e grava madeira fina, papelão e acrílico com um feixe de luz concentrado.',
+      descricao: 'Máquina compacta que grava madeira, MDF e papelão e corta papel e materiais finos com um feixe de luz concentrado. A janela verde filtra a luz do laser.',
       aprender: 'Ensina desenho vetorial (2D), precisão e encaixes: com chapas planas se constroem objetos 3D, como o porquinho fatiado da vitrine.',
       dica: 'Nunca olhe diretamente para o feixe, mantenha a tampa fechada e não deixe a máquina ligada sozinha.',
       sim: {
@@ -327,7 +327,7 @@ window.UVA_DATA = {
     },
 
     // ---------- Sobre os balcões ----------
-    { id: 'impressora-3d', tipo: 'impressora3d', pos: [0.95, 0.9, -2.42], parede: 'cinza', sobre: 'balcao-fabricacao' },
+    { id: 'impressora-3d', tipo: 'impressora3d', pos: [0.92, 0.9, -2.39], parede: 'cinza', sobre: 'balcao-fabricacao' },
     { id: 'cortadora-laser', tipo: 'laser', pos: [0.4, 0.9, -2.2], parede: 'cinza', sobre: 'balcao-fabricacao' },
     { id: 'caneta-3d', tipo: 'caneta3d', pos: [-0.12, 0.9, -2.2], parede: 'cinza', sobre: 'balcao-fabricacao' },
     { id: 'drone-vermelho', tipo: 'droneQuadricoptero', pos: [-0.15, 0.9, -2.49], parede: 'cinza', sobre: 'balcao-fabricacao' },
@@ -339,24 +339,24 @@ window.UVA_DATA = {
     { id: 'tablet', tipo: 'tablet', pos: [-2.6, 0.9, -2.47], parede: 'cinza', sobre: 'balcao-eletronica' },
 
     // ---------- Presos na parede cinza ----------
-    { id: 'logo-uva', modelo: 'logoUVA', pos: [-0.1, 2.2, -2.645], parede: 'cinza', fixo: true },
+    { id: 'letreiro-uva', modelo: 'letreiroUVA', pos: [0.45, 1.81, -2.645], parede: 'cinza', fixo: true },
     { id: 'ar-condicionado', modelo: 'arCondicionado', pos: [-3.25, 2.3, -2.645], parede: 'cinza', fixo: true },
     {
-      id: 'painel-ferramentas', modelo: 'painelPerfurado', pos: [0.45, 1.05, -2.645], parede: 'cinza', fixo: true,
+      id: 'painel-ferramentas', modelo: 'painelPerfurado', pos: [0.45, 1.25, -2.645], parede: 'cinza', fixo: true,
       zona: 'ferramentas', nome: 'Painéis de ferramentas', icone: '🧰',
       descricao: 'Painéis perfurados onde cada ferramenta tem o seu lugar.',
       aprender: 'Organização também se aprende: um espaço maker compartilhado só funciona quando todos encontram e devolvem as ferramentas.',
       dica: 'Devolver a ferramenta ao painel é cuidar do espaço coletivo.'
     },
     {
-      id: 'martelo', modelo: 'martelo', escala: 0.4, rotX: Math.PI / 2, pos: [0.15, 1.33, -2.6], parede: 'cinza', fixo: true,
-      zona: 'ferramentas', nome: 'Martelo', icone: '🔨',
+      id: 'martelo', modelo: 'martelo', pos: [1.23, 1.01, -2.645], parede: 'cinza', fixo: true,
+      zona: 'ferramentas', nome: 'Martelos', icone: '🔨',
       descricao: 'Ferramenta de impacto para pregar, encaixar e ajustar peças.',
       aprender: 'Usar o martelo ensina física na prática: alavanca, impulso e transferência de energia.',
       dica: 'Segure pela ponta do cabo, mantenha os dedos longe e use óculos de proteção.'
     },
     {
-      id: 'chave-fenda', modelo: 'chaveFenda', escala: 0.4, rotX: Math.PI / 2, pos: [0.55, 1.2, -2.6], parede: 'cinza', fixo: true,
+      id: 'chave-fenda', modelo: 'chaveFenda', pos: [0.225, 1.17, -2.645], parede: 'cinza', fixo: true,
       zona: 'ferramentas', nome: 'Chaves de fenda', icone: '🪛',
       descricao: 'Chaves de fenda e Phillips de vários tamanhos.',
       aprender: 'Montar e desmontar com parafusos permite reaproveitar peças, fazer manutenção e entender como os objetos são construídos.',
