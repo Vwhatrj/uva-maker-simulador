@@ -358,6 +358,7 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
     definirSobMouse(null);
     voarPara(new THREE.Vector3(0, 9, 4.2), new THREE.Vector3(0, 0, -0.2));
     atualizarBarraEdicao();
+    statusEdicao(textoModoEdicao());
   }
   function sairEdicao() {
     terminarArrasto();
@@ -389,23 +390,31 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
     clearTimeout(confirmarReset);
     confirmarReset = null;
     btn.textContent = 'Restaurar tudo';
-    aplicarLayout({});
-    salvarLayout();
+    restaurarTudo();
   });
 
   // ---------- Onde o layout fica salvo ----------
-  // Publicado no claude.ai: no banco do artifact (todos veem; só quem pode editar altera).
-  // Aberto como arquivo local: no navegador deste computador.
+  // - Dono e editores do artifact no claude.ai: no banco do artifact. É o layout oficial, que todos veem.
+  // - Todas as outras pessoas (site público, arquivo local, visitantes do artifact): no próprio navegador,
+  //   e em arquivo .json pelos botões "Salvar arquivo" e "Abrir arquivo".
   const CHAVE_LAYOUT = 'uva-maker-layout';
   let docLayout = null, salvando = false, salvarDeNovo = false;
+  let temLayoutPessoal = false, ultimoOficial = {};
   function statusEdicao(texto) { $('#be-status').textContent = texto; }
+  function lerLayoutPessoal() {
+    try {
+      const v = JSON.parse(localStorage.getItem(CHAVE_LAYOUT) || 'null');
+      return v && typeof v === 'object' ? v : null;
+    } catch (e) { return null; }
+  }
   async function salvarLayout() {
     if (!docLayout) {
+      temLayoutPessoal = true;
       try {
         localStorage.setItem(CHAVE_LAYOUT, JSON.stringify(layout));
-        statusEdicao('Salvo neste navegador. Para todos verem, use a versão publicada do simulador.');
+        statusEdicao('Salvo neste navegador. Use "Salvar arquivo" para guardar uma cópia ou enviar para alguém.');
       } catch (e) {
-        statusEdicao('Este navegador não deixou salvar. As mudanças valem só até fechar a página.');
+        statusEdicao('Este navegador não deixou salvar. Use "Salvar arquivo" para não perder o layout.');
       }
       return;
     }
@@ -414,31 +423,111 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
     statusEdicao('Salvando…');
     try {
       await docLayout.set({ posicoes: JSON.parse(JSON.stringify(layout)) });
-      statusEdicao('Salvo. Quem abrir o simulador vê este layout.');
+      statusEdicao('Salvo como layout oficial. Quem abrir o simulador vê este layout.');
     } catch (e) {
       statusEdicao('Não foi possível salvar agora. Mova o móvel de novo em alguns segundos.');
     }
     salvando = false;
     if (salvarDeNovo) { salvarDeNovo = false; salvarLayout(); }
   }
+  function restaurarTudo() {
+    if (docLayout) { aplicarLayout({}); salvarLayout(); return; }
+    try { localStorage.removeItem(CHAVE_LAYOUT); } catch (e) { /* sem armazenamento */ }
+    temLayoutPessoal = false;
+    aplicarLayout(ultimoOficial);
+    statusEdicao('Voltou ao layout original do laboratório.');
+  }
+  function textoModoEdicao() {
+    return docLayout
+      ? 'Você está editando o layout oficial: todos que abrirem o simulador verão as mudanças.'
+      : 'Suas mudanças ficam salvas neste navegador. Use "Salvar arquivo" para guardar uma cópia.';
+  }
+
+  // Arquivo de layout (.json)
+  function nomeArquivo() {
+    const d = new Date(), p = (n) => String(n).padStart(2, '0');
+    return `layout-uva-maker-${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}.json`;
+  }
+  async function salvarArquivo() {
+    const conteudo = JSON.stringify({ tipo: 'uva-maker-layout', versao: 1, salvoEm: new Date().toISOString(), posicoes: layout }, null, 2);
+    const claude = window.claude;
+    if (claude && typeof claude.use === 'function') {
+      const downloads = await claude.use('downloads');
+      if (!downloads) { statusEdicao('Esta visualização não permite baixar arquivos.'); return; }
+      try {
+        await downloads.save({ filename: nomeArquivo(), data: conteudo });
+        statusEdicao('Arquivo salvo.');
+      } catch (e) {
+        statusEdicao(e && e.code === 'declined' ? 'Download cancelado.' : 'Não foi possível baixar o arquivo aqui.');
+      }
+      return;
+    }
+    const url = URL.createObjectURL(new Blob([conteudo], { type: 'application/json' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nomeArquivo();
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    statusEdicao(`Arquivo "${a.download}" salvo na pasta de downloads.`);
+  }
+  function abrirArquivo(arquivo) {
+    const leitor = new FileReader();
+    leitor.onload = async () => {
+      let dados = null;
+      try { dados = JSON.parse(leitor.result); } catch (e) { /* tratado abaixo */ }
+      const posicoes = dados && dados.tipo === 'uva-maker-layout' ? dados.posicoes : null;
+      if (!posicoes || typeof posicoes !== 'object') {
+        statusEdicao(`"${arquivo.name}" não é um layout do simulador. Abra um arquivo criado com "Salvar arquivo".`);
+        return;
+      }
+      const limpo = {};
+      Object.keys(posicoes).forEach((id) => {
+        const p = posicoes[id];
+        if (!moviveis.has(id) || !p || ![p.x, p.z, p.rot].every(Number.isFinite)) return;
+        limpo[id] = {
+          x: Math.min(LX - 0.1, Math.max(-LX + 0.1, p.x)),
+          z: Math.min(LZ - 0.1, Math.max(-LZ + 0.1, p.z)),
+          rot: p.rot
+        };
+      });
+      selecionarMovel(null);
+      aplicarLayout(limpo);
+      await salvarLayout();
+      statusEdicao(`Layout "${arquivo.name}" aberto. ${docLayout ? 'Ele agora é o layout oficial.' : 'Ficou salvo neste navegador.'}`);
+    };
+    leitor.readAsText(arquivo);
+  }
+  $('#be-salvar-arquivo').addEventListener('click', salvarArquivo);
+  $('#be-abrir-arquivo').addEventListener('click', () => $('#be-arquivo').click());
+  $('#be-arquivo').addEventListener('change', (ev) => {
+    const arquivo = ev.target.files && ev.target.files[0];
+    if (arquivo) abrirArquivo(arquivo);
+    ev.target.value = '';
+  });
+
   async function iniciarArmazenamento() {
+    $('#btn-editar').hidden = false;
+    const pessoal = lerLayoutPessoal();
     const claude = window.claude;
     if (!claude || typeof claude.use !== 'function') {
-      // Fora do claude.ai: no arquivo local quem desenvolve pode testar layouts (salvos só no navegador);
-      // no site público (GitHub Pages) os visitantes veem o layout de js/dados.js, sem edição.
-      if (location.protocol !== 'file:') return;
-      try { aplicarLayout(JSON.parse(localStorage.getItem(CHAVE_LAYOUT) || '{}')); } catch (e) { /* sem armazenamento */ }
-      $('#btn-editar').hidden = false;
+      if (pessoal) { temLayoutPessoal = true; aplicarLayout(pessoal); }
       return;
     }
     const [db, user] = await Promise.all([claude.use('db'), claude.use('user')]);
-    if (!db) return;                       // sem banco: mostra o layout original, sem edição
-    docLayout = db.doc('layout/atual');
-    docLayout.onSnapshot((snap) => {
-      if (arrasto) return;
-      aplicarLayout(snap.exists ? (snap.data() || {}).posicoes : {});
-    }, () => { /* mantém o último layout recebido */ });
-    if (user && await user.canEdit()) $('#btn-editar').hidden = false;
+    const oficial = Boolean(db && user && await user.canEdit());
+    if (db) {
+      const doc = db.doc('layout/atual');
+      if (oficial) docLayout = doc;
+      doc.onSnapshot((snap) => {
+        ultimoOficial = (snap.exists && (snap.data() || {}).posicoes) || {};
+        if (arrasto || temLayoutPessoal) return;
+        aplicarLayout(ultimoOficial);
+      }, () => { /* mantém o último layout recebido */ });
+    }
+    if (!oficial && pessoal) { temLayoutPessoal = true; aplicarLayout(pessoal); }
+    if (editando) statusEdicao(textoModoEdicao());
   }
   iniciarArmazenamento();
 

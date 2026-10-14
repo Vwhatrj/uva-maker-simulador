@@ -4,9 +4,10 @@ Simulador 3D (Three.js 0.160 via CDN, sem build) do laboratório maker da Univer
 Feito por Guilherme para os orientadores (entre eles o Thiago, professor e chefe do laboratório). Textos e código em português.
 
 ## Onde está publicado
-- **Site público (sem login):** GitHub Pages do repositório `Vwhatrj/uva-maker-simulador`, que mostra o layout de `js/dados.js`.
-- **Artifact no claude.ai:** https://claude.ai/artifact/9hMQPQEQnuXfDYN4Kcxv5g. Republicar sempre nesse mesmo link, passando `index.html` como página e `css/estilo.css`, `js/dados.js`, `js/modelos.js`, `js/app.js` em `files`. Capabilities: `db` (regra `layout`: leitura `view`, escrita `admin`) e `user`.
-- O layout arrastado no modo "Editar layout" do artifact fica no db, no documento `layout/atual` (campo `posicoes`: `{id: {x, z, rot}}`). Para torná-lo o padrão do site público, ler esse documento e gravar as posições em `js/dados.js`.
+- **Site público (sem login):** GitHub Pages do repositório `Vwhatrj/uva-maker-simulador` (https://vwhatrj.github.io/uva-maker-simulador/), que mostra o layout de `js/dados.js`.
+- **Artifact no claude.ai:** https://claude.ai/artifact/9hMQPQEQnuXfDYN4Kcxv5g. Republicar sempre nesse mesmo link, passando `index.html` como página e `css/estilo.css`, `js/dados.js`, `js/modelos.js`, `js/app.js` em `files`. Capabilities: `db` (regra `layout`: leitura `view`, escrita `admin`), `user` e `downloads`.
+- **Modo "Editar layout":** qualquer pessoa pode arrastar os móveis. Para o dono/editores do artifact o layout é o oficial, salvo no db do artifact (documento `layout/atual`, campo `posicoes`: `{id: {x, z, rot}}`). Para todos os outros, fica no navegador da pessoa (localStorage `uva-maker-layout`) e pode ser salvo/aberto como arquivo `.json` (`{tipo: "uva-maker-layout", versao: 1, posicoes}`).
+- Para tornar um layout o padrão do site público: ler o db do artifact ou o `.json` enviado pelo usuário e gravar as posições em `js/dados.js`.
 
 ## Medidas reais
 - Sala: 7,54 x 5,29 m (informado pelo Thiago). Abertura/janela de 2,31 x 1,90 m na parede menor.
