@@ -12,10 +12,15 @@ Guilherme está começando em programação e GitHub: explicar passos em linguag
 
 ## Medidas reais
 - Sala: 7,54 x 5,29 m (informado pelo Thiago). Abertura/janela de 2,31 x 1,90 m na parede menor.
-- **Estimativas a confirmar:** pé-direito 2,80 m, peitoril 0,80 m, posição e medida da porta, conteúdo de cada porta do armário.
-- As imagens de referência mostram um layout antigo do laboratório.
-- Fotos reais de 2026-10 (enviadas no chat, não estão no repositório): impressora **Bambu Lab A1**, cortadora **NEJE** e os painéis de ferramentas. Esses modelos 3D foram refeitos em tamanho real (sem `escala`).
-- **Estimativas pelas fotos:** painéis de ferramentas com 0,92 x 0,56 m cada, base a 1,25 m do chão; tampo das bancadas azul.
+- **Estimativas a confirmar:** pé-direito 3,00 m (pelas fotos), peitoril 0,80 m, porta dupla de 1,50 m, conteúdo de cada porta do armário.
+- Layout refeito com as fotos reais de 2026-10 (enviadas no chat, não estão no repositório). Os nomes das paredes no código vêm do layout antigo; hoje todas são creme:
+  - `cinza` (z = -Z): gaveteiros no canto, armário 37-48, bancada branca da eletrônica, banner ODS, coração de fios, coluna turquesa, mesa de projetos, painéis de ferramentas com letras UVA, bancada azul (Fercar) com Bambu Lab A1 e impressora de perfis pretos, armário 25-36 e coluna rosa no canto.
+  - `janela` (x = +X): coluna rosa, janela para o corredor e bancada com computadores e a cortadora NEJE; ar-condicionado de teto.
+  - `azul` (z = +Z): porta dupla de vidro com película "UVA MAKER HACKER SPACE" (sala A109), split, prateleiras brancas da vitrine, coluna amarela e computadores.
+  - `quadro` (x = -X): quadro branco.
+- Piso vinílico xadrez azul/branco/cinza; cadeiras plásticas coloridas; corredor de ladrilhos sextavados do lado de fora.
+- Os armários têm nomes de pessoas nas portas: no site só aparecem os números.
+- **Estimativas pelas fotos:** painéis de ferramentas com 0,92 x 0,56 m cada, base a 1,25 m do chão.
 
 ## Como o código está organizado
 - `js/dados.js`: `zonas`, `catalogo` (tipos: modelo, `base` [w, d] em metros, `apoio`, `superficie`, card) e `objetos` (instâncias: `id`, `tipo` ou `modelo`, `pos` no mundo, `parede`, `rot`, `sobre`, `preso`, `fixo`). Campos da instância sobrescrevem os do catálogo.
@@ -26,4 +31,6 @@ Guilherme está começando em programação e GitHub: explicar passos em linguag
 - `index.html` usa scripts clássicos (não módulos) para funcionar abrindo o arquivo direto no navegador.
 
 ## Pendências
-- Autoria e objetivo reais dos projetos da vitrine (hoje "Autoria a confirmar").
+- Autoria e objetivo reais dos projetos da vitrine (hoje "Autoria a confirmar"). As fotos mostram outras peças nas prateleiras (tendas amarelas, esculturas de madeira, peças de acrílico).
+- Onde ficam de verdade os insumos (papel, E.V.A., Lego...): hoje estão nas portas do armário 25-36.
+- O banner "UVA Maker e os ODS" não aparece nas fotos; está provisoriamente na parede do quadro.
