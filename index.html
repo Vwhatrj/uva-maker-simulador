@@ -1,3 +1,5 @@
+<!doctype html>
+<html lang="pt-BR">
 <title>UVA Maker Hacker Space</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -5,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/estilo.css">
+<link rel="stylesheet" href="css/estilo.css?v=4">
 
 <div id="palco"></div>
 
@@ -27,13 +29,15 @@
 
 <div id="barra-edicao" class="barra-edicao" hidden>
   <div class="be-info">
-    <b id="be-nome">Nenhum móvel selecionado</b>
-    <span id="be-pos">Clique e arraste um móvel pelo chão.</span>
+    <b id="be-nome">Nenhum objeto selecionado</b>
+    <span id="be-pos">Clique e arraste um objeto.</span>
   </div>
   <div class="be-acoes">
+    <button id="be-adicionar" class="btn primario">➕ Adicionar objeto</button>
     <button id="be-girar-esq" class="btn" disabled>⟲ 90°</button>
     <button id="be-girar-dir" class="btn" disabled>⟳ 90°</button>
     <button id="be-original" class="btn" disabled>Voltar ao lugar original</button>
+    <button id="be-remover" class="btn" disabled>🗑 Remover</button>
     <button id="be-resetar" class="btn">Restaurar tudo</button>
     <button id="be-salvar-arquivo" class="btn">💾 Salvar arquivo</button>
     <button id="be-abrir-arquivo" class="btn">📂 Abrir arquivo</button>
@@ -44,15 +48,23 @@
 </div>
 
 <footer class="rodape">
-  <div class="progresso">
-    <span id="progresso-texto">0 explorados</span>
-    <div class="barra"><div id="progresso-barra"></div></div>
+  <div class="rodape-esq">
+    <div class="progresso">
+      <span id="progresso-texto">0 explorados</span>
+      <div class="barra"><div id="progresso-barra"></div></div>
+    </div>
+    <div class="painel-luz">
+      <button id="btn-dia" class="btn-icone" aria-label="Passar o dia">▶</button>
+      <label for="hora">☀️ <span id="hora-texto">10:00</span></label>
+      <input id="hora" type="range" min="5" max="22" step="0.25" value="10">
+      <button id="btn-luzes" class="btn-icone" aria-label="Ligar ou desligar as lâmpadas">💡</button>
+    </div>
   </div>
   <div class="acoes">
     <button id="btn-trilha" class="btn primario">🧭 Trilha guiada</button>
     <button id="btn-geral" class="btn">🏠 Visão geral</button>
     <button id="btn-medidas" class="btn">📏 Medidas</button>
-    <button id="btn-editar" class="btn" hidden>✥ Editar layout</button>
+    <button id="btn-editar" class="btn">✥ Editar layout</button>
     <button id="btn-ajuda" class="btn" aria-label="Ajuda">?</button>
   </div>
 </footer>
@@ -70,6 +82,7 @@
       <li><b>🖱️ Arraste</b> para girar a sala; use a <b>rolagem</b> (ou pinça) para aproximar. A parede da frente abaixa para você ver dentro.</li>
       <li><b>👆 Clique</b> em qualquer objeto, até nas portas dos armários, para descobrir para que serve e o que se aprende com ele.</li>
       <li><b>▶ Simule</b> a impressora 3D, a cortadora a laser, a caneta 3D, o Arduino e o drone.</li>
+      <li><b>✥ Editar layout</b> para mover, girar, adicionar e remover objetos, e <b>☀️</b> para mudar a hora do dia.</li>
     </ul>
     <div class="modal-acoes">
       <button id="bv-trilha" class="btn primario">🧭 Começar trilha guiada</button>
@@ -79,9 +92,9 @@
 </div>
 
 <!-- Scripts clássicos: funcionam abrindo o arquivo direto no navegador (sem servidor). -->
-<script src="js/dados.js"></script>
-<script src="js/modelos.js"></script>
-<script src="js/app.js"></script>
+<script src="js/dados.js?v=4"></script>
+<script src="js/modelos.js?v=4"></script>
+<script src="js/app.js?v=4"></script>
 <script type="importmap">
   {
     "imports": {

@@ -1,32 +1,38 @@
 {
   "js/app.js": {
-    "mtime": 1791993068.688754,
-    "seen": 1791993214.578142,
-    "ast_hash": "a5948e50781de7d5e4b1cb866df1b697",
+    "mtime": 1791997293.7906506,
+    "seen": 1791997482.9179325,
+    "ast_hash": "5e865446cb8430352f7a15eaee4f38ef",
     "semantic_hash": ""
   },
   "js/dados.js": {
-    "mtime": 1791993162.6681094,
-    "seen": 1791993214.578142,
-    "ast_hash": "7d42ddaea6b3d17100bc236cf0cfb05e",
+    "mtime": 1791997146.456985,
+    "seen": 1791997482.9179325,
+    "ast_hash": "b59c9b9ad3792dd5d1637051d4e70cd9",
     "semantic_hash": ""
   },
   "js/modelos.js": {
-    "mtime": 1791993162.6713505,
-    "seen": 1791993214.578142,
-    "ast_hash": "ffce3406bba82fce5dda70933c0c7ea0",
+    "mtime": 1791996910.4725275,
+    "seen": 1791997482.9179325,
+    "ast_hash": "06d43bec843b69deeaff1a4344870c6e",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1791993208.896922,
-    "seen": 1791993214.578142,
-    "ast_hash": "43c3ae655e47e19dc5851cf0ffa5aaa3",
+    "mtime": 1791997475.4691694,
+    "seen": 1791997482.9179325,
+    "ast_hash": "226b0f5618e9cf683e452fb3e7400da4",
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1791992928.8144991,
-    "seen": 1791993214.578142,
-    "ast_hash": "023ca58cd38ff51b6a053c80d74fe52b",
+    "mtime": 1791997402.7511826,
+    "seen": 1791997482.9179325,
+    "ast_hash": "0212bc9efb2715de4fd380a11450adec",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1791997476.5486052,
+    "seen": 1791997482.9179325,
+    "ast_hash": "7fa4372f71acedd0bc315aebed7a97b6",
     "semantic_hash": ""
   }
 }

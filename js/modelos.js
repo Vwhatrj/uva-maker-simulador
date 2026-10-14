@@ -283,7 +283,20 @@ window.UVA_MODELOS = function (THREE) {
     g.add(caixa(w, 0.05, d, '#b9bcc0', 0, h - 0.05, 0, { roughness: 0.5 }));
     return { grupo: g };
   }
-  function armario() {
+  let ventilacao = null;
+  function texturaVentilacao() {
+    if (!ventilacao) {
+      ventilacao = textura(64, 128, (c, w, h) => {
+        c.fillStyle = '#e3e6ea'; c.fillRect(0, 0, w, h);
+        c.fillStyle = '#9097a0';
+        for (let i = 0; i < 5; i++) { c.fillRect(14, 10 + i * 9, 36, 4); c.fillRect(14, 78 + i * 9, 36, 4); }
+      });
+    }
+    return ventilacao;
+  }
+  // `portas: true` desenha as 9 portas fechadas (armário novo do catálogo).
+  // O armário original tem as portas como objetos clicáveis à parte (portaArmario).
+  function armario(op) {
     const g = new THREE.Group(), cor = '#d4d8de', W = 0.9, H = 1.8, D = 0.45;
     g.add(caixa(W, H, 0.02, cor, 0, 0, -D / 2 + 0.01));
     g.add(caixa(0.02, H, D, cor, -W / 2 + 0.01, 0, 0));
@@ -291,6 +304,14 @@ window.UVA_MODELOS = function (THREE) {
     for (let r = 0; r <= 3; r++) g.add(caixa(W, 0.02, D, cor, 0, 0.04 + r * 0.58, 0));
     for (let c = 1; c <= 2; c++) g.add(caixa(0.02, H - 0.04, D, cor, -W / 2 + c * 0.3, 0.04, 0));
     g.add(caixa(W, 0.04, D - 0.04, '#9aa0a6'));
+    if (op && op.portas) {
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 3; c++) {
+          g.add(caixa(0.28, 0.55, 0.02, '#ffffff', -0.3 + c * 0.3, 0.065 + r * 0.58, D / 2 + 0.012, { map: texturaVentilacao() }));
+          g.add(caixa(0.03, 0.07, 0.02, '#3a3f47', -0.2 + c * 0.3, 0.3 + r * 0.58, D / 2 + 0.027));
+        }
+      }
+    }
     return { grupo: g };
   }
   function gaveteiro() {
@@ -315,28 +336,28 @@ window.UVA_MODELOS = function (THREE) {
     [[0.18, 0.17], [-0.18, 0.17], [0.18, -0.17], [-0.18, -0.17]].forEach(([x, z]) => g.add(em(cilindro(0.012, 0.012, 0.44, '#111', 6), x, 0.22, z)));
     return { grupo: g };
   }
-  function mesasColaborativas() {
+  // Mesa branca com faixa preta na borda da frente (+z); tampo a 0,755 m.
+  function mesaColaborativa() {
     const g = new THREE.Group();
-    [-0.375, 0.375].forEach((z) => [-0.75, 0.75].forEach((x) => {
-      g.add(caixa(1.48, 0.035, 0.74, '#f2f3f5', x, 0.72, z));
-      g.add(caixa(1.48, 0.004, 0.16, '#1d1e22', x, 0.755, z < 0 ? z + 0.29 : z - 0.29));
-      [[0.68, 0.33], [-0.68, 0.33], [0.68, -0.33], [-0.68, -0.33]].forEach(([dx, dz]) => g.add(caixa(0.04, 0.72, 0.04, '#dfe2e6', x + dx, 0, z + dz)));
-    }));
-    for (let i = 0; i < 5; i++) {
-      const x = -1.2 + i * 0.6;
-      const a = cadeira({}).grupo; a.position.set(x, 0, -1.02); g.add(a);
-      const b = cadeira({}).grupo; b.position.set(x, 0, 1.02); b.rotation.y = Math.PI; g.add(b);
-    }
+    g.add(caixa(1.48, 0.035, 0.74, '#f2f3f5', 0, 0.72, 0));
+    g.add(caixa(1.48, 0.004, 0.16, '#1d1e22', 0, 0.755, 0.29));
+    [[0.68, 0.33], [-0.68, 0.33], [0.68, -0.33], [-0.68, -0.33]].forEach(([x, z]) => g.add(caixa(0.04, 0.72, 0.04, '#dfe2e6', x, 0, z)));
     return { grupo: g };
   }
-  function bancadaComputadores(op) {
-    const g = new THREE.Group(), azul = '#1f4fa0';
-    (op.segmentos || [[-1, 1]]).forEach(([a, b]) => {
-      g.add(caixa(b - a, 0.04, 0.6, '#f4f5f7', (a + b) / 2, 0.7, 0.3));
-      g.add(caixa(b - a, 0.32, 0.03, azul, (a + b) / 2, 0.38, 0.05));
-      g.add(caixa(0.04, 0.7, 0.55, azul, a + 0.02, 0, 0.3));
-      g.add(caixa(0.04, 0.7, 0.55, azul, b - 0.02, 0, 0.3));
-    });
+  // Módulo da bancada dos computadores; tampo a 0,74 m, fundo azul em -z.
+  function mesaComputador(op) {
+    const g = new THREE.Group(), w = op.w || 1.05, azul = '#1f4fa0';
+    g.add(caixa(w, 0.04, 0.6, '#f4f5f7', 0, 0.7, 0));
+    g.add(caixa(w - 0.06, 0.32, 0.03, azul, 0, 0.38, -0.27));
+    [-1, 1].forEach((s) => g.add(caixa(0.04, 0.7, 0.55, azul, s * (w / 2 - 0.02), 0, 0)));
+    return { grupo: g };
+  }
+  function planta() {
+    const g = new THREE.Group();
+    g.add(em(cilindro(0.17, 0.13, 0.32, '#e76f51'), 0, 0.16, 0));
+    g.add(em(cilindro(0.16, 0.16, 0.02, '#5c3d2e'), 0, 0.31, 0));
+    [[0, 0.62, 0, 0.22], [0.13, 0.5, 0.05, 0.16], [-0.12, 0.54, -0.05, 0.17], [0.03, 0.82, -0.03, 0.14]]
+      .forEach(([x, y, z, r]) => g.add(em(esfera(r, '#52b788'), x, y, z)));
     return { grupo: g };
   }
   function prateleiraParede(op) {
@@ -475,14 +496,9 @@ window.UVA_MODELOS = function (THREE) {
     const conteudo = conteudoArmario(op.conteudo);
     conteudo.position.set(0, 0.01, -0.22);
     g.add(conteudo);
-    const ventilacao = textura(64, 128, (c, w, h) => {
-      c.fillStyle = '#e3e6ea'; c.fillRect(0, 0, w, h);
-      c.fillStyle = '#9097a0';
-      for (let i = 0; i < 5; i++) { c.fillRect(14, 10 + i * 9, 36, 4); c.fillRect(14, 78 + i * 9, 36, 4); }
-    });
     const pivo = new THREE.Group();
     pivo.position.set(-0.14, 0, 0.012);
-    pivo.add(caixa(0.28, 0.55, 0.02, '#ffffff', 0.14, 0.005, 0, { map: ventilacao }));
+    pivo.add(caixa(0.28, 0.55, 0.02, '#ffffff', 0.14, 0.005, 0, { map: texturaVentilacao() }));
     pivo.add(caixa(0.03, 0.07, 0.02, '#3a3f47', 0.24, 0.24, 0.015));
     g.add(pivo);
     let alvo = 0, angulo = 0;
@@ -617,17 +633,16 @@ window.UVA_MODELOS = function (THREE) {
       }
     };
   }
-  function computadores(op) {
-    const g = new THREE.Group(), tela = texturaPorDoSol();
-    (op.xs || [0]).forEach((x) => {
-      g.add(caixa(0.18, 0.01, 0.14, '#c9ccd1', x, 0, 0.25));
-      g.add(caixa(0.04, 0.2, 0.03, '#c9ccd1', x, 0.01, 0.22));
-      g.add(caixa(0.5, 0.33, 0.03, '#c9ccd1', x, 0.17, 0.24));
-      g.add(em(plano(0.46, 0.29, tela), x, 0.335, 0.256));
-      g.add(caixa(0.18, 0.42, 0.4, '#16181c', x + 0.38, 0, 0.25));
-      g.add(caixa(0.4, 0.015, 0.13, '#f1f3f5', x, 0, 0.45));
-      g.add(caixa(0.05, 0.015, 0.08, '#f1f3f5', x + 0.28, 0, 0.45));
-    });
+  // Uma estação: monitor, gabinete, teclado e mouse (ocupa 0,80 x 0,50 m).
+  function computador() {
+    const g = new THREE.Group();
+    g.add(caixa(0.18, 0.01, 0.14, '#c9ccd1', -0.1, 0, -0.12));
+    g.add(caixa(0.04, 0.2, 0.03, '#c9ccd1', -0.1, 0.01, -0.15));
+    g.add(caixa(0.5, 0.33, 0.03, '#c9ccd1', -0.1, 0.17, -0.13));
+    g.add(em(plano(0.46, 0.29, texturaPorDoSol()), -0.1, 0.335, -0.114));
+    g.add(caixa(0.18, 0.42, 0.4, '#16181c', 0.3, 0, -0.05));
+    g.add(caixa(0.4, 0.015, 0.13, '#f1f3f5', -0.1, 0, 0.15));
+    g.add(caixa(0.05, 0.015, 0.08, '#f1f3f5', 0.18, 0, 0.15));
     return { grupo: g };
   }
 
@@ -950,10 +965,10 @@ window.UVA_MODELOS = function (THREE) {
 
   return {
     SALA, JANELA, PORTA,
-    sala, balcao, armario, gaveteiro, cadeira, mesasColaborativas, bancadaComputadores, prateleiraParede,
+    sala, balcao, armario, gaveteiro, cadeira, mesaColaborativa, mesaComputador, planta, prateleiraParede,
     logoUVA, poster, quadroBranco, painelPerfurado, arCondicionado,
     portaArmario, lixeiras, martelo, chaveFenda,
-    impressora3d, laser, caneta3d, computadores,
+    impressora3d, laser, caneta3d, computador,
     arduino, protoboard, kit, drone, oculosVR, cameraFoto, tablet,
     colaBranca, colaQuente, blocoPostit,
     lhama, raposa, potesLuz, relogio, porquinho, triangulos, vaso, luminaria, telaTripe,

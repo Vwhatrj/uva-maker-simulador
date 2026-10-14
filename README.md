@@ -1,55 +1,58 @@
-# Simulador Uva Maker Hacker Space
+# Simulador UVA Maker Hacker Space
 
-Laboratório maker em 3D, interativo e didático. Funciona direto no navegador.
+Laboratório maker da Universidade Veiga de Almeida em 3D, na escala real (7,54 × 5,29 m), interativo e didático.
 
-## Como abrir
+**Abrir:** https://vwhatrj.github.io/uva-maker-simulador/
 
-- **Versão publicada** (para orientadores, celular e qualquer computador): https://claude.ai/artifact/9hMQPQEQnuXfDYN4Kcxv5g. O layout arrastado no modo "Editar layout" fica salvo nesse link.
-- **Local:** dê dois cliques em `index.html` (precisa de internet, porque a biblioteca 3D Three.js vem de um CDN). Aqui o layout editado fica salvo só no navegador.
+## O que dá para fazer
+
+- Clicar nos objetos para ver para que servem e o que se aprende com eles
+- Simular a impressora 3D, a cortadora a laser, a caneta 3D, o Arduino e o drone
+- Seguir a trilha guiada pelas 6 estações
+- Ver as medidas reais da sala (📏)
+- Mudar a hora do dia (☀️), com sol, sombras e lâmpadas à noite
+- **Editar layout (✥):** arrastar e girar cada objeto, adicionar objetos do catálogo e remover. Objetos não se sobrepõem, e o que está em cima de um móvel vai junto com ele. O layout fica salvo no navegador de cada pessoa e pode ser guardado e aberto como arquivo `.json`.
+
+Links diretos: `#impressora-3d` (um objeto), `#eletronica` (uma estação), `#medidas`.
+
+## Abrir no próprio computador
+
+Dê dois cliques em `index.html` (precisa de internet, porque a biblioteca 3D Three.js vem de um CDN).
 
 ## Continuar em outro computador
 
 1. No GitHub Desktop: **File → Clone repository** e escolha `uva-maker-simulador`.
 2. Abra a pasta no VS Code com o Claude Code e peça o que quiser mudar.
-3. Ao terminar, faça commit e **Push** no GitHub Desktop.
-
-Para republicar no mesmo link, peça ao Claude para "publicar de novo no link https://claude.ai/artifact/9hMQPQEQnuXfDYN4Kcxv5g".
-
-Links diretos, úteis para mandar a alunos:
-
-- `index.html#item=impressora-3d` abre o card de um equipamento
-- `index.html#zona=eletronica` abre uma estação
-- `index.html#sim=cortadora-laser` abre e já roda a simulação
+3. Ao terminar: **Commit to main** e **Push origin** no GitHub Desktop. O site atualiza sozinho em 1 ou 2 minutos.
 
 ## Estrutura
 
 | Arquivo | O que tem |
 |---|---|
-| `js/dados.js` | **Todo o conteúdo**: zonas, equipamentos, materiais, projetos da vitrine, móveis |
-| `js/modelos.js` | Os modelos 3D (feitos em código, estilo cartoon) e as animações das máquinas |
-| `js/app.js` | Cena, câmera, cliques, cards, trilha guiada, simulações e progresso |
+| `js/dados.js` | **Todo o conteúdo**: zonas, catálogo de tipos de objeto e os objetos da sala |
+| `js/modelos.js` | Os modelos 3D (feitos em código) e as animações das máquinas |
+| `js/app.js` | Cena, câmera, cards, trilha, simulações, edição de layout, hora do dia |
 | `css/estilo.css` | Visual da interface |
 
-## Como adicionar um item novo
+## Como adicionar um tipo de objeto novo ao catálogo
 
-Em `js/dados.js`, acrescente um objeto na lista `itens`:
+Em `js/dados.js`, dentro de `catalogo`:
 
 ```js
-{
-  id: 'furadeira', zona: 'ferramentas', nome: 'Furadeira', icone: '🔩',
-  modelo: 'generico', opcoes: { cor: '#e76f51', tamanho: [0.5, 0.3, 0.2] },
-  pos: [-8.6, 1.4, 1.8],
-  descricao: '...', aprender: '...', dica: '...'
+furadeira: {
+  categoria: 'Equipamentos', nome: 'Furadeira', icone: '🔩',
+  modelo: 'generico', opcoes: { cor: '#e76f51', tamanho: [0.3, 0.2, 0.1] },
+  base: [0.3, 0.1],          // espaço que ocupa (largura x profundidade, em metros)
+  apoio: 'ambos',            // 'chao', 'superficie' ou 'ambos'
+  zona: 'ferramentas', descricao: '...', aprender: '...', dica: '...'
 }
 ```
 
-- Tudo é em **metros**, na escala real da sala (7,54 × 5,29 m). `pos` é `[x, y, z]`: x vai de -3,77 a 3,77 e z de -2,645 a 2,645. Use `y = 0.9` para apoiar o item no tampo dos balcões.
-- `parede` (`cinza`, `azul`, `janela` ou `quadro`) vira o objeto de frente para a sala. Use `fixo: true` para objetos presos na parede, que somem quando a parede é "cortada".
-- `modelo: 'generico'` desenha um bloco colorido. Para um modelo próprio, crie uma função em `js/modelos.js` e exporte no `return` do final.
-- Para um projeto da vitrine, use o campo `projeto` (autor, objetivo, materiais, tecnologias) e remova `exemplo: true`.
+Ele aparece no botão **➕ Adicionar objeto**. Para colocá-lo na sala desde o início, acrescente em `objetos`:
+`{ id: 'furadeira-1', tipo: 'furadeira', pos: [x, y, z], sobre: 'balcao-fabricacao' }`.
+A sala vai de x -3,77 a 3,77 e de z -2,645 a 2,645; y = 0,9 é o tampo dos balcões.
 
-## Próximos passos
+## A confirmar
 
-- Confirmar as medidas estimadas: pé-direito (2,80 m), altura do peitoril da janela (0,80 m) e posição da porta
-- Completar autoria e objetivo dos projetos da vitrine (hoje "a confirmar")
-- Arrastar materiais da zona de sustentabilidade para a bancada e montar protótipos
+- Pé-direito (estimado em 2,80 m), altura do peitoril da janela (0,80 m) e posição da porta
+- Autoria e objetivo dos projetos da vitrine

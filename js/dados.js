@@ -1,20 +1,20 @@
 /*
- * Conteúdo do simulador Uva Maker Hacker Space.
+ * Conteúdo do simulador UVA Maker Hacker Space.
  *
  * Tudo em METROS. A sala mede 7,54 m (eixo x, de -3,77 a 3,77) por 5,29 m (eixo z, de -2,645 a 2,645).
- *   Parede "cinza"  (z = -2,645): banners, logo UVA, painéis de ferramentas, balcões e armários
+ *   Parede "cinza"  (z = -2,645): banners, logo UVA, painéis de ferramentas, balcões e armário
  *   Parede "azul"   (z = +2,645): prateleiras, computadores e porta de vidro
  *   Parede "janela" (x = +3,77):  abertura de 2,31 x 1,90 m
  *   Parede "quadro" (x = -3,77):  quadro branco e gaveteiros
  *
- * Para incluir um novo equipamento ou material, adicione um objeto em `itens`:
- *   - `zona`:   id de uma das zonas abaixo
- *   - `modelo`: nome de um modelo 3D de js/modelos.js (ou 'generico' para um bloco colorido)
- *   - `pos`:    [x, y, z]; y = 0.9 é o tampo dos balcões e y = 0.74 o das mesas
- *   - `parede`: parede mais próxima (gira o objeto de frente para a sala e orienta a câmera)
- *   - `fixo`:   true para objetos presos na parede (somem junto quando a parede é "cortada")
- *   - `escala`: ajusta o tamanho do modelo (opcional)
- * Campos opcionais do card: `aprender`, `dica`, `vira` (lista), `sim` (simulação), `projeto`.
+ * `catalogo`: os TIPOS de objeto. Cada tipo diz o modelo 3D, o espaço que ocupa no chão (`base`: [largura, profundidade]),
+ *   onde pode ficar (`apoio`: 'chao', 'superficie' ou 'ambos'), a altura do tampo se outros objetos podem ficar
+ *   em cima (`superficie`) e, opcionalmente, o card que aparece ao clicar (zona, descricao, aprender, dica, sim...).
+ *   Os tipos sem `noCatalogo` aparecem no botão "Adicionar objeto" do modo de edição.
+ * `objetos`: o que está na sala. Cada objeto tem `id`, `tipo` (ou `modelo`), `pos` [x, y, z] e, se for o caso:
+ *   `parede` (vira o objeto de frente para a sala), `rot`, `sobre` (id do móvel onde está apoiado),
+ *   `preso` (parte de outro objeto, como as portas do armário), `fixo` (preso na parede, não se move)
+ *   e campos de card próprios, que substituem os do catálogo.
  */
 window.UVA_DATA = {
   zonas: [
@@ -56,106 +56,58 @@ window.UVA_DATA = {
     }
   ],
 
-  itens: [
-    // ---------- A. Sustentabilidade: portas do armário (abrem ao clicar) ----------
-    {
-      id: 'papel', zona: 'sustentabilidade', nome: 'Papel', icone: '📄',
-      modelo: 'portaArmario', opcoes: { conteudo: 'papel' }, pos: [2.0, 1.22, -2.195], parede: 'cinza', sobre: 'armario',
-      descricao: 'Folhas usadas, revistas e sobras de impressão.',
-      aprender: 'Papel é ótimo para rascunhar ideias em 3D: dobraduras, moldes e protótipos de baixa fidelidade ajudam a testar formas antes de gastar material nobre. A lhama da vitrine é um exemplo!',
-      vira: ['Moldes e gabaritos', 'Papercraft low-poly', 'Protótipos de embalagem'],
-      dica: 'Separe o papel limpo do sujo: só o limpo volta para a bancada.'
+  catalogo: {
+    // ---------- Móveis ----------
+    balcao: {
+      categoria: 'Móveis', nome: 'Balcão com portas', icone: '🗄️',
+      modelo: 'balcao', opcoes: { w: 1.6 }, base: [1.6, 0.6], apoio: 'chao', superficie: 0.9
     },
-    {
-      id: 'eva', zona: 'sustentabilidade', nome: 'E.V.A.', icone: '🎨',
-      modelo: 'portaArmario', opcoes: { conteudo: 'eva' }, pos: [2.3, 1.22, -2.195], parede: 'cinza', sobre: 'armario',
-      descricao: 'Retalhos coloridos de E.V.A. que sobraram de outros projetos.',
-      aprender: 'Flexível, colorido e macio: perfeito para acabamentos, articulações, proteções e protótipos de produtos vestíveis.',
-      vira: ['Acabamentos', 'Dobradiças flexíveis', 'Jogos pedagógicos'],
-      dica: 'Guarde até os retalhos pequenos: eles viram detalhes, botões e etiquetas.'
+    armario: {
+      categoria: 'Móveis', nome: 'Armário de 9 portas', icone: '🚪',
+      modelo: 'armario', opcoes: { portas: true }, base: [0.9, 0.45], apoio: 'chao'
     },
-    {
-      id: 'lego', zona: 'sustentabilidade', nome: 'Lego', icone: '🧱',
-      modelo: 'portaArmario', opcoes: { conteudo: 'lego' }, pos: [2.6, 1.22, -2.195], parede: 'cinza', sobre: 'armario',
-      descricao: 'Peças de encaixe para prototipar mecanismos rapidamente.',
-      aprender: 'Com blocos de encaixe dá para testar engrenagens, alavancas e estruturas em minutos e desmontar sem desperdício nenhum.',
-      vira: ['Mecanismos e engrenagens', 'Estruturas de teste', 'Robôs educacionais'],
-      dica: 'Monte, teste, desmonte, repita. Errar rápido é aprender rápido!'
+    gaveteiro: {
+      categoria: 'Móveis', nome: 'Gaveteiro com rodinhas', icone: '🗃️',
+      modelo: 'gaveteiro', base: [0.52, 0.44], apoio: 'chao', superficie: 0.64
     },
-    {
-      id: 'papelao', zona: 'sustentabilidade', nome: 'Papelão', icone: '📦',
-      modelo: 'portaArmario', opcoes: { conteudo: 'papelao' }, pos: [2.0, 0.64, -2.195], parede: 'cinza', sobre: 'armario',
-      descricao: 'Caixas de entrega, tubos e embalagens.',
-      aprender: 'Resistente e fácil de cortar, o papelão é o "MDF do maker iniciante": dá para construir maquetes habitacionais, móveis em escala e carcaças de robôs.',
-      vira: ['Maquetes habitacionais', 'Carcaças de robôs', 'Organizadores'],
-      dica: 'Corte sempre com a lâmina se afastando do corpo e use uma base de corte.'
+    mesaComputador: {
+      categoria: 'Móveis', nome: 'Mesa de computador', icone: '🟦',
+      modelo: 'mesaComputador', opcoes: { w: 1.05 }, base: [1.05, 0.6], apoio: 'chao', superficie: 0.74
     },
-    {
-      id: 'isopor', zona: 'sustentabilidade', nome: 'Isopor', icone: '🧊',
-      modelo: 'portaArmario', opcoes: { conteudo: 'isopor' }, pos: [2.3, 0.64, -2.195], parede: 'cinza', sobre: 'armario',
-      descricao: 'Bandejas, blocos de proteção de eletrônicos e placas.',
-      aprender: 'Leve e fácil de modelar, é ideal para volumes de maquetes, relevos e protótipos que flutuam.',
-      vira: ['Volumes de maquete', 'Relevos e topografia', 'Protótipos flutuantes'],
-      dica: 'Cola quente muito quente e colas com solvente derretem o isopor! Prefira cola branca ou cola própria para isopor.'
+    mesaColaborativa: {
+      categoria: 'Móveis', nome: 'Mesa colaborativa', icone: '⬜',
+      modelo: 'mesaColaborativa', base: [1.5, 0.75], apoio: 'chao', superficie: 0.755,
+      zona: 'colagem',
+      descricao: 'Mesas brancas com faixa preta, unidas no centro da sala para o trabalho em equipe.',
+      aprender: 'É aqui que as equipes se encontram para planejar, recortar, colar e montar os protótipos juntas.',
+      dica: 'Proteja a mesa com uma base de corte ou papelão antes de usar estilete ou cola quente.'
     },
-    {
-      id: 'blocos', zona: 'sustentabilidade', nome: 'Blocos de montagem', icone: '🔷',
-      modelo: 'portaArmario', opcoes: { conteudo: 'blocos' }, pos: [2.6, 0.64, -2.195], parede: 'cinza', sobre: 'armario',
-      descricao: 'Blocos de madeira e plástico em formas geométricas.',
-      aprender: 'Ajudam a pensar em volumes, equilíbrio e proporção, que são o primeiro passo de qualquer maquete.',
-      vira: ['Estudos de forma', 'Maquetes rápidas'],
-      dica: 'Experimente montar a mesma ideia de três jeitos diferentes antes de escolher um.'
+    cadeiraPreta: {
+      categoria: 'Móveis', nome: 'Cadeira preta', icone: '🪑',
+      modelo: 'cadeira', base: [0.46, 0.46], apoio: 'chao'
     },
-    {
-      id: 'sucata', zona: 'sustentabilidade', nome: 'Sucata eletrônica', icone: '🔩',
-      modelo: 'portaArmario', opcoes: { conteudo: 'sucata' }, pos: [2.0, 0.06, -2.195], parede: 'cinza', sobre: 'armario',
-      descricao: 'Placas, motores e peças retiradas de aparelhos que iam para o lixo.',
-      aprender: 'Desmontar um aparelho velho é uma aula de engenharia reversa, e muitas peças voltam à vida em novos projetos.',
-      vira: ['Motores para robôs', 'Peças de reposição', 'Arte com circuitos'],
-      dica: 'Nunca desmonte aparelhos ligados na tomada nem baterias estufadas.'
+    cadeiraAzul: {
+      categoria: 'Móveis', nome: 'Cadeira azul', icone: '💺',
+      modelo: 'cadeira', opcoes: { cor: '#3f86c6' }, base: [0.46, 0.46], apoio: 'chao'
     },
-    {
-      id: 'coleta-seletiva', zona: 'sustentabilidade', nome: 'Coleta seletiva', icone: '🗑️',
-      modelo: 'lixeiras', escala: 0.45, pos: [-3.65, 0, 2.0], parede: 'quadro',
+    lixeiras: {
+      categoria: 'Móveis', nome: 'Coleta seletiva', icone: '🗑️',
+      modelo: 'lixeiras', escala: 0.45, base: [0.96, 0.24], apoio: 'chao',
+      zona: 'sustentabilidade',
       descricao: 'Lixeiras separadas por tipo de material: papel, plástico, vidro e metal.',
       aprender: 'A economia circular começa na separação: material bem separado pode voltar para a bancada ou seguir para a reciclagem.',
       dica: 'Antes de descartar, pergunte: "isso ainda pode virar outro projeto?"'
     },
-
-    // ---------- B. Ferramentas ----------
-    {
-      id: 'painel-ferramentas', zona: 'ferramentas', nome: 'Painéis de ferramentas', icone: '🧰',
-      modelo: 'painelPerfurado', pos: [0.45, 1.05, -2.645], parede: 'cinza', fixo: true,
-      descricao: 'Painéis perfurados onde cada ferramenta tem o seu lugar.',
-      aprender: 'Organização também se aprende: um espaço maker compartilhado só funciona quando todos encontram e devolvem as ferramentas.',
-      dica: 'Devolver a ferramenta ao painel é cuidar do espaço coletivo.'
-    },
-    {
-      id: 'martelo', zona: 'ferramentas', nome: 'Martelo', icone: '🔨',
-      modelo: 'martelo', escala: 0.4, rotX: Math.PI / 2, pos: [0.15, 1.33, -2.6], parede: 'cinza', fixo: true,
-      descricao: 'Ferramenta de impacto para pregar, encaixar e ajustar peças.',
-      aprender: 'Usar o martelo ensina física na prática: alavanca, impulso e transferência de energia.',
-      dica: 'Segure pela ponta do cabo, mantenha os dedos longe e use óculos de proteção.'
-    },
-    {
-      id: 'chave-fenda', zona: 'ferramentas', nome: 'Chaves de fenda', icone: '🪛',
-      modelo: 'chaveFenda', escala: 0.4, rotX: Math.PI / 2, pos: [0.55, 1.2, -2.6], parede: 'cinza', fixo: true,
-      descricao: 'Chaves de fenda e Phillips de vários tamanhos.',
-      aprender: 'Montar e desmontar com parafusos permite reaproveitar peças, fazer manutenção e entender como os objetos são construídos.',
-      dica: 'Use a ponta do tamanho exato do parafuso para não espaná-lo.'
-    },
-    {
-      id: 'caixa-ferramentas', zona: 'ferramentas', nome: 'Caixa de ferramentas', icone: '🧰',
-      modelo: 'portaArmario', opcoes: { conteudo: 'ferramentas' }, pos: [2.3, 0.06, -2.195], parede: 'cinza', sobre: 'armario',
-      descricao: 'Serrote, lixas, trena, alicates e estilete para marcenaria educacional.',
-      aprender: 'Medir, serrar e lixar desenvolve precisão e paciência, e transforma retalhos de madeira em estruturas para os protótipos.',
-      dica: 'Meça duas vezes, corte uma. E sempre com óculos de proteção!'
+    planta: {
+      categoria: 'Móveis', nome: 'Vaso de planta', icone: '🪴',
+      modelo: 'planta', base: [0.36, 0.36], apoio: 'ambos'
     },
 
-    // ---------- C. Fabricação digital ----------
-    {
-      id: 'impressora-3d', zona: 'fabricacao', nome: 'Impressora 3D', icone: '🖨️',
-      modelo: 'impressora3d', escala: 0.3, pos: [0.95, 0.9, -2.42], parede: 'cinza', sobre: 'balcao-fabricacao',
+    // ---------- Equipamentos ----------
+    impressora3d: {
+      categoria: 'Equipamentos', nome: 'Impressora 3D', icone: '🖨️',
+      modelo: 'impressora3d', escala: 0.3, base: [0.39, 0.33], apoio: 'ambos',
+      zona: 'fabricacao',
       descricao: 'Constrói objetos camada por camada derretendo filamento plástico (PLA).',
       aprender: 'Do modelo digital ao objeto físico: o estudante aprende modelagem 3D, fatiamento e geometria, e conhece as limitações reais da fabricação (suportes, preenchimento, tempo).',
       dica: 'Prefira o PLA, um plástico de origem vegetal, e reaproveite impressões que falharam como material de teste.',
@@ -164,9 +116,10 @@ window.UVA_DATA = {
         passos: ['Modelando no computador…', 'Fatiando em camadas…', 'Aquecendo o bico a 200 °C…', 'Imprimindo camada por camada…', 'Esfriando a peça…']
       }
     },
-    {
-      id: 'cortadora-laser', zona: 'fabricacao', nome: 'Mini cortadora a laser', icone: '✨',
-      modelo: 'laser', escala: 0.24, pos: [0.4, 0.9, -2.2], parede: 'cinza', sobre: 'balcao-fabricacao',
+    laser: {
+      categoria: 'Equipamentos', nome: 'Mini cortadora a laser', icone: '✨',
+      modelo: 'laser', escala: 0.24, base: [0.41, 0.29], apoio: 'ambos',
+      zona: 'fabricacao',
       descricao: 'Corta e grava madeira fina, papelão e acrílico com um feixe de luz concentrado.',
       aprender: 'Ensina desenho vetorial (2D), precisão e encaixes: com chapas planas se constroem objetos 3D, como o porquinho fatiado da vitrine.',
       dica: 'Nunca olhe diretamente para o feixe, mantenha a tampa fechada e não deixe a máquina ligada sozinha.',
@@ -175,9 +128,10 @@ window.UVA_DATA = {
         passos: ['Desenhando o vetor…', 'Ajustando potência e velocidade…', 'Gravando a peça…', 'Retirando a peça…']
       }
     },
-    {
-      id: 'caneta-3d', zona: 'fabricacao', nome: 'Caneta 3D', icone: '🖊️',
-      modelo: 'caneta3d', escala: 0.3, pos: [-0.12, 0.9, -2.2], parede: 'cinza', sobre: 'balcao-fabricacao',
+    caneta3d: {
+      categoria: 'Equipamentos', nome: 'Caneta 3D', icone: '🖊️',
+      modelo: 'caneta3d', escala: 0.3, base: [0.2, 0.28], apoio: 'ambos',
+      zona: 'fabricacao',
       descricao: 'Uma "impressora 3D de mão" que desenha no ar com plástico derretido.',
       aprender: 'Desenvolve coordenação e criatividade, serve para reparos rápidos e mostra o princípio da impressão 3D sem computador.',
       dica: 'O bico esquenta! Use uma superfície protegida e não toque no plástico logo depois que ele sai.',
@@ -186,18 +140,18 @@ window.UVA_DATA = {
         passos: ['Aquecendo…', 'Desenhando no ar…', 'Esfriando…']
       }
     },
-    {
-      id: 'estacoes-computador', zona: 'fabricacao', nome: 'Estações de computador', icone: '🖥️',
-      modelo: 'computadores', opcoes: { xs: [1.7, 0.6, -0.3, -1.7, -2.8] }, pos: [0, 0.74, 2.645], parede: 'azul', sobre: 'bancada-computadores',
-      descricao: 'Cinco computadores para modelagem 3D, desenho vetorial, programação e pesquisa.',
+    computador: {
+      categoria: 'Equipamentos', nome: 'Estação de computador', icone: '🖥️',
+      modelo: 'computador', base: [0.8, 0.5], apoio: 'ambos',
+      zona: 'fabricacao',
+      descricao: 'Computador para modelagem 3D, desenho vetorial, programação e pesquisa.',
       aprender: 'O computador é a ponte entre a imaginação e as máquinas: o desenho digital (ex.: Tinkercad, Inkscape) vira instruções para a impressora e a cortadora.',
       dica: 'Salve versões do arquivo (v1, v2, v3…). Uma ideia antiga pode salvar o projeto!'
     },
-
-    // ---------- D. Eletrônica, robótica e tecnologias ----------
-    {
-      id: 'arduino', zona: 'eletronica', nome: 'Placa Arduino', icone: '🔌',
-      modelo: 'arduino', escala: 0.25, pos: [-2.45, 0.9, -2.2], parede: 'cinza', sobre: 'balcao-eletronica',
+    arduino: {
+      categoria: 'Equipamentos', nome: 'Placa Arduino', icone: '🔌',
+      modelo: 'arduino', escala: 0.25, base: [0.24, 0.17], apoio: 'ambos',
+      zona: 'eletronica',
       descricao: 'Microcontrolador programável: o "cérebro" de robôs e projetos interativos.',
       aprender: 'Conecta o mundo físico ao digital: o estudante programa (lógica, variáveis, laços) e vê o resultado acendendo LEDs, girando motores e lendo sensores.',
       dica: 'Desconecte o cabo USB antes de mexer nos fios do circuito.',
@@ -206,30 +160,34 @@ window.UVA_DATA = {
         passos: ['Escrevendo o código…', 'Enviando para a placa…', 'Executando: verde → amarelo → vermelho!']
       }
     },
-    {
-      id: 'protoboard', zona: 'eletronica', nome: 'Circuitos e protoboard', icone: '🔋',
-      modelo: 'protoboard', escala: 0.25, pos: [-1.95, 0.9, -2.2], parede: 'cinza', sobre: 'balcao-eletronica',
+    protoboard: {
+      categoria: 'Equipamentos', nome: 'Circuitos e protoboard', icone: '🔋',
+      modelo: 'protoboard', escala: 0.25, base: [0.4, 0.14], apoio: 'ambos',
+      zona: 'eletronica',
       descricao: 'Placa de ensaio para montar circuitos sem solda.',
       aprender: 'Permite experimentar, trocar componentes, errar e corrigir sem estragar nada. É ideal para entender corrente, tensão e resistência.',
       dica: 'Confira a polaridade do LED: a perna mais longa é o positivo (+).'
     },
-    {
-      id: 'kit-eletronico', zona: 'eletronica', nome: 'Kit de componentes', icone: '🧪',
-      modelo: 'portaArmario', opcoes: { conteudo: 'kit' }, pos: [2.6, 0.06, -2.195], parede: 'cinza', sobre: 'armario',
+    kit: {
+      categoria: 'Equipamentos', nome: 'Kit de componentes', icone: '🧪',
+      modelo: 'kit', escala: 0.3, base: [0.26, 0.18], apoio: 'ambos',
+      zona: 'eletronica',
       descricao: 'LEDs, resistores, botões, sensores, motores e jumpers organizados.',
       aprender: 'Conhecer cada componente é como aprender o alfabeto da eletrônica: combinados, eles formam qualquer projeto.',
       dica: 'Brinquedos e impressoras velhas guardam motores e sensores que podem ser reaproveitados!'
     },
-    {
-      id: 'drone-branco', zona: 'eletronica', nome: 'Drone com câmera', icone: '🛸',
-      modelo: 'drone', opcoes: { cor: '#f1f3f5', detalhe: '#ffbe0b' }, pos: [-2.0, 0.9, -2.47], parede: 'cinza', sobre: 'balcao-eletronica',
+    droneCamera: {
+      categoria: 'Equipamentos', nome: 'Drone com câmera', icone: '🛸',
+      modelo: 'drone', opcoes: { cor: '#f1f3f5', detalhe: '#ffbe0b' }, base: [0.3, 0.3], apoio: 'ambos',
+      zona: 'eletronica',
       descricao: 'Drone compacto com câmera para fotos aéreas e mapeamento.',
       aprender: 'Drones juntam física (sustentação, equilíbrio), eletrônica e programação, e servem para registrar projetos de arquitetura e urbanismo vistos de cima.',
       dica: 'Voe sempre em área aberta e permitida, longe de pessoas e com a bateria carregada.'
     },
-    {
-      id: 'drone-vermelho', zona: 'eletronica', nome: 'Drone quadricóptero', icone: '🚁',
-      modelo: 'drone', opcoes: { cor: '#1b1b1b', detalhe: '#e63946' }, pos: [-0.15, 0.9, -2.47], parede: 'cinza', sobre: 'balcao-fabricacao',
+    droneQuadricoptero: {
+      categoria: 'Equipamentos', nome: 'Drone quadricóptero', icone: '🚁',
+      modelo: 'drone', opcoes: { cor: '#1b1b1b', detalhe: '#e63946' }, base: [0.28, 0.28], apoio: 'ambos',
+      zona: 'eletronica',
       descricao: 'Quadricóptero para estudar voo, controle e estabilização.',
       aprender: 'Quatro hélices girando em sentidos opostos equilibram o drone: um ótimo jeito de ver na prática as leis de Newton e o controle automático.',
       dica: 'Antes de decolar, confira hélices, bateria e o espaço ao redor.',
@@ -238,177 +196,302 @@ window.UVA_DATA = {
         passos: ['Checando hélices e bateria…', 'Decolando…', 'Pairando e filmando…', 'Pousando com segurança…']
       }
     },
-    {
-      id: 'oculos-vr', zona: 'eletronica', nome: 'Óculos de realidade virtual', icone: '🥽',
-      modelo: 'oculosVR', pos: [0.4, 0.9, -2.47], parede: 'cinza', sobre: 'balcao-fabricacao',
+    oculosVR: {
+      categoria: 'Equipamentos', nome: 'Óculos de realidade virtual', icone: '🥽',
+      modelo: 'oculosVR', base: [0.5, 0.2], apoio: 'ambos',
+      zona: 'eletronica',
       descricao: 'Óculos e controles para experiências imersivas em realidade virtual.',
       aprender: 'Permitem "entrar" em maquetes e ambientes digitais antes de construí-los, como este simulador!',
       dica: 'Faça pausas a cada 20 minutos e use em um espaço livre de obstáculos.'
     },
-    {
-      id: 'camera', zona: 'eletronica', nome: 'Câmera fotográfica', icone: '📷',
-      modelo: 'cameraFoto', pos: [-1.5, 0.9, -2.42], parede: 'cinza', sobre: 'balcao-eletronica',
+    cameraFoto: {
+      categoria: 'Equipamentos', nome: 'Câmera fotográfica', icone: '📷',
+      modelo: 'cameraFoto', base: [0.2, 0.2], apoio: 'ambos',
+      zona: 'eletronica',
       descricao: 'Câmera com tripé flexível para registrar o processo e os resultados dos projetos.',
       aprender: 'Documentar é parte do método maker: fotos e vídeos contam a história do projeto e ajudam outras pessoas a reproduzi-lo.',
       dica: 'Fotografe o "antes, durante e depois", e não só o resultado final.'
     },
-    {
-      id: 'tablet', zona: 'eletronica', nome: 'Tablet', icone: '📱',
-      modelo: 'tablet', pos: [-2.6, 0.9, -2.47], parede: 'cinza', sobre: 'balcao-eletronica',
+    tablet: {
+      categoria: 'Equipamentos', nome: 'Tablet', icone: '📱',
+      modelo: 'tablet', base: [0.3, 0.15], apoio: 'ambos',
+      zona: 'eletronica',
       descricao: 'Tablet para apresentações, apps educativos e controle de dispositivos.',
       aprender: 'Serve de controle remoto para drones e robôs e de vitrine digital para os projetos.',
       dica: 'Mantenha o tablet carregado e com os apps do laboratório atualizados.'
     },
 
-    // ---------- E. Colagem e ideias ----------
-    {
-      id: 'quadro-branco', zona: 'colagem', nome: 'Quadro branco e mural de post-its', icone: '🗒️',
-      modelo: 'quadroBranco', opcoes: { w: 3.0, h: 1.45 }, pos: [-3.77, 0.85, 0], parede: 'quadro', fixo: true,
-      descricao: 'Quadro para aulas, brainstorms e recados, com um mural de notas autoadesivas.',
-      aprender: 'Organizar ideias visualmente faz parte do design thinking e do trabalho em equipe. No quadro está uma aula de dilatação térmica: a física também vira projeto!',
-      dica: 'Uma ideia por post-it! Assim dá para agrupar, reorganizar e votar nas melhores.'
-    },
-    {
-      id: 'cola-branca', zona: 'colagem', nome: 'Cola branca', icone: '🥛',
-      modelo: 'colaBranca', escala: 0.35, pos: [-3.5, 0.64, -1.05], parede: 'quadro', sobre: 'gaveteiro-colas',
+    // ---------- Materiais de colagem ----------
+    colaBranca: {
+      categoria: 'Materiais', nome: 'Cola branca', icone: '🥛',
+      modelo: 'colaBranca', escala: 0.35, base: [0.2, 0.12], apoio: 'ambos',
+      zona: 'colagem',
       descricao: 'Cola atóxica à base d\'água.',
       aprender: 'Ideal para papel, papelão e madeira. Ensina paciência: a secagem leva tempo, mas a união fica forte.',
       dica: 'Use pouca cola e espalhe bem: o excesso deixa o papelão empenado.'
     },
-    {
-      id: 'cola-quente', zona: 'colagem', nome: 'Pistola de cola quente', icone: '🔥',
-      modelo: 'colaQuente', escala: 0.35, pos: [-3.5, 0.64, -0.75], parede: 'quadro', sobre: 'gaveteiro-colas',
+    colaQuente: {
+      categoria: 'Materiais', nome: 'Pistola de cola quente', icone: '🔥',
+      modelo: 'colaQuente', escala: 0.35, base: [0.2, 0.25], apoio: 'ambos',
+      zona: 'colagem',
       descricao: 'Derrete bastões de cola para uma união quase instantânea.',
       aprender: 'Perfeita para prototipagem rápida: une materiais diferentes em segundos (papelão + E.V.A. + plástico).',
       dica: 'Apoie a pistola no suporte e cuidado com os fios de cola, que queimam! Atenção redobrada com isopor.'
     },
-    {
-      id: 'post-its', zona: 'colagem', nome: 'Notas autoadesivas (Post-it)', icone: '📝',
-      modelo: 'blocoPostit', pos: [-3.5, 0.64, 0.9], parede: 'quadro', sobre: 'gaveteiro-postits',
+    blocoPostit: {
+      categoria: 'Materiais', nome: 'Notas autoadesivas (Post-it)', icone: '📝',
+      modelo: 'blocoPostit', base: [0.25, 0.25], apoio: 'ambos',
+      zona: 'colagem',
       descricao: 'Blocos de post-it e canetas para registrar ideias e recados.',
       aprender: 'Escrever e colar ideias torna o pensamento visível e facilita a colaboração.',
       dica: 'Escreva com letra grande: o post-it precisa ser lido de longe.'
+    }
+  },
+
+  objetos: [
+    // ---------- Móveis da parede cinza ----------
+    { id: 'balcao-eletronica', tipo: 'balcao', pos: [-2.0, 0, -2.345], parede: 'cinza' },
+    { id: 'balcao-fabricacao', tipo: 'balcao', pos: [0.45, 0, -2.345], parede: 'cinza' },
+    { id: 'armario', tipo: 'armario', nome: 'Armário de insumos', opcoes: { portas: false }, pos: [2.3, 0, -2.42], parede: 'cinza' },
+
+    // ---------- Portas do armário (abrem ao clicar e vão junto com o armário) ----------
+    {
+      id: 'papel', modelo: 'portaArmario', opcoes: { conteudo: 'papel' }, pos: [2.0, 1.22, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      zona: 'sustentabilidade', nome: 'Papel', icone: '📄',
+      descricao: 'Folhas usadas, revistas e sobras de impressão.',
+      aprender: 'Papel é ótimo para rascunhar ideias em 3D: dobraduras, moldes e protótipos de baixa fidelidade ajudam a testar formas antes de gastar material nobre. A lhama da vitrine é um exemplo!',
+      vira: ['Moldes e gabaritos', 'Papercraft low-poly', 'Protótipos de embalagem'],
+      dica: 'Separe o papel limpo do sujo: só o limpo volta para a bancada.'
     },
     {
-      id: 'mesas-colaborativas', zona: 'colagem', nome: 'Mesas colaborativas', icone: '🪑',
-      modelo: 'mesasColaborativas', pos: [0.2, 0, -0.2],
-      descricao: 'Quatro mesas unidas com dez lugares, no centro da sala.',
-      aprender: 'É aqui que as equipes se encontram para planejar, recortar, colar e montar os protótipos juntas.',
-      dica: 'Proteja a mesa com uma base de corte ou papelão antes de usar estilete ou cola quente.'
+      id: 'eva', modelo: 'portaArmario', opcoes: { conteudo: 'eva' }, pos: [2.3, 1.22, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      zona: 'sustentabilidade', nome: 'E.V.A.', icone: '🎨',
+      descricao: 'Retalhos coloridos de E.V.A. que sobraram de outros projetos.',
+      aprender: 'Flexível, colorido e macio: perfeito para acabamentos, articulações, proteções e protótipos de produtos vestíveis.',
+      vira: ['Acabamentos', 'Dobradiças flexíveis', 'Jogos pedagógicos'],
+      dica: 'Guarde até os retalhos pequenos: eles viram detalhes, botões e etiquetas.'
+    },
+    {
+      id: 'lego', modelo: 'portaArmario', opcoes: { conteudo: 'lego' }, pos: [2.6, 1.22, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      zona: 'sustentabilidade', nome: 'Lego', icone: '🧱',
+      descricao: 'Peças de encaixe para prototipar mecanismos rapidamente.',
+      aprender: 'Com blocos de encaixe dá para testar engrenagens, alavancas e estruturas em minutos e desmontar sem desperdício nenhum.',
+      vira: ['Mecanismos e engrenagens', 'Estruturas de teste', 'Robôs educacionais'],
+      dica: 'Monte, teste, desmonte, repita. Errar rápido é aprender rápido!'
+    },
+    {
+      id: 'papelao', modelo: 'portaArmario', opcoes: { conteudo: 'papelao' }, pos: [2.0, 0.64, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      zona: 'sustentabilidade', nome: 'Papelão', icone: '📦',
+      descricao: 'Caixas de entrega, tubos e embalagens.',
+      aprender: 'Resistente e fácil de cortar, o papelão é o "MDF do maker iniciante": dá para construir maquetes habitacionais, móveis em escala e carcaças de robôs.',
+      vira: ['Maquetes habitacionais', 'Carcaças de robôs', 'Organizadores'],
+      dica: 'Corte sempre com a lâmina se afastando do corpo e use uma base de corte.'
+    },
+    {
+      id: 'isopor', modelo: 'portaArmario', opcoes: { conteudo: 'isopor' }, pos: [2.3, 0.64, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      zona: 'sustentabilidade', nome: 'Isopor', icone: '🧊',
+      descricao: 'Bandejas, blocos de proteção de eletrônicos e placas.',
+      aprender: 'Leve e fácil de modelar, é ideal para volumes de maquetes, relevos e protótipos que flutuam.',
+      vira: ['Volumes de maquete', 'Relevos e topografia', 'Protótipos flutuantes'],
+      dica: 'Cola quente muito quente e colas com solvente derretem o isopor! Prefira cola branca ou cola própria para isopor.'
+    },
+    {
+      id: 'blocos', modelo: 'portaArmario', opcoes: { conteudo: 'blocos' }, pos: [2.6, 0.64, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      zona: 'sustentabilidade', nome: 'Blocos de montagem', icone: '🔷',
+      descricao: 'Blocos de madeira e plástico em formas geométricas.',
+      aprender: 'Ajudam a pensar em volumes, equilíbrio e proporção, que são o primeiro passo de qualquer maquete.',
+      vira: ['Estudos de forma', 'Maquetes rápidas'],
+      dica: 'Experimente montar a mesma ideia de três jeitos diferentes antes de escolher um.'
+    },
+    {
+      id: 'sucata', modelo: 'portaArmario', opcoes: { conteudo: 'sucata' }, pos: [2.0, 0.06, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      zona: 'sustentabilidade', nome: 'Sucata eletrônica', icone: '🔩',
+      descricao: 'Placas, motores e peças retiradas de aparelhos que iam para o lixo.',
+      aprender: 'Desmontar um aparelho velho é uma aula de engenharia reversa, e muitas peças voltam à vida em novos projetos.',
+      vira: ['Motores para robôs', 'Peças de reposição', 'Arte com circuitos'],
+      dica: 'Nunca desmonte aparelhos ligados na tomada nem baterias estufadas.'
+    },
+    {
+      id: 'caixa-ferramentas', modelo: 'portaArmario', opcoes: { conteudo: 'ferramentas' }, pos: [2.3, 0.06, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      zona: 'ferramentas', nome: 'Caixa de ferramentas', icone: '🧰',
+      descricao: 'Serrote, lixas, trena, alicates e estilete para marcenaria educacional.',
+      aprender: 'Medir, serrar e lixar desenvolve precisão e paciência, e transforma retalhos de madeira em estruturas para os protótipos.',
+      dica: 'Meça duas vezes, corte uma. E sempre com óculos de proteção!'
+    },
+    {
+      id: 'kit-eletronico', modelo: 'portaArmario', opcoes: { conteudo: 'kit' }, pos: [2.6, 0.06, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      zona: 'eletronica', nome: 'Kit de componentes', icone: '🧪',
+      descricao: 'LEDs, resistores, botões, sensores, motores e jumpers organizados.',
+      aprender: 'Conhecer cada componente é como aprender o alfabeto da eletrônica: combinados, eles formam qualquer projeto.',
+      dica: 'Brinquedos e impressoras velhas guardam motores e sensores que podem ser reaproveitados!'
     },
 
-    // ---------- F. Vitrine ----------
+    // ---------- Sobre os balcões ----------
+    { id: 'impressora-3d', tipo: 'impressora3d', pos: [0.95, 0.9, -2.42], parede: 'cinza', sobre: 'balcao-fabricacao' },
+    { id: 'cortadora-laser', tipo: 'laser', pos: [0.4, 0.9, -2.2], parede: 'cinza', sobre: 'balcao-fabricacao' },
+    { id: 'caneta-3d', tipo: 'caneta3d', pos: [-0.12, 0.9, -2.2], parede: 'cinza', sobre: 'balcao-fabricacao' },
+    { id: 'drone-vermelho', tipo: 'droneQuadricoptero', pos: [-0.15, 0.9, -2.49], parede: 'cinza', sobre: 'balcao-fabricacao' },
+    { id: 'oculos-vr', tipo: 'oculosVR', pos: [0.4, 0.9, -2.47], parede: 'cinza', sobre: 'balcao-fabricacao' },
+    { id: 'arduino', tipo: 'arduino', pos: [-2.45, 0.9, -2.2], parede: 'cinza', sobre: 'balcao-eletronica' },
+    { id: 'protoboard', tipo: 'protoboard', pos: [-1.95, 0.9, -2.2], parede: 'cinza', sobre: 'balcao-eletronica' },
+    { id: 'drone-branco', tipo: 'droneCamera', pos: [-2.0, 0.9, -2.47], parede: 'cinza', sobre: 'balcao-eletronica' },
+    { id: 'camera', tipo: 'cameraFoto', pos: [-1.5, 0.9, -2.42], parede: 'cinza', sobre: 'balcao-eletronica' },
+    { id: 'tablet', tipo: 'tablet', pos: [-2.6, 0.9, -2.47], parede: 'cinza', sobre: 'balcao-eletronica' },
+
+    // ---------- Presos na parede cinza ----------
+    { id: 'logo-uva', modelo: 'logoUVA', pos: [-0.1, 2.2, -2.645], parede: 'cinza', fixo: true },
+    { id: 'ar-condicionado', modelo: 'arCondicionado', pos: [-3.25, 2.3, -2.645], parede: 'cinza', fixo: true },
     {
-      id: 'proj-lhama', zona: 'vitrine', nome: 'Lhama low-poly', icone: '🦙',
-      modelo: 'lhama', escala: 0.8, pos: [-1.5, 1.435, 2.515], parede: 'azul', fixo: true,
-      descricao: 'Escultura de papel em estilo low-poly (papercraft).',
-      projeto: {
-        exemplo: true,
-        autor: 'Autoria a confirmar',
-        objetivo: 'Transformar um modelo 3D digital em peça física usando apenas papel planificado.',
-        materiais: ['Papel', 'Cola branca'],
-        tecnologias: ['Modelagem 3D', 'Planificação']
-      }
+      id: 'painel-ferramentas', modelo: 'painelPerfurado', pos: [0.45, 1.05, -2.645], parede: 'cinza', fixo: true,
+      zona: 'ferramentas', nome: 'Painéis de ferramentas', icone: '🧰',
+      descricao: 'Painéis perfurados onde cada ferramenta tem o seu lugar.',
+      aprender: 'Organização também se aprende: um espaço maker compartilhado só funciona quando todos encontram e devolvem as ferramentas.',
+      dica: 'Devolver a ferramenta ao painel é cuidar do espaço coletivo.'
     },
     {
-      id: 'proj-raposa', zona: 'vitrine', nome: 'Raposa low-poly', icone: '🦊',
-      modelo: 'raposa', pos: [-0.85, 1.435, 2.515], parede: 'azul', fixo: true,
-      descricao: 'Outra escultura facetada em papel, do mesmo estudo de formas.',
-      projeto: {
-        exemplo: true,
-        autor: 'Autoria a confirmar',
-        objetivo: 'Estudar geometria e planificação de sólidos com papel reaproveitado.',
-        materiais: ['Papel', 'Cola branca'],
-        tecnologias: ['Modelagem 3D', 'Planificação']
-      }
+      id: 'martelo', modelo: 'martelo', escala: 0.4, rotX: Math.PI / 2, pos: [0.15, 1.33, -2.6], parede: 'cinza', fixo: true,
+      zona: 'ferramentas', nome: 'Martelo', icone: '🔨',
+      descricao: 'Ferramenta de impacto para pregar, encaixar e ajustar peças.',
+      aprender: 'Usar o martelo ensina física na prática: alavanca, impulso e transferência de energia.',
+      dica: 'Segure pela ponta do cabo, mantenha os dedos longe e use óculos de proteção.'
     },
     {
-      id: 'proj-potes', zona: 'vitrine', nome: 'Potes de luz', icone: '✨',
-      modelo: 'potesLuz', pos: [-0.1, 1.435, 2.515], parede: 'azul', fixo: true,
-      descricao: 'Luminárias feitas com potes de vidro reaproveitados e fios de LED.',
-      projeto: {
-        exemplo: true,
-        autor: 'Autoria a confirmar',
-        objetivo: 'Dar nova vida a embalagens de vidro com um circuito simples de iluminação.',
-        materiais: ['Potes de vidro', 'Rolhas', 'Fio de LED'],
-        tecnologias: ['Circuitos simples']
-      }
+      id: 'chave-fenda', modelo: 'chaveFenda', escala: 0.4, rotX: Math.PI / 2, pos: [0.55, 1.2, -2.6], parede: 'cinza', fixo: true,
+      zona: 'ferramentas', nome: 'Chaves de fenda', icone: '🪛',
+      descricao: 'Chaves de fenda e Phillips de vários tamanhos.',
+      aprender: 'Montar e desmontar com parafusos permite reaproveitar peças, fazer manutenção e entender como os objetos são construídos.',
+      dica: 'Use a ponta do tamanho exato do parafuso para não espaná-lo.'
     },
     {
-      id: 'proj-relogio', zona: 'vitrine', nome: 'Relógio digital', icone: '⏰',
-      modelo: 'relogio', pos: [-0.6, 1.835, 2.515], parede: 'azul', fixo: true,
-      descricao: 'Relógio com caixa de madeira. Ele mostra a hora de verdade!',
-      projeto: {
-        exemplo: true,
-        autor: 'Autoria a confirmar',
-        objetivo: 'Integrar marcenaria e eletrônica em um objeto do dia a dia.',
-        materiais: ['Madeira', 'Display', 'Componentes eletrônicos'],
-        tecnologias: ['Arduino', 'Cortadora a laser']
-      }
-    },
-    {
-      id: 'proj-porquinho', zona: 'vitrine', nome: 'Porquinho fatiado', icone: '🐷',
-      modelo: 'porquinho', pos: [1.8, 1.435, 2.515], parede: 'azul', fixo: true,
-      descricao: 'Escultura montada com fatias de MDF encaixadas.',
-      projeto: {
-        exemplo: true,
-        autor: 'Autoria a confirmar',
-        objetivo: 'Aprender a fatiar um modelo 3D em camadas planas que se encaixam.',
-        materiais: ['MDF reaproveitado'],
-        tecnologias: ['Cortadora a laser', 'Modelagem 3D']
-      }
-    },
-    {
-      id: 'proj-triangulos', zona: 'vitrine', nome: 'Escultura de triângulos', icone: '🔺',
-      modelo: 'triangulos', pos: [2.7, 1.435, 2.515], parede: 'azul', fixo: true,
-      descricao: 'Peça decorativa com ripas em ziguezague.',
-      projeto: {
-        exemplo: true,
-        autor: 'Autoria a confirmar',
-        objetivo: 'Explorar ritmo, repetição e encaixes com ripas de madeira.',
-        materiais: ['Retalhos de madeira'],
-        tecnologias: ['Ferramentas manuais']
-      }
-    },
-    {
-      id: 'banner-ods', zona: 'vitrine', nome: 'Banner: ODS na comunidade acadêmica', icone: '🌍',
-      modelo: 'poster', opcoes: { titulo: 'PROMOÇÃO DOS ODS NA COMUNIDADE ACADÊMICA: COMPROMISSO DA UNIVERSIDADE VEIGA DE ALMEIDA COM O PACTO GLOBAL DA ONU' },
+      id: 'banner-ods', modelo: 'poster', opcoes: { titulo: 'PROMOÇÃO DOS ODS NA COMUNIDADE ACADÊMICA: COMPROMISSO DA UNIVERSIDADE VEIGA DE ALMEIDA COM O PACTO GLOBAL DA ONU' },
       pos: [-2.4, 1.2, -2.645], parede: 'cinza', fixo: true,
+      zona: 'vitrine', nome: 'Banner: ODS na comunidade acadêmica', icone: '🌍',
       descricao: 'Banner de pesquisa sobre a promoção dos Objetivos de Desenvolvimento Sustentável (ODS) na universidade.',
       aprender: 'Os 17 ODS da ONU orientam os projetos do UVA Maker: cada protótipo pode responder a um desafio real de sustentabilidade.',
       dica: 'Ao começar um projeto, escolha qual ODS ele ajuda a alcançar.'
     },
     {
-      id: 'banner-uva-maker', zona: 'vitrine', nome: 'Banner: UVA Maker e os ODS', icone: '📜',
-      modelo: 'poster', opcoes: { titulo: 'UVA MAKER: FORMAÇÃO DE PROFISSIONAIS ENGAJADOS COM OS OBJETIVOS DO DESENVOLVIMENTO SUSTENTÁVEL' },
+      id: 'banner-uva-maker', modelo: 'poster', opcoes: { titulo: 'UVA MAKER: FORMAÇÃO DE PROFISSIONAIS ENGAJADOS COM OS OBJETIVOS DO DESENVOLVIMENTO SUSTENTÁVEL' },
       pos: [-1.65, 1.2, -2.645], parede: 'cinza', fixo: true,
+      zona: 'vitrine', nome: 'Banner: UVA Maker e os ODS', icone: '📜',
       descricao: 'Banner de pesquisa sobre o UVA Maker e a formação de profissionais engajados com o desenvolvimento sustentável.',
       aprender: 'Mostra como a cultura maker, com Feira Maker, oficinas e projetos, aproxima a formação acadêmica dos desafios da sociedade.',
       dica: 'Os resultados de pesquisa também são um projeto: compartilhe o que você aprendeu!'
-    }
-  ],
+    },
 
-  // Mobiliário e decoração (não clicáveis). `parede` gira o objeto de frente para a sala.
-  // Móveis com `id` (e sem `fixo`) podem ser arrastados no modo "Editar layout";
-  // itens com `sobre: '<id do móvel>'` vão junto com ele.
-  moveis: [
-    { id: 'balcao-eletronica', nome: 'Balcão da eletrônica', tipo: 'balcao', pos: [-2.0, 0, -2.345], parede: 'cinza', w: 1.6 },
-    { id: 'balcao-fabricacao', nome: 'Balcão da fabricação', tipo: 'balcao', pos: [0.45, 0, -2.345], parede: 'cinza', w: 1.6 },
-    { id: 'armario', nome: 'Armário de insumos', tipo: 'armario', pos: [2.3, 0, -2.42], parede: 'cinza' },
-    { tipo: 'logoUVA', pos: [-0.1, 2.2, -2.645], parede: 'cinza', fixo: true },
-    { tipo: 'arCondicionado', pos: [-3.25, 2.3, -2.645], parede: 'cinza', fixo: true },
-    { id: 'gaveteiro-colas', nome: 'Gaveteiro das colas', tipo: 'gaveteiro', pos: [-3.5, 0, -0.9], parede: 'quadro' },
-    { id: 'gaveteiro-postits', nome: 'Gaveteiro dos post-its', tipo: 'gaveteiro', pos: [-3.5, 0, 0.9], parede: 'quadro' },
-    { id: 'bancada-computadores', nome: 'Bancada dos computadores', tipo: 'bancadaComputadores', pos: [0, 0, 2.645], parede: 'azul', segmentos: [[-0.75, 2.2], [-3.55, -1.15]] },
-    { id: 'cadeira-pc-1', nome: 'Cadeira azul', tipo: 'cadeira', pos: [-1.7, 0, 1.8], cor: '#3f86c6' },
-    { id: 'cadeira-pc-2', nome: 'Cadeira azul', tipo: 'cadeira', pos: [-0.6, 0, 1.8], cor: '#3f86c6' },
-    { id: 'cadeira-pc-3', nome: 'Cadeira azul', tipo: 'cadeira', pos: [0.3, 0, 1.8], cor: '#3f86c6' },
-    { id: 'cadeira-pc-4', nome: 'Cadeira azul', tipo: 'cadeira', pos: [1.7, 0, 1.8], cor: '#3f86c6' },
-    { id: 'cadeira-pc-5', nome: 'Cadeira azul', tipo: 'cadeira', pos: [2.8, 0, 1.8], cor: '#3f86c6' },
-    { tipo: 'prateleiraParede', pos: [-0.6, 0, 2.645], parede: 'azul', fixo: true, w: 2.7, alturas: [1.4, 1.8, 2.2] },
-    { tipo: 'prateleiraParede', pos: [2.275, 0, 2.645], parede: 'azul', fixo: true, w: 2.25, alturas: [1.4, 1.8, 2.2] },
-    { tipo: 'vaso', pos: [-1.5, 2.235, 2.515], parede: 'azul', fixo: true },
-    { tipo: 'telaTripe', pos: [-0.3, 2.235, 2.515], parede: 'azul', fixo: true },
-    { tipo: 'luminaria', pos: [2.0, 2.235, 2.515], parede: 'azul', fixo: true }
+    // ---------- Parede do quadro ----------
+    {
+      id: 'quadro-branco', modelo: 'quadroBranco', opcoes: { w: 3.0, h: 1.45 }, pos: [-3.77, 0.85, 0], parede: 'quadro', fixo: true,
+      zona: 'colagem', nome: 'Quadro branco e mural de post-its', icone: '🗒️',
+      descricao: 'Quadro para aulas, brainstorms e recados, com um mural de notas autoadesivas.',
+      aprender: 'Organizar ideias visualmente faz parte do design thinking e do trabalho em equipe. No quadro está uma aula de dilatação térmica: a física também vira projeto!',
+      dica: 'Uma ideia por post-it! Assim dá para agrupar, reorganizar e votar nas melhores.'
+    },
+    { id: 'gaveteiro-colas', tipo: 'gaveteiro', pos: [-3.5, 0, -0.9], parede: 'quadro' },
+    { id: 'gaveteiro-postits', tipo: 'gaveteiro', pos: [-3.5, 0, 0.9], parede: 'quadro' },
+    { id: 'cola-branca', tipo: 'colaBranca', pos: [-3.5, 0.64, -1.05], parede: 'quadro', sobre: 'gaveteiro-colas' },
+    { id: 'cola-quente', tipo: 'colaQuente', pos: [-3.5, 0.64, -0.75], parede: 'quadro', sobre: 'gaveteiro-colas' },
+    { id: 'post-its', tipo: 'blocoPostit', pos: [-3.5, 0.64, 0.9], parede: 'quadro', sobre: 'gaveteiro-postits' },
+    { id: 'coleta-seletiva', tipo: 'lixeiras', pos: [-3.65, 0, 2.0], parede: 'quadro' },
+
+    // ---------- Mesas e computadores da parede azul ----------
+    { id: 'mesa-pc-1', tipo: 'mesaComputador', pos: [-1.875, 0, 2.345], parede: 'azul' },
+    { id: 'mesa-pc-2', tipo: 'mesaComputador', pos: [-0.825, 0, 2.345], parede: 'azul' },
+    { id: 'mesa-pc-3', tipo: 'mesaComputador', pos: [0.225, 0, 2.345], parede: 'azul' },
+    { id: 'mesa-pc-4', tipo: 'mesaComputador', pos: [1.675, 0, 2.345], parede: 'azul' },
+    { id: 'mesa-pc-5', tipo: 'mesaComputador', pos: [2.725, 0, 2.345], parede: 'azul' },
+    { id: 'computador-1', tipo: 'computador', pos: [-1.875, 0.74, 2.345], parede: 'azul', sobre: 'mesa-pc-1' },
+    { id: 'computador-2', tipo: 'computador', pos: [-0.825, 0.74, 2.345], parede: 'azul', sobre: 'mesa-pc-2' },
+    { id: 'computador-3', tipo: 'computador', pos: [0.225, 0.74, 2.345], parede: 'azul', sobre: 'mesa-pc-3' },
+    { id: 'computador-4', tipo: 'computador', pos: [1.675, 0.74, 2.345], parede: 'azul', sobre: 'mesa-pc-4' },
+    { id: 'computador-5', tipo: 'computador', pos: [2.725, 0.74, 2.345], parede: 'azul', sobre: 'mesa-pc-5' },
+    { id: 'cadeira-pc-1', tipo: 'cadeiraAzul', pos: [-1.875, 0, 1.8] },
+    { id: 'cadeira-pc-2', tipo: 'cadeiraAzul', pos: [-0.825, 0, 1.8] },
+    { id: 'cadeira-pc-3', tipo: 'cadeiraAzul', pos: [0.225, 0, 1.8] },
+    { id: 'cadeira-pc-4', tipo: 'cadeiraAzul', pos: [1.675, 0, 1.8] },
+    { id: 'cadeira-pc-5', tipo: 'cadeiraAzul', pos: [2.725, 0, 1.8] },
+
+    // ---------- Centro da sala: mesas colaborativas e cadeiras (cada peça se move sozinha) ----------
+    { id: 'mesa-central-1', tipo: 'mesaColaborativa', pos: [-0.55, 0, -0.575] },
+    { id: 'mesa-central-2', tipo: 'mesaColaborativa', pos: [0.95, 0, -0.575] },
+    { id: 'mesa-central-3', tipo: 'mesaColaborativa', pos: [-0.55, 0, 0.175], rot: Math.PI },
+    { id: 'mesa-central-4', tipo: 'mesaColaborativa', pos: [0.95, 0, 0.175], rot: Math.PI },
+    { id: 'cadeira-1', tipo: 'cadeiraPreta', pos: [-1.0, 0, -1.22] },
+    { id: 'cadeira-2', tipo: 'cadeiraPreta', pos: [-0.4, 0, -1.22] },
+    { id: 'cadeira-3', tipo: 'cadeiraPreta', pos: [0.2, 0, -1.22] },
+    { id: 'cadeira-4', tipo: 'cadeiraPreta', pos: [0.8, 0, -1.22] },
+    { id: 'cadeira-5', tipo: 'cadeiraPreta', pos: [1.4, 0, -1.22] },
+    { id: 'cadeira-6', tipo: 'cadeiraPreta', pos: [-1.0, 0, 0.82], rot: Math.PI },
+    { id: 'cadeira-7', tipo: 'cadeiraPreta', pos: [-0.4, 0, 0.82], rot: Math.PI },
+    { id: 'cadeira-8', tipo: 'cadeiraPreta', pos: [0.2, 0, 0.82], rot: Math.PI },
+    { id: 'cadeira-9', tipo: 'cadeiraPreta', pos: [0.8, 0, 0.82], rot: Math.PI },
+    { id: 'cadeira-10', tipo: 'cadeiraPreta', pos: [1.4, 0, 0.82], rot: Math.PI },
+
+    // ---------- Prateleiras e vitrine (presas na parede azul) ----------
+    { id: 'prateleira-esquerda', modelo: 'prateleiraParede', opcoes: { w: 2.7, alturas: [1.4, 1.8, 2.2] }, pos: [-0.6, 0, 2.645], parede: 'azul', fixo: true },
+    { id: 'prateleira-direita', modelo: 'prateleiraParede', opcoes: { w: 2.25, alturas: [1.4, 1.8, 2.2] }, pos: [2.275, 0, 2.645], parede: 'azul', fixo: true },
+    { id: 'vaso-vidro', modelo: 'vaso', pos: [-1.5, 2.235, 2.515], parede: 'azul', fixo: true },
+    { id: 'tela-tripe', modelo: 'telaTripe', pos: [-0.3, 2.235, 2.515], parede: 'azul', fixo: true },
+    { id: 'luminaria-tripe', modelo: 'luminaria', pos: [2.0, 2.235, 2.515], parede: 'azul', fixo: true },
+    {
+      id: 'proj-lhama', modelo: 'lhama', escala: 0.8, pos: [-1.5, 1.435, 2.515], parede: 'azul', fixo: true,
+      zona: 'vitrine', nome: 'Lhama low-poly', icone: '🦙',
+      descricao: 'Escultura de papel em estilo low-poly (papercraft).',
+      projeto: {
+        exemplo: true, autor: 'Autoria a confirmar',
+        objetivo: 'Transformar um modelo 3D digital em peça física usando apenas papel planificado.',
+        materiais: ['Papel', 'Cola branca'], tecnologias: ['Modelagem 3D', 'Planificação']
+      }
+    },
+    {
+      id: 'proj-raposa', modelo: 'raposa', pos: [-0.85, 1.435, 2.515], parede: 'azul', fixo: true,
+      zona: 'vitrine', nome: 'Raposa low-poly', icone: '🦊',
+      descricao: 'Outra escultura facetada em papel, do mesmo estudo de formas.',
+      projeto: {
+        exemplo: true, autor: 'Autoria a confirmar',
+        objetivo: 'Estudar geometria e planificação de sólidos com papel reaproveitado.',
+        materiais: ['Papel', 'Cola branca'], tecnologias: ['Modelagem 3D', 'Planificação']
+      }
+    },
+    {
+      id: 'proj-potes', modelo: 'potesLuz', pos: [-0.1, 1.435, 2.515], parede: 'azul', fixo: true,
+      zona: 'vitrine', nome: 'Potes de luz', icone: '✨',
+      descricao: 'Luminárias feitas com potes de vidro reaproveitados e fios de LED.',
+      projeto: {
+        exemplo: true, autor: 'Autoria a confirmar',
+        objetivo: 'Dar nova vida a embalagens de vidro com um circuito simples de iluminação.',
+        materiais: ['Potes de vidro', 'Rolhas', 'Fio de LED'], tecnologias: ['Circuitos simples']
+      }
+    },
+    {
+      id: 'proj-relogio', modelo: 'relogio', pos: [-0.6, 1.835, 2.515], parede: 'azul', fixo: true,
+      zona: 'vitrine', nome: 'Relógio digital', icone: '⏰',
+      descricao: 'Relógio com caixa de madeira. Ele mostra a hora de verdade!',
+      projeto: {
+        exemplo: true, autor: 'Autoria a confirmar',
+        objetivo: 'Integrar marcenaria e eletrônica em um objeto do dia a dia.',
+        materiais: ['Madeira', 'Display', 'Componentes eletrônicos'], tecnologias: ['Arduino', 'Cortadora a laser']
+      }
+    },
+    {
+      id: 'proj-porquinho', modelo: 'porquinho', pos: [1.8, 1.435, 2.515], parede: 'azul', fixo: true,
+      zona: 'vitrine', nome: 'Porquinho fatiado', icone: '🐷',
+      descricao: 'Escultura montada com fatias de MDF encaixadas.',
+      projeto: {
+        exemplo: true, autor: 'Autoria a confirmar',
+        objetivo: 'Aprender a fatiar um modelo 3D em camadas planas que se encaixam.',
+        materiais: ['MDF reaproveitado'], tecnologias: ['Cortadora a laser', 'Modelagem 3D']
+      }
+    },
+    {
+      id: 'proj-triangulos', modelo: 'triangulos', pos: [2.7, 1.435, 2.515], parede: 'azul', fixo: true,
+      zona: 'vitrine', nome: 'Escultura de triângulos', icone: '🔺',
+      descricao: 'Peça decorativa com ripas em ziguezague.',
+      projeto: {
+        exemplo: true, autor: 'Autoria a confirmar',
+        objetivo: 'Explorar ritmo, repetição e encaixes com ripas de madeira.',
+        materiais: ['Retalhos de madeira'], tecnologias: ['Ferramentas manuais']
+      }
+    }
   ]
 };
