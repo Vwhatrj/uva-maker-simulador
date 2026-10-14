@@ -424,6 +424,9 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
   async function iniciarArmazenamento() {
     const claude = window.claude;
     if (!claude || typeof claude.use !== 'function') {
+      // Fora do claude.ai: no arquivo local quem desenvolve pode testar layouts (salvos só no navegador);
+      // no site público (GitHub Pages) os visitantes veem o layout de js/dados.js, sem edição.
+      if (location.protocol !== 'file:') return;
       try { aplicarLayout(JSON.parse(localStorage.getItem(CHAVE_LAYOUT) || '{}')); } catch (e) { /* sem armazenamento */ }
       $('#btn-editar').hidden = false;
       return;
