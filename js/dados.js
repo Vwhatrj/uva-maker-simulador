@@ -431,7 +431,8 @@ window.UVA_DATA = {
     { id: 'cadeira-pc-5', tipo: 'cadeiraPreta', opcoes: { cor: '#d8442c' }, pos: [2.725, 0, 1.8] },
     { id: 'insumos-caixa', modelo: 'generico', opcoes: { cor: '#c49a6c', tamanho: [0.5, 0.3, 0.4] }, pos: [2.95, 0.74, 2.4], parede: 'azul', sobre: 'mesa-pc-5', fixo: true },
     { id: 'insumos-sacola', modelo: 'generico', opcoes: { cor: '#e4e9ee', tamanho: [0.35, 0.25, 0.3] }, pos: [2.45, 0.74, 2.42], parede: 'azul', sobre: 'mesa-pc-5', fixo: true },
-    { id: 'balcao-centro', modelo: 'armarioBaixo', opcoes: { w: 1.0, h: 0.9, d: 0.7 }, base: [1.0, 0.7], apoio: 'chao', superficie: 0.9, pos: [2.3, 0, -0.2] },
+    // Na ponta das mesas do centro: costas para as mesas e portas viradas para a bancada da janela
+    { id: 'balcao-centro', modelo: 'armarioBaixo', opcoes: { w: 1.4, h: 0.9, d: 0.7 }, base: [1.4, 0.7], apoio: 'chao', superficie: 0.9, pos: [2.06, 0, -0.2], rot: Math.PI / 2 },
 
     // ---------- Bancada embaixo da janela (para o corredor) ----------
     { id: 'mesa-pc-7', tipo: 'mesaComputador', pos: [3.47, 0, -1.6], parede: 'janela' },
