@@ -11,9 +11,10 @@ window.UVA_MODELOS = function (THREE) {
   'use strict';
 
   // Medidas reais do Uva Maker: 7,54 m x 5,29 m. Pé-direito estimado.
-  // Pela foto, a janela começa logo depois da coluna rosa e a porta dupla de vidro fica perto do canto do quadro.
+  // Pelas fotos: no canto, o armário 25-36 encostado na parede da janela; depois a coluna rosa e a janela.
+  // A porta dupla de vidro fica perto do canto do quadro.
   const SALA = { X: 7.54 / 2, Z: 5.29 / 2, H: 3.0, E: 0.15 };
-  const JANELA = { centro: -1.05, w: 2.31, h: 1.9, base: 0.8 };  // na parede menor (x = +X), virada para o corredor
+  const JANELA = { centro: -0.05, w: 2.31, h: 1.9, base: 0.8 };  // na parede menor (x = +X), virada para o corredor
   const PORTA = { centro: -2.5, w: 1.5, h: 2.1 };               // porta dupla na parede azul (z = +Z)
 
   // ---------- Utilitários ----------
@@ -240,7 +241,7 @@ window.UVA_MODELOS = function (THREE) {
     // colunas pintadas: azul-turquesa (atrás da mesa de projetos), amarela (entre as prateleiras) e rosa (canto da janela)
     cinza.grupo.add(em(cilindro(0.2, 0.2, H, '#5ec4dc', 32), -0.75, H / 2, 0.12));
     azul.grupo.add(caixa(0.32, H, 0.25, '#f2c94c', -0.95, 0, 0.125));
-    janela.grupo.add(caixa(0.3, H, 0.3, '#e0568c', -2.47, 0, 0.15));
+    janela.grupo.add(caixa(0.3, H, 0.3, '#e0568c', -1.45, 0, 0.15));   // entre o armário 25-36 e a janela
 
     // Moldura, vidro e porta ficam em grupos próprios que somem quando a parede abaixa
     // (achatados junto com a parede, as peças se sobreporiam e piscariam).

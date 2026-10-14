@@ -20,7 +20,7 @@ window.UVA_DATA = {
   zonas: [
     {
       id: 'sustentabilidade', nome: 'Sustentabilidade e Reaproveitamento', curto: 'Sustentabilidade',
-      icone: '♻️', cor: '#2fb34a', parede: 'cinza', centro: [3.0, 0.95, -2.4], rotulo: [3.0, 2.2, -2.3],
+      icone: '♻️', cor: '#2fb34a', parede: 'cinza', centro: [3.3, 0.95, -2.15], rotulo: [3.15, 2.2, -2.15],
       descricao: 'Os armários guardam os insumos de reaproveitamento: papel, papelão, isopor, E.V.A., Lego e blocos de montagem. Clique em cada porta para abri-la.',
       objetivo: 'Viver a economia circular na prática: reduzir, reutilizar e transformar materiais de baixo custo em protótipos funcionais.'
     },
@@ -260,7 +260,7 @@ window.UVA_DATA = {
     // ---------- Móveis da parede cinza ----------
     { id: 'balcao-eletronica', tipo: 'balcao', opcoes: { w: 1.1, tampo: '#eef0f2' }, base: [1.1, 0.6], pos: [-1.8, 0, -2.345], parede: 'cinza' },
     { id: 'balcao-fabricacao', tipo: 'balcao', opcoes: { w: 2.1 }, base: [2.1, 0.6], pos: [1.45, 0, -2.345], parede: 'cinza' },
-    { id: 'armario', tipo: 'armario', nome: 'Armário de insumos', opcoes: { portas: 'baixo', numero: 25 }, pos: [3.0, 0, -2.42], parede: 'cinza' },
+    { id: 'armario', tipo: 'armario', nome: 'Armário de insumos', opcoes: { portas: 'baixo', numero: 25 }, pos: [3.545, 0, -2.15], parede: 'janela' },
     { id: 'armario-37', tipo: 'armario', nome: 'Armário 37-48', opcoes: { portas: true, numero: 37 }, pos: [-2.85, 0, -2.42], parede: 'cinza' },
     {
       id: 'mesa-vitrine', modelo: 'mesaVitrine', base: [0.95, 0.6], apoio: 'chao', pos: [-0.1, 0, -2.345], parede: 'cinza',
@@ -272,7 +272,7 @@ window.UVA_DATA = {
 
     // ---------- Portas do armário (abrem ao clicar e vão junto com o armário) ----------
     {
-      id: 'papel', modelo: 'portaArmario', opcoes: { conteudo: 'papel', numero: 25 }, pos: [2.7, 1.41, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      id: 'papel', modelo: 'portaArmario', opcoes: { conteudo: 'papel', numero: 25 }, pos: [3.32, 1.41, -2.45], parede: 'janela', sobre: 'armario', preso: true,
       zona: 'sustentabilidade', nome: 'Papel', icone: '📄',
       descricao: 'Folhas usadas, revistas e sobras de impressão.',
       aprender: 'Papel é ótimo para rascunhar ideias em 3D: dobraduras, moldes e protótipos de baixa fidelidade ajudam a testar formas antes de gastar material nobre. A lhama da vitrine é um exemplo!',
@@ -280,7 +280,7 @@ window.UVA_DATA = {
       dica: 'Separe o papel limpo do sujo: só o limpo volta para a bancada.'
     },
     {
-      id: 'eva', modelo: 'portaArmario', opcoes: { conteudo: 'eva', numero: 29 }, pos: [3.0, 1.41, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      id: 'eva', modelo: 'portaArmario', opcoes: { conteudo: 'eva', numero: 29 }, pos: [3.32, 1.41, -2.15], parede: 'janela', sobre: 'armario', preso: true,
       zona: 'sustentabilidade', nome: 'E.V.A.', icone: '🎨',
       descricao: 'Retalhos coloridos de E.V.A. que sobraram de outros projetos.',
       aprender: 'Flexível, colorido e macio: perfeito para acabamentos, articulações, proteções e protótipos de produtos vestíveis.',
@@ -288,7 +288,7 @@ window.UVA_DATA = {
       dica: 'Guarde até os retalhos pequenos: eles viram detalhes, botões e etiquetas.'
     },
     {
-      id: 'lego', modelo: 'portaArmario', opcoes: { conteudo: 'lego', numero: 33 }, pos: [3.3, 1.41, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      id: 'lego', modelo: 'portaArmario', opcoes: { conteudo: 'lego', numero: 33 }, pos: [3.32, 1.41, -1.85], parede: 'janela', sobre: 'armario', preso: true,
       zona: 'sustentabilidade', nome: 'Lego', icone: '🧱',
       descricao: 'Peças de encaixe para prototipar mecanismos rapidamente.',
       aprender: 'Com blocos de encaixe dá para testar engrenagens, alavancas e estruturas em minutos e desmontar sem desperdício nenhum.',
@@ -296,7 +296,7 @@ window.UVA_DATA = {
       dica: 'Monte, teste, desmonte, repita. Errar rápido é aprender rápido!'
     },
     {
-      id: 'papelao', modelo: 'portaArmario', opcoes: { conteudo: 'papelao', numero: 26 }, pos: [2.7, 0.96, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      id: 'papelao', modelo: 'portaArmario', opcoes: { conteudo: 'papelao', numero: 26 }, pos: [3.32, 0.96, -2.45], parede: 'janela', sobre: 'armario', preso: true,
       zona: 'sustentabilidade', nome: 'Papelão', icone: '📦',
       descricao: 'Caixas de entrega, tubos e embalagens.',
       aprender: 'Resistente e fácil de cortar, o papelão é o "MDF do maker iniciante": dá para construir maquetes habitacionais, móveis em escala e carcaças de robôs.',
@@ -304,7 +304,7 @@ window.UVA_DATA = {
       dica: 'Corte sempre com a lâmina se afastando do corpo e use uma base de corte.'
     },
     {
-      id: 'isopor', modelo: 'portaArmario', opcoes: { conteudo: 'isopor', numero: 30 }, pos: [3.0, 0.96, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      id: 'isopor', modelo: 'portaArmario', opcoes: { conteudo: 'isopor', numero: 30 }, pos: [3.32, 0.96, -2.15], parede: 'janela', sobre: 'armario', preso: true,
       zona: 'sustentabilidade', nome: 'Isopor', icone: '🧊',
       descricao: 'Bandejas, blocos de proteção de eletrônicos e placas.',
       aprender: 'Leve e fácil de modelar, é ideal para volumes de maquetes, relevos e protótipos que flutuam.',
@@ -312,7 +312,7 @@ window.UVA_DATA = {
       dica: 'Cola quente muito quente e colas com solvente derretem o isopor! Prefira cola branca ou cola própria para isopor.'
     },
     {
-      id: 'blocos', modelo: 'portaArmario', opcoes: { conteudo: 'blocos', numero: 34 }, pos: [3.3, 0.96, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      id: 'blocos', modelo: 'portaArmario', opcoes: { conteudo: 'blocos', numero: 34 }, pos: [3.32, 0.96, -1.85], parede: 'janela', sobre: 'armario', preso: true,
       zona: 'sustentabilidade', nome: 'Blocos de montagem', icone: '🔷',
       descricao: 'Blocos de madeira e plástico em formas geométricas.',
       aprender: 'Ajudam a pensar em volumes, equilíbrio e proporção, que são o primeiro passo de qualquer maquete.',
@@ -320,7 +320,7 @@ window.UVA_DATA = {
       dica: 'Experimente montar a mesma ideia de três jeitos diferentes antes de escolher um.'
     },
     {
-      id: 'sucata', modelo: 'portaArmario', opcoes: { conteudo: 'sucata', numero: 27 }, pos: [2.7, 0.51, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      id: 'sucata', modelo: 'portaArmario', opcoes: { conteudo: 'sucata', numero: 27 }, pos: [3.32, 0.51, -2.45], parede: 'janela', sobre: 'armario', preso: true,
       zona: 'sustentabilidade', nome: 'Sucata eletrônica', icone: '🔩',
       descricao: 'Placas, motores e peças retiradas de aparelhos que iam para o lixo.',
       aprender: 'Desmontar um aparelho velho é uma aula de engenharia reversa, e muitas peças voltam à vida em novos projetos.',
@@ -328,14 +328,14 @@ window.UVA_DATA = {
       dica: 'Nunca desmonte aparelhos ligados na tomada nem baterias estufadas.'
     },
     {
-      id: 'caixa-ferramentas', modelo: 'portaArmario', opcoes: { conteudo: 'ferramentas', numero: 31 }, pos: [3.0, 0.51, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      id: 'caixa-ferramentas', modelo: 'portaArmario', opcoes: { conteudo: 'ferramentas', numero: 31 }, pos: [3.32, 0.51, -2.15], parede: 'janela', sobre: 'armario', preso: true,
       zona: 'ferramentas', nome: 'Caixa de ferramentas', icone: '🧰',
       descricao: 'Serrote, lixas, trena, alicates e estilete para marcenaria educacional.',
       aprender: 'Medir, serrar e lixar desenvolve precisão e paciência, e transforma retalhos de madeira em estruturas para os protótipos.',
       dica: 'Meça duas vezes, corte uma. E sempre com óculos de proteção!'
     },
     {
-      id: 'kit-eletronico', modelo: 'portaArmario', opcoes: { conteudo: 'kit', numero: 35 }, pos: [3.3, 0.51, -2.195], parede: 'cinza', sobre: 'armario', preso: true,
+      id: 'kit-eletronico', modelo: 'portaArmario', opcoes: { conteudo: 'kit', numero: 35 }, pos: [3.32, 0.51, -1.85], parede: 'janela', sobre: 'armario', preso: true,
       zona: 'eletronica', nome: 'Kit de componentes', icone: '🧪',
       descricao: 'LEDs, resistores, botões, sensores, motores e jumpers organizados.',
       aprender: 'Conhecer cada componente é como aprender o alfabeto da eletrônica: combinados, eles formam qualquer projeto.',
@@ -344,6 +344,7 @@ window.UVA_DATA = {
 
     // ---------- Sobre os balcões ----------
     { id: 'impressora-3d', tipo: 'impressora3d', pos: [0.82, 0.9, -2.39], parede: 'cinza', sobre: 'balcao-fabricacao' },
+    { id: 'cortadora-laser', tipo: 'laser', pos: [1.72, 0.9, -2.3], parede: 'cinza', sobre: 'balcao-fabricacao' },
     { id: 'impressora-grande', tipo: 'impressoraGrande', pos: [2.1, 0.9, -2.39], parede: 'cinza', sobre: 'balcao-fabricacao' },
     { id: 'caneta-3d', tipo: 'caneta3d', pos: [0.52, 0.9, -2.25], parede: 'cinza', sobre: 'balcao-fabricacao' },
     { id: 'drone-vermelho', tipo: 'droneQuadricoptero', pos: [1.35, 0.9, -2.45], parede: 'cinza', sobre: 'balcao-fabricacao' },
@@ -356,7 +357,7 @@ window.UVA_DATA = {
 
     // ---------- Presos na parede cinza ----------
     { id: 'letreiro-uva', modelo: 'letreiroUVA', pos: [0.35, 1.81, -2.645], parede: 'cinza', fixo: true },
-    { id: 'ar-condicionado', modelo: 'arCondicionado', opcoes: { tipo: 'teto' }, pos: [3.77, 2.77, -0.4], parede: 'janela', fixo: true },
+    { id: 'ar-condicionado', modelo: 'arCondicionado', opcoes: { tipo: 'teto' }, pos: [3.77, 2.77, -0.2], parede: 'janela', fixo: true },
     { id: 'ar-split', modelo: 'arCondicionado', pos: [-2.0, 2.5, 2.645], parede: 'azul', fixo: true },
     { id: 'coracao-fios', modelo: 'coracaoFios', pos: [-1.25, 1.35, -2.645], parede: 'cinza', fixo: true },
     {
@@ -435,14 +436,13 @@ window.UVA_DATA = {
     { id: 'balcao-centro', modelo: 'armarioBaixo', opcoes: { w: 1.4, h: 0.9, d: 0.7 }, base: [1.4, 0.7], apoio: 'chao', superficie: 0.9, pos: [2.06, 0, -0.2], rot: Math.PI / 2 },
 
     // ---------- Bancada embaixo da janela (para o corredor) ----------
-    { id: 'mesa-pc-7', tipo: 'mesaComputador', pos: [3.47, 0, -1.6], parede: 'janela' },
-    { id: 'mesa-pc-6', tipo: 'mesaComputador', pos: [3.47, 0, -0.55], parede: 'janela' },
-    { id: 'mesa-pc-1', tipo: 'mesaComputador', pos: [3.47, 0, 0.5], parede: 'janela' },
-    { id: 'cortadora-laser', tipo: 'laser', pos: [3.47, 0.74, -1.75], parede: 'janela', sobre: 'mesa-pc-7' },
-    { id: 'computador-6', tipo: 'computador', pos: [3.47, 0.74, -0.55], parede: 'janela', sobre: 'mesa-pc-6' },
-    { id: 'computador-1', tipo: 'computador', pos: [3.47, 0.74, 0.5], parede: 'janela', sobre: 'mesa-pc-1' },
-    { id: 'cadeira-pc-6', tipo: 'cadeiraAzul', pos: [3.0, 0, -0.55], rot: Math.PI / 2 },
-    { id: 'cadeira-pc-1', tipo: 'cadeiraPreta', pos: [3.0, 0, 0.5], rot: Math.PI / 2 },
+    { id: 'mesa-pc-7', tipo: 'mesaComputador', pos: [3.47, 0, 1.4], parede: 'janela' },
+    { id: 'mesa-pc-6', tipo: 'mesaComputador', pos: [3.47, 0, -0.7], parede: 'janela' },
+    { id: 'mesa-pc-1', tipo: 'mesaComputador', pos: [3.47, 0, 0.35], parede: 'janela' },
+    { id: 'computador-6', tipo: 'computador', pos: [3.47, 0.74, -0.7], parede: 'janela', sobre: 'mesa-pc-6' },
+    { id: 'computador-1', tipo: 'computador', pos: [3.47, 0.74, 0.35], parede: 'janela', sobre: 'mesa-pc-1' },
+    { id: 'cadeira-pc-6', tipo: 'cadeiraAzul', pos: [3.0, 0, -0.7], rot: Math.PI / 2 },
+    { id: 'cadeira-pc-1', tipo: 'cadeiraPreta', pos: [3.0, 0, 0.35], rot: Math.PI / 2 },
 
     // ---------- Centro da sala: mesas colaborativas e cadeiras (cada peça se move sozinha) ----------
     { id: 'mesa-central-1', tipo: 'mesaColaborativa', pos: [-0.55, 0, -0.575] },

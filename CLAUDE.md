@@ -14,8 +14,8 @@ Guilherme está começando em programação e GitHub: explicar passos em linguag
 - Sala: 7,54 x 5,29 m (informado pelo Thiago). Abertura/janela de 2,31 x 1,90 m na parede menor.
 - **Estimativas a confirmar:** pé-direito 3,00 m (pelas fotos), peitoril 0,80 m, porta dupla de 1,50 m, conteúdo de cada porta do armário.
 - Layout refeito com as fotos reais de 2026-10 (enviadas no chat, não estão no repositório). Os nomes das paredes no código vêm do layout antigo; hoje todas são creme:
-  - `cinza` (z = -Z): gaveteiros no canto, armário 37-48, bancada branca da eletrônica, banner ODS, coração de fios, coluna turquesa, mesa de projetos, painéis de ferramentas com letras UVA, bancada azul (Fercar) com Bambu Lab A1 e impressora de perfis pretos, armário 25-36 e coluna rosa no canto.
-  - `janela` (x = +X): coluna rosa, janela para o corredor e bancada com computadores e a cortadora NEJE; ar-condicionado de teto.
+  - `cinza` (z = -Z): gaveteiros no canto, armário 37-48, bancada branca da eletrônica, banner ODS, coração de fios, coluna turquesa, mesa de projetos, painéis de ferramentas com letras UVA e bancada azul (Fercar) com Bambu Lab A1, cortadora NEJE e impressora de perfis pretos.
+  - `janela` (x = +X): armário 25-36 no canto (costas na parede, de frente para a bancada azul), coluna rosa, janela para o corredor e bancada com computadores; ar-condicionado de teto.
   - `azul` (z = +Z): porta dupla de vidro com película "UVA MAKER HACKER SPACE" (sala A109; de dentro aparece espelhada) e letras UVA acima, split, prateleiras brancas da vitrine, armário baixo branco, coluna amarela, 3 computadores e, no canto da janela, a bancada dos materiais.
   - `quadro` (x = -X): quadro branco, tela de projeção (projetor no teto) e painel de chaveiros perto da porta.
   - Centro: mesas brancas com cadeiras coloridas e um balcão branco com portas na ponta perto da janela. Coluna turquesa é redonda.
