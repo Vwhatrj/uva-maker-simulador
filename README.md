@@ -54,5 +54,4 @@ A sala vai de x -3,77 a 3,77 e de z -2,645 a 2,645; y = 0,9 é o tampo dos balc�
 
 ## A confirmar
 
-- Pé-direito (estimado em 2,80 m), altura do peitoril da janela (0,80 m) e posição da porta
-- Autoria e objetivo dos projetos da vitrine
+- Pé-direito (estimado em 3,00 m pelas fotos), altura do peitoril da janela (0,80 m) e largura da porta dupla (1,50 m)

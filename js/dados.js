@@ -51,8 +51,8 @@ window.UVA_DATA = {
     {
       id: 'vitrine', nome: 'Vitrine de Projetos', curto: 'Vitrine',
       icone: '🏆', cor: '#e63946', parede: 'azul', centro: [0.4, 1.7, 2.45], rotulo: [0.4, 2.55, 2.4],
-      descricao: 'Prateleiras com trabalhos feitos no laboratório e os banners de pesquisa do UVA Maker.',
-      objetivo: 'Inspirar novos projetos e valorizar a produção dos estudantes. Clique em cada peça para saber quem fez e como.'
+      descricao: 'A mesa de projetos com peças feitas no laboratório, as prateleiras e os banners de pesquisa do UVA Maker.',
+      objetivo: 'Inspirar novos projetos e valorizar a produção dos estudantes.'
     }
   ],
 
@@ -121,7 +121,7 @@ window.UVA_DATA = {
       modelo: 'laser', base: [0.17, 0.16], apoio: 'ambos',
       zona: 'fabricacao',
       descricao: 'Máquina compacta que grava madeira, MDF e papelão e corta papel e materiais finos com um feixe de luz concentrado. A janela verde filtra a luz do laser.',
-      aprender: 'Ensina desenho vetorial (2D), precisão e encaixes: com chapas planas se constroem objetos 3D, como o porquinho fatiado da vitrine.',
+      aprender: 'Ensina desenho vetorial (2D), precisão e encaixes: com chapas planas se constroem objetos 3D, como as peças de MDF da mesa de projetos.',
       dica: 'Nunca olhe diretamente para o feixe, mantenha a tampa fechada e não deixe a máquina ligada sozinha.',
       sim: {
         acao: 'Gravar uma estrela', tempo: '≈ 12 min', duracao: 8,
@@ -275,7 +275,7 @@ window.UVA_DATA = {
       id: 'papel', modelo: 'portaArmario', opcoes: { conteudo: 'papel', numero: 25 }, pos: [3.32, 1.41, -2.45], parede: 'janela', sobre: 'armario', preso: true,
       zona: 'sustentabilidade', nome: 'Papel', icone: '📄',
       descricao: 'Folhas usadas, revistas e sobras de impressão.',
-      aprender: 'Papel é ótimo para rascunhar ideias em 3D: dobraduras, moldes e protótipos de baixa fidelidade ajudam a testar formas antes de gastar material nobre. A lhama da vitrine é um exemplo!',
+      aprender: 'Papel é ótimo para rascunhar ideias em 3D: dobraduras, moldes e protótipos de baixa fidelidade ajudam a testar formas antes de gastar material nobre.',
       vira: ['Moldes e gabaritos', 'Papercraft low-poly', 'Protótipos de embalagem'],
       dica: 'Separe o papel limpo do sujo: só o limpo volta para a bancada.'
     },
@@ -465,66 +465,6 @@ window.UVA_DATA = {
     { id: 'prateleira-direita', modelo: 'prateleiraParede', opcoes: { w: 2.25, alturas: [1.4, 1.8, 2.2] }, pos: [2.275, 0, 2.645], parede: 'azul', fixo: true },
     { id: 'vaso-vidro', modelo: 'vaso', pos: [-1.35, 2.235, 2.515], parede: 'azul', fixo: true },
     { id: 'tela-tripe', modelo: 'telaTripe', pos: [-0.3, 2.235, 2.515], parede: 'azul', fixo: true },
-    { id: 'luminaria-tripe', modelo: 'luminaria', pos: [2.0, 2.235, 2.515], parede: 'azul', fixo: true },
-    {
-      id: 'proj-lhama', modelo: 'lhama', escala: 0.8, pos: [-1.35, 1.435, 2.515], parede: 'azul', fixo: true,
-      zona: 'vitrine', nome: 'Lhama low-poly', icone: '🦙',
-      descricao: 'Escultura de papel em estilo low-poly (papercraft).',
-      projeto: {
-        exemplo: true, autor: 'Autoria a confirmar',
-        objetivo: 'Transformar um modelo 3D digital em peça física usando apenas papel planificado.',
-        materiais: ['Papel', 'Cola branca'], tecnologias: ['Modelagem 3D', 'Planificação']
-      }
-    },
-    {
-      id: 'proj-raposa', modelo: 'raposa', pos: [-0.85, 1.435, 2.515], parede: 'azul', fixo: true,
-      zona: 'vitrine', nome: 'Raposa low-poly', icone: '🦊',
-      descricao: 'Outra escultura facetada em papel, do mesmo estudo de formas.',
-      projeto: {
-        exemplo: true, autor: 'Autoria a confirmar',
-        objetivo: 'Estudar geometria e planificação de sólidos com papel reaproveitado.',
-        materiais: ['Papel', 'Cola branca'], tecnologias: ['Modelagem 3D', 'Planificação']
-      }
-    },
-    {
-      id: 'proj-potes', modelo: 'potesLuz', pos: [-0.1, 1.435, 2.515], parede: 'azul', fixo: true,
-      zona: 'vitrine', nome: 'Potes de luz', icone: '✨',
-      descricao: 'Luminárias feitas com potes de vidro reaproveitados e fios de LED.',
-      projeto: {
-        exemplo: true, autor: 'Autoria a confirmar',
-        objetivo: 'Dar nova vida a embalagens de vidro com um circuito simples de iluminação.',
-        materiais: ['Potes de vidro', 'Rolhas', 'Fio de LED'], tecnologias: ['Circuitos simples']
-      }
-    },
-    {
-      id: 'proj-relogio', modelo: 'relogio', pos: [-0.6, 1.835, 2.515], parede: 'azul', fixo: true,
-      zona: 'vitrine', nome: 'Relógio digital', icone: '⏰',
-      descricao: 'Relógio com caixa de madeira. Ele mostra a hora de verdade!',
-      projeto: {
-        exemplo: true, autor: 'Autoria a confirmar',
-        objetivo: 'Integrar marcenaria e eletrônica em um objeto do dia a dia.',
-        materiais: ['Madeira', 'Display', 'Componentes eletrônicos'], tecnologias: ['Arduino', 'Cortadora a laser']
-      }
-    },
-    {
-      id: 'proj-porquinho', modelo: 'porquinho', pos: [1.8, 1.435, 2.515], parede: 'azul', fixo: true,
-      zona: 'vitrine', nome: 'Porquinho fatiado', icone: '🐷',
-      descricao: 'Escultura montada com fatias de MDF encaixadas.',
-      projeto: {
-        exemplo: true, autor: 'Autoria a confirmar',
-        objetivo: 'Aprender a fatiar um modelo 3D em camadas planas que se encaixam.',
-        materiais: ['MDF reaproveitado'], tecnologias: ['Cortadora a laser', 'Modelagem 3D']
-      }
-    },
-    {
-      id: 'proj-triangulos', modelo: 'triangulos', pos: [2.7, 1.435, 2.515], parede: 'azul', fixo: true,
-      zona: 'vitrine', nome: 'Escultura de triângulos', icone: '🔺',
-      descricao: 'Peça decorativa com ripas em ziguezague.',
-      projeto: {
-        exemplo: true, autor: 'Autoria a confirmar',
-        objetivo: 'Explorar ritmo, repetição e encaixes com ripas de madeira.',
-        materiais: ['Retalhos de madeira'], tecnologias: ['Ferramentas manuais']
-      }
-    }
+    { id: 'luminaria-tripe', modelo: 'luminaria', pos: [2.0, 2.235, 2.515], parede: 'azul', fixo: true }
   ]
 };

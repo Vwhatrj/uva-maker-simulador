@@ -32,6 +32,6 @@ Guilherme está começando em programação e GitHub: explicar passos em linguag
 - `index.html` usa scripts clássicos (não módulos) para funcionar abrindo o arquivo direto no navegador.
 
 ## Pendências
-- Autoria e objetivo reais dos projetos da vitrine (hoje "Autoria a confirmar"). As fotos mostram outras peças nas prateleiras (tendas amarelas, esculturas de madeira, peças de acrílico).
+- Vitrine: as 6 peças de exemplo (lhama, raposa etc.) foram retiradas em 2026-10-15 porque não tinham autoria real. Só adicionar peças novas com autor e objetivo confirmados (campo `projeto` em `js/dados.js`). As fotos mostram maquetes de arquitetura, tendas amarelas e esculturas de madeira nas prateleiras.
 - Onde ficam de verdade os insumos (papel, E.V.A., Lego...): hoje estão nas portas do armário 25-36.
 - O banner "UVA Maker e os ODS" não aparece nas fotos; está provisoriamente na parede do quadro.

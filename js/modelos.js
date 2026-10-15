@@ -1297,104 +1297,8 @@ window.UVA_MODELOS = function (THREE) {
     return { grupo: g };
   }
 
-  // ---------- Vitrine: projetos nas prateleiras ----------
-  function lhama() {
-    const g = new THREE.Group(), cor = '#eef0f3';
-    const corpo = poli(new THREE.IcosahedronGeometry(0.06, 0), cor);
-    corpo.scale.set(1.4, 0.9, 0.9);
-    g.add(em(corpo, 0, 0.14, 0));
-    const pescoco = poli(new THREE.BoxGeometry(0.05, 0.15, 0.05), cor);
-    pescoco.rotation.z = -0.2;
-    g.add(em(pescoco, 0.07, 0.23, 0));
-    const cabeca = poli(new THREE.IcosahedronGeometry(0.04, 0), cor);
-    cabeca.scale.set(1.3, 0.9, 0.9);
-    g.add(em(cabeca, 0.1, 0.31, 0));
-    [-0.015, 0.015].forEach((z) => g.add(em(poli(new THREE.ConeGeometry(0.012, 0.05, 4), cor), 0.09, 0.36, z)));
-    [[0.05, 0.03], [-0.05, 0.03], [0.05, -0.03], [-0.05, -0.03]].forEach(([x, z]) => g.add(poli(new THREE.BoxGeometry(0.02, 0.1, 0.02), cor).translateX(x).translateY(0.05).translateZ(z)));
-    return { grupo: g };
-  }
-  function raposa() {
-    const g = new THREE.Group(), cor = '#e9ecef';
-    const corpo = poli(new THREE.DodecahedronGeometry(0.07, 0), cor);
-    corpo.scale.set(1, 0.9, 0.8);
-    g.add(em(corpo, 0, 0.065, 0));
-    g.add(em(poli(new THREE.DodecahedronGeometry(0.045, 0), cor), 0.05, 0.15, 0.02));
-    [-0.02, 0.025].forEach((z) => g.add(em(poli(new THREE.ConeGeometry(0.015, 0.05, 4), cor), 0.05, 0.2, 0.02 + z)));
-    const rabo = poli(new THREE.ConeGeometry(0.03, 0.12, 5), cor);
-    rabo.rotation.z = 1.2;
-    g.add(em(rabo, -0.09, 0.05, 0));
-    return { grupo: g };
-  }
-  function potesLuz() {
-    const g = new THREE.Group(), luzes = [];
-    [[0.22, -0.06], [0.15, 0.02], [0.1, 0.09]].forEach(([h, x]) => {
-      const vidro = cilindro(0.04, 0.04, h, '#dfe9f2', 20, { transparent: true, opacity: 0.3, roughness: 0.1 });
-      vidro.castShadow = false;
-      g.add(em(vidro, x, h / 2, 0));
-      g.add(em(cilindro(0.041, 0.041, 0.02, '#a0764f', 20), x, h + 0.01, 0));
-      for (let i = 0; i < 10; i++) {
-        const l = semDestaque(new THREE.Mesh(new THREE.SphereGeometry(0.005, 6, 4), new THREE.MeshBasicMaterial({ color: '#ffe8a3', toneMapped: false })));
-        l.position.set(x + Math.cos(i * 2.4) * 0.025, 0.02 + (i / 10) * (h - 0.04), Math.sin(i * 2.4) * 0.025);
-        g.add(l);
-        luzes.push(l);
-      }
-    });
-    return {
-      grupo: g,
-      atualizar(t) { luzes.forEach((l, i) => { l.visible = Math.sin(t * 2 + i * 1.7) > -0.6; }); }
-    };
-  }
-  function relogio() {
-    const g = new THREE.Group();
-    g.add(caixa(0.3, 0.1, 0.08, '#7a5236'));
-    const c = document.createElement('canvas');
-    c.width = 256; c.height = 80;
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    const ctx = c.getContext('2d');
-    let ultimo = '';
-    function desenhar() {
-      const agora = new Date();
-      const hh = String(agora.getHours()).padStart(2, '0'), mm = String(agora.getMinutes()).padStart(2, '0');
-      if (hh + mm === ultimo) return;
-      ultimo = hh + mm;
-      ctx.fillStyle = '#1b1d22'; ctx.fillRect(0, 0, 256, 80);
-      ctx.font = 'bold 54px "Courier New", monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      [hh[0], hh[1], mm[0], mm[1]].forEach((d, i) => {
-        const x = 34 + i * 58 + (i > 1 ? 14 : 0);
-        ctx.fillStyle = '#2c2f36'; ctx.fillRect(x - 24, 8, 48, 64);
-        ctx.fillStyle = '#f1f3f5'; ctx.fillText(d, x, 42);
-      });
-      tex.needsUpdate = true;
-    }
-    desenhar();
-    g.add(em(plano(0.26, 0.08, tex), 0, 0.05, 0.041));
-    return { grupo: g, atualizar: desenhar };
-  }
-  function porquinho() {
-    const g = new THREE.Group(), cor = '#8b5a3c';
-    [0.08, 0.12, 0.145, 0.155, 0.145, 0.12, 0.085].forEach((h, i) => {
-      g.add(caixa(0.016, h, h * 0.85, i % 2 ? cor : '#9c6a48', -0.09 + i * 0.03, 0.05 + (0.155 - h) / 2, 0));
-    });
-    const focinho = em(cilindro(0.03, 0.03, 0.03, '#a0704f'), 0.12, 0.12, 0);
-    focinho.rotation.z = Math.PI / 2;
-    g.add(focinho);
-    [-0.03, 0.03].forEach((z) => g.add(em(poli(new THREE.ConeGeometry(0.02, 0.04, 3), cor), 0.07, 0.22, z)));
-    [[0.06, 0.04], [-0.06, 0.04], [0.06, -0.04], [-0.06, -0.04]].forEach(([x, z]) => g.add(caixa(0.025, 0.05, 0.025, cor, x, 0, z)));
-    return { grupo: g };
-  }
-  function triangulos() {
-    const g = new THREE.Group();
-    for (let i = 0; i < 3; i++) {
-      [-1, 1].forEach((s, k) => {
-        const ripa = caixa(0.018, 0.22, 0.03, k ? '#a0522d' : '#f1f3f5');
-        ripa.position.set(-0.13 + i * 0.13 + s * 0.035, 0.1, 0);
-        ripa.rotation.z = -s * 0.36;
-        g.add(ripa);
-      });
-    }
-    return { grupo: g };
-  }
+
+  // ---------- Vitrine: objetos decorativos nas prateleiras ----------
   function vaso() {
     const g = new THREE.Group();
     const perfil = [[0, 0], [0.06, 0], [0.075, 0.08], [0.06, 0.2], [0.04, 0.26]].map(([x, y]) => new THREE.Vector2(x, y));
@@ -1440,7 +1344,7 @@ window.UVA_MODELOS = function (THREE) {
     armarioBaixo, painelChaveiros, projetor, telaProjecao,
     arduino, protoboard, kit, drone, oculosVR, cameraFoto, tablet,
     colaBranca, colaQuente, blocoPostit,
-    lhama, raposa, potesLuz, relogio, porquinho, triangulos, vaso, luminaria, telaTripe,
+    vaso, luminaria, telaTripe,
     generico
   };
 };

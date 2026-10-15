@@ -383,7 +383,6 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
       <div class="icone">${it.icone || ''}</div>
       <div><button class="etiqueta" data-zona="${z.id}">${z.icone} ${esc(z.nome)}</button><h2>${esc(it.nome)}</h2></div>
     </div>`;
-    if (it.projeto && it.projeto.exemplo) h += `<p class="aviso-exemplo">Informações de exemplo: complete com os dados reais do projeto em <code>js/dados.js</code>.</p>`;
     h += `<p class="desc">${esc(it.descricao)}</p>`;
     if (it.projeto) {
       const p = it.projeto;
