@@ -83,7 +83,7 @@ window.UVA_DATA = {
     {
       id: 'vitrine', nome: 'Vitrine de Projetos', curto: 'Vitrine',
       icone: '🏆', cor: '#e63946', parede: 'azul', centro: [0.4, 1.7, 2.45], rotulo: [0.4, 2.55, 2.4],
-      descricao: 'A mesa de projetos com peças feitas no laboratório, as prateleiras e os banners de pesquisa do UVA Maker.',
+      descricao: 'A mesa de projetos com peças feitas no laboratório, as prateleiras, os banners de pesquisa do UVA Maker e os selos e certificados recebidos pela universidade e pelo NITeP.',
       objetivo: 'Inspirar novos projetos e valorizar a produção dos estudantes.'
     }
   ],
@@ -391,7 +391,41 @@ window.UVA_DATA = {
     { id: 'letreiro-uva', modelo: 'letreiroUVA', pos: [0.35, 1.81, -2.645], parede: 'cinza', fixo: true },
     { id: 'ar-condicionado', modelo: 'arCondicionado', opcoes: { tipo: 'teto' }, pos: [3.77, 2.77, -0.2], parede: 'janela', fixo: true },
     { id: 'ar-split', modelo: 'arCondicionado', pos: [-2.0, 2.5, 2.645], parede: 'azul', fixo: true },
-    { id: 'coracao-fios', modelo: 'coracaoFios', pos: [-1.25, 1.35, -2.645], parede: 'cinza', fixo: true },
+    { id: 'coracao-fios', modelo: 'coracaoFios', pos: [-1.35, 1.95, -2.645], parede: 'cinza', fixo: true },
+
+    // ---------- Selos e certificados, perto do coração (fotos de 2026-10) ----------
+    {
+      id: 'selo-ods-2023', modelo: 'certificado', opcoes: { tipo: 'ods2023', w: 0.21 }, pos: [-1.58, 1.12, -2.645], parede: 'cinza', fixo: true,
+      zona: 'vitrine', nome: 'Selo ODS Educação 2023', icone: '🏅',
+      descricao: 'Certificado conferido à Universidade Veiga de Almeida pelo Instituto Selo Social, pelo Programa UnB 2030 e pelo G1 Agenda 2030, pelo compromisso com os Objetivos de Desenvolvimento Sustentável (ODS).',
+      aprender: 'O selo reconhece os projetos declarados na plataforma do Selo Social: o certificado registra 27 projetos, 35 impactos sociais e 11.866 atendimentos.',
+      dica: 'Os ODS são 17 objetivos da ONU. Ao começar um projeto no laboratório, pense em qual deles ele ajuda a alcançar.'
+    },
+    { id: 'painel-selos', modelo: 'painelSelos', pos: [-1.18, 0.98, -2.645], parede: 'cinza', fixo: true, preso: true },
+    {
+      id: 'selo-ods-edebe', modelo: 'certificado', opcoes: { tipo: 'odsEdebe' }, pos: [-1.29, 1.52, -2.62], parede: 'cinza', fixo: true,
+      zona: 'vitrine', nome: 'Selo ODS Educação (Selo Social e Editora Edebê)', icone: '🏅',
+      descricao: 'Certificado conferido à Universidade Veiga de Almeida pelo Instituto Selo Social, em parceria com a Editora Edebê, pelo compromisso com os Objetivos de Desenvolvimento Sustentável.',
+      aprender: 'Cada selo é uma prova pública do impacto dos projetos: ele mostra para a sociedade o que a universidade faz pelos ODS.'
+    },
+    {
+      id: 'selo-ods-2025', modelo: 'certificado', opcoes: { tipo: 'ods2025' }, pos: [-1.07, 1.52, -2.62], parede: 'cinza', fixo: true,
+      zona: 'vitrine', nome: 'Selo ODS Educação 2025', icone: '🏅',
+      descricao: 'Selo ODS Educação 2025, conferido à Universidade Veiga de Almeida pelo Instituto Selo Social, em parceria com a Editora Edebê, pelo compromisso com os Objetivos de Desenvolvimento Sustentável.',
+      aprender: 'Renovar o selo a cada ano mostra que o compromisso com os ODS continua, com novos projetos e novos impactos.'
+    },
+    {
+      id: 'selo-inclusao', modelo: 'certificado', opcoes: { tipo: 'inclusao', w: 0.18 }, pos: [-1.13, 1.17, -2.62], parede: 'cinza', fixo: true,
+      zona: 'vitrine', nome: 'Selo Parceiro da Inclusão', icone: '🤝',
+      descricao: 'Selo do Programa de Selos de Acessibilidade e Inclusão, conferido pela Secretaria Municipal da Pessoa com Deficiência do Rio de Janeiro ao Núcleo de Inovação Pedagógica e Tecnológica da Universidade Veiga de Almeida.',
+      aprender: 'Acessibilidade também se constrói no laboratório: com as ferramentas maker dá para criar recursos que ajudam pessoas com deficiência.'
+    },
+    {
+      id: 'mencao-rrd', modelo: 'certificado', opcoes: { tipo: 'mencao', w: 0.22 }, pos: [-1.27, 0.99, -2.62], parede: 'cinza', fixo: true,
+      zona: 'vitrine', nome: 'Menção Honrosa – 4º Seminário RRD Rio', icone: '🎖️',
+      descricao: 'Menção honrosa recebida no 4º Seminário Técnico-Científico de Redução de Riscos de Desastres (RRD Rio), da Prefeitura do Rio de Janeiro.',
+      aprender: 'Projetos acadêmicos também ajudam a cidade a se preparar para desastres, como enchentes e deslizamentos.'
+    },
     {
       id: 'painel-ferramentas', modelo: 'painelPerfurado', pos: [0.35, 1.25, -2.645], parede: 'cinza', fixo: true,
       zona: 'ferramentas', nome: 'Painéis de ferramentas', icone: '🧰',
@@ -415,7 +449,7 @@ window.UVA_DATA = {
     },
     {
       id: 'banner-ods', modelo: 'poster', opcoes: { titulo: 'PROMOÇÃO DOS ODS NA COMUNIDADE ACADÊMICA: COMPROMISSO DA UNIVERSIDADE VEIGA DE ALMEIDA COM O PACTO GLOBAL DA ONU' },
-      pos: [-1.95, 1.2, -2.645], parede: 'cinza', fixo: true,
+      pos: [-2.05, 1.2, -2.645], parede: 'cinza', fixo: true,
       zona: 'vitrine', nome: 'Banner: ODS na comunidade acadêmica', icone: '🌍',
       descricao: 'Banner de pesquisa sobre a promoção dos Objetivos de Desenvolvimento Sustentável (ODS) na universidade.',
       aprender: 'Os 17 ODS da ONU orientam os projetos do UVA Maker: cada protótipo pode responder a um desafio real de sustentabilidade.',

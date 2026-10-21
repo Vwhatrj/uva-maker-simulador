@@ -1080,6 +1080,169 @@ window.UVA_MODELOS = function (THREE) {
     g.add(caixa(w, 0.025, 0.02, '#2a2c30', 0, -0.07 - h - 0.02, 0.06));
     return { grupo: g };
   }
+  // ---------- Selos e certificados (perto do coração, fotos de 2026-10) ----------
+  const COR_ODS = { 3: '#4C9F38', 4: '#C5192D', 5: '#FF3A21', 6: '#26BDE2', 8: '#A21942', 9: '#FD6925', 10: '#DD1367',
+    11: '#FD9D24', 12: '#BF8B2E', 13: '#3F7E44', 14: '#0A97D9', 17: '#19486A' };
+  // Linha de quadradinhos coloridos dos ODS, centrada em (cx, y).
+  function quadradosODS(c, numeros, cx, y, lado) {
+    const passo = lado + 4, x0 = cx - (numeros.length * passo - 4) / 2;
+    numeros.forEach((n, i) => {
+      c.fillStyle = COR_ODS[n]; c.fillRect(x0 + i * passo, y, lado, lado);
+      c.fillStyle = '#fff'; c.font = `bold ${Math.round(lado * 0.38)}px Arial, sans-serif`; c.textAlign = 'left';
+      c.fillText(String(n), x0 + i * passo + 3, y + lado * 0.4);
+    });
+  }
+  // Anel com as cores dos 17 ODS.
+  function anelODS(c, x, y, r, espessura) {
+    const cores = ['#E5243B', '#DDA63A', '#4C9F38', '#C5192D', '#FF3A21', '#26BDE2', '#FCC30B', '#A21942', '#FD6925',
+      '#DD1367', '#FD9D24', '#BF8B2E', '#3F7E44', '#0A97D9', '#56C02B', '#00689D', '#19486A'];
+    c.lineWidth = espessura;
+    cores.forEach((cor, i) => {
+      c.strokeStyle = cor; c.beginPath();
+      c.arc(x, y, r, (i / 17) * Math.PI * 2 - Math.PI / 2, ((i + 1) / 17) * Math.PI * 2 - Math.PI / 2); c.stroke();
+    });
+  }
+  const linhasTexto = (c, x, y, n, larg, cor = 'rgba(60,60,60,0.35)') => {
+    c.fillStyle = cor; for (let i = 0; i < n; i++) c.fillRect(x, y + i * 9, larg - (i % 2) * 30, 3);
+  };
+  const DESENHO_CERTIFICADO = {
+    ods2023(c, w, h) {
+      c.fillStyle = '#eef1f5'; c.fillRect(0, 0, w, h);
+      c.strokeStyle = '#7bc96f'; c.lineWidth = 5; c.strokeRect(10, 10, w - 20, h - 20);
+      c.fillStyle = '#3d3f45'; c.textAlign = 'center'; c.font = 'bold 66px "Arial Narrow", Arial, sans-serif';
+      c.fillText('SELO', w / 2, 92);
+      anelODS(c, w / 2 - 40, 132, 20, 9);
+      c.fillText('DS', w / 2 + 22, 156);
+      linhasTexto(c, 50, 182, 3, w - 100);
+      c.fillStyle = '#9fdc8f'; c.fillRect(50, 214, w - 100, 40);
+      c.fillStyle = '#1f3a2a'; c.font = 'bold 18px Arial, sans-serif'; c.fillText('UVA', w / 2, 232);
+      c.font = '11px Arial, sans-serif'; c.fillText('Universidade Veiga de Almeida', w / 2, 248);
+      quadradosODS(c, [3, 4, 5, 6, 8], w / 2, 270, 30);
+      quadradosODS(c, [9, 10, 11, 13, 14, 17], w / 2, 304, 30);
+      linhasTexto(c, 60, 346, 2, w - 120);
+      c.fillStyle = '#7bc96f'; c.fillRect(60, 372, w - 120, 6);
+      anelODS(c, w / 2, 398, 11, 5);
+      c.fillStyle = '#3d3f45'; c.font = 'bold 10px Arial, sans-serif'; c.fillText('UnB 2030', w - 70, 404); c.fillText('SELO SOCIAL', 70, 404);
+    },
+    odsEdebe(c, w, h) {
+      const g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#f6b23c'); g.addColorStop(1, '#f39a2e');
+      c.fillStyle = g; c.fillRect(0, 0, w, h);
+      c.fillStyle = '#fff'; c.beginPath(); c.arc(w / 2, 62, 46, 0, Math.PI * 2); c.fill();
+      anelODS(c, w / 2 - 22, 62, 16, 7);
+      c.fillStyle = '#e8452c'; c.textAlign = 'left'; c.font = 'bold 18px Arial, sans-serif'; c.fillText('SELO', w / 2, 56); c.fillText('ODS', w / 2, 76);
+      c.textAlign = 'center'; c.font = 'bold 9px Arial, sans-serif'; c.fillText('EDUCAÇÃO', w / 2 + 6, 92);
+      c.fillStyle = '#fff'; c.font = 'bold 15px Arial, sans-serif'; c.fillText('Universidade Veiga de Almeida - UVA', w / 2, 140);
+      linhasTexto(c, 50, 152, 2, w - 100, 'rgba(255,255,255,0.7)');
+      quadradosODS(c, [3, 4, 5, 6, 8], w / 2, 180, 34);
+      quadradosODS(c, [10, 11, 12, 13, 17], w / 2, 220, 34);
+      c.fillStyle = '#e8452c'; c.fillRect(0, 262, w, 104);
+      linhasTexto(c, 50, 284, 3, w - 100, 'rgba(255,255,255,0.75)');
+      c.fillStyle = '#fff'; c.fillRect(0, 366, w, h - 366);
+      c.fillStyle = '#e8452c'; c.font = 'bold 26px Arial, sans-serif'; c.fillText('edebê', w / 2 - 40, 404);
+      anelODS(c, w - 60, 396, 12, 5);
+    },
+    ods2025(c, w, h) {
+      c.fillStyle = '#f7a733'; c.fillRect(0, 0, w, h);
+      c.fillStyle = '#f26b2a';
+      for (let i = 0; i < 16; i++) {
+        const a = (i / 16) * Math.PI * 2;
+        c.beginPath(); c.moveTo(w / 2, 70);
+        c.lineTo(w / 2 + Math.cos(a) * 400, 70 + Math.sin(a) * 400); c.lineTo(w / 2 + Math.cos(a + 0.18) * 400, 70 + Math.sin(a + 0.18) * 400); c.fill();
+      }
+      c.fillStyle = '#fff'; c.beginPath(); c.arc(w / 2, 70, 54, 0, Math.PI * 2); c.fill();
+      c.strokeStyle = '#19486A'; c.lineWidth = 3; c.stroke();
+      anelODS(c, w / 2 - 26, 66, 16, 7);
+      c.fillStyle = '#19486A'; c.textAlign = 'left'; c.font = 'bold 18px Arial, sans-serif'; c.fillText('SELO', w / 2 - 4, 60); c.fillText('ODS', w / 2 - 4, 80);
+      c.textAlign = 'center'; c.font = 'bold 9px Arial, sans-serif'; c.fillText('EDUCAÇÃO 2025', w / 2, 100);
+      c.fillStyle = 'rgba(255,255,255,0.88)'; c.fillRect(30, 150, w - 60, 200);
+      c.fillStyle = '#19486A'; c.font = 'bold 15px Arial, sans-serif'; c.fillText('Universidade Veiga', w / 2, 184); c.fillText('de Almeida - UVA', w / 2, 202);
+      linhasTexto(c, 60, 214, 2, w - 120);
+      quadradosODS(c, [4, 6, 11, 12, 13, 17], w / 2, 240, 30);
+      linhasTexto(c, 60, 290, 3, w - 120);
+      c.fillStyle = '#fff'; c.fillRect(0, 372, w, h - 372);
+      c.fillStyle = '#e8452c'; c.font = 'bold 16px Arial, sans-serif'; c.fillText('edebê', w / 2, 404);
+    },
+    inclusao(c, w, h) {
+      c.fillStyle = '#ffffff'; c.fillRect(0, 0, w, h);
+      [[0, 26], [h - 26, 26]].forEach(([y, alt]) => {
+        c.fillStyle = '#2c55c8'; c.fillRect(0, y, w, alt);
+        c.fillStyle = '#7f9ff0'; for (let x = 0; x < w; x += 18) c.fillRect(x, y + 8, 9, 10);
+      });
+      c.fillStyle = '#2c55c8'; c.textAlign = 'center'; c.font = 'bold 15px Arial, sans-serif';
+      c.fillText('Programa de Selos de', w / 2, 62); c.fillText('Acessibilidade e Inclusão', w / 2, 80);
+      c.fillStyle = '#e3b23c'; c.beginPath(); c.arc(w / 2, 160, 62, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#f2d06b'; c.beginPath(); c.arc(w / 2, 160, 52, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#2c55c8'; c.fillRect(w / 2 - 34, 152, 68, 26);
+      c.fillStyle = '#fff'; c.beginPath(); c.arc(w / 2 - 10, 165, 9, 0, Math.PI * 2); c.arc(w / 2 + 10, 165, 9, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#2c55c8'; c.font = 'bold 9px Arial, sans-serif'; c.fillText('PARCEIRO DA INCLUSÃO', w / 2, 132);
+      c.fillText('★ ★ ★', w / 2, 200);
+      linhasTexto(c, 50, 244, 2, w - 100);
+      c.fillStyle = '#2d2f36'; c.font = 'bold 11px Arial, sans-serif';
+      c.fillText('Núcleo de Inovação Pedagógica e', w / 2, 272); c.fillText('Tecnológica da Universidade', w / 2, 286); c.fillText('Veiga de Almeida', w / 2, 300);
+      linhasTexto(c, 50, 312, 4, w - 100);
+      c.fillStyle = '#2c55c8'; c.font = 'bold 14px Arial, sans-serif'; c.fillText('Rio', 50, 384);
+    },
+    mencao(c, w, h) {
+      c.fillStyle = '#fbf8f4'; c.fillRect(0, 0, w, h);
+      c.strokeStyle = '#d98a7c'; c.lineWidth = 6; c.strokeRect(12, 12, w - 24, h - 24);
+      c.lineWidth = 2; c.strokeRect(22, 22, w - 44, h - 44);
+      c.fillStyle = '#1f3a93'; c.textAlign = 'left'; c.font = 'bold 44px Arial, sans-serif'; c.fillText('4º', 40, 78);
+      c.font = 'bold 24px Arial, sans-serif'; c.fillText('RRD', 92, 62); c.fillText('RIO', 92, 86);
+      c.font = 'bold 14px Arial, sans-serif'; c.fillText('Rio', 190, 70);
+      c.fillStyle = '#c0392b'; c.fillRect(250, 50, 40, 26);
+      c.fillStyle = '#2d2f36'; c.textAlign = 'center'; c.font = 'bold 26px Georgia, serif'; c.fillText('MENÇÃO HONROSA', w / 2, 128);
+      linhasTexto(c, 50, 152, 6, w - 100);
+      linhasTexto(c, 60, 236, 2, 120); linhasTexto(c, w - 180, 236, 2, 120);
+    }
+  };
+  // `tipo`: ods2023, odsEdebe, ods2025 (acrílico) ou inclusao, mencao (moldura branca). Origem: centro da base.
+  function certificado(op) {
+    const g = new THREE.Group(), tipo = op.tipo || 'ods2023';
+    const deitado = tipo === 'mencao', acrilico = !['inclusao', 'mencao'].includes(tipo);
+    const w = op.w || (deitado ? 0.22 : 0.2), h = deitado ? w * 0.72 : w * 1.414;
+    const tex = textura(deitado ? 424 : 300, deitado ? 300 : 424, (c, cw, ch) => DESENHO_CERTIFICADO[tipo](c, cw, ch));
+    if (acrilico) {
+      const placa = caixa(w + 0.03, h + 0.03, 0.006, '#dff3ff', 0, 0, 0.012, { transparent: true, opacity: 0.25, roughness: 0.05 });
+      placa.castShadow = false;
+      g.add(em(plano(w, h, tex), 0, 0.015 + h / 2, 0.008), placa);
+    } else {
+      g.add(caixa(w + 0.03, h + 0.03, 0.018, '#f7f7f5', 0, 0, 0.009));
+      g.add(em(plano(w - 0.01, h - 0.01, tex), 0, 0.015 + h / 2, 0.0185));
+    }
+    return { grupo: g };
+  }
+  // Painel perfurado pequeno ao lado da coluna turquesa: garrafa PET com cordão vermelho, folheto,
+  // porta-objetos de papelão e porta-lápis. Os selos ficam por cima (objetos clicáveis à parte).
+  function painelSelos() {
+    const g = new THREE.Group(), W = 0.44, H = 0.52;
+    const furos = textura(32, 32, (c, w, h) => {
+      c.fillStyle = '#4b4f56'; c.fillRect(0, 0, w, h);
+      c.fillStyle = '#23262b'; c.beginPath(); c.arc(w / 2, h / 2, 5, 0, Math.PI * 2); c.fill();
+    });
+    furos.wrapS = furos.wrapT = THREE.RepeatWrapping;
+    furos.repeat.set(W / 0.025, H / 0.025);
+    g.add(caixa(W, H, 0.015, '#ffffff', 0, 0, 0.0075, { map: furos }));
+    const garrafa = cilindro(0.035, 0.035, 0.24, '#dbeefa', 16, { transparent: true, opacity: 0.45, roughness: 0.1 });
+    garrafa.castShadow = false;
+    g.add(em(garrafa, -0.16, 0.34, 0.05));
+    g.add(em(cilindro(0.012, 0.035, 0.05, '#dbeefa', 12, { transparent: true, opacity: 0.45 }), -0.16, 0.485, 0.05));
+    g.add(em(cilindro(0.011, 0.011, 0.02, '#2a5bd7', 12), -0.16, 0.52, 0.05));
+    g.add(em(esfera(0.025, '#c62828'), -0.16, 0.25, 0.05));
+    const folheto = textura(64, 180, (c, w, h) => {
+      c.fillStyle = '#f2a541'; c.fillRect(0, 0, w, 90);
+      c.fillStyle = '#6fa8dc'; c.fillRect(8, 30, 20, 50); c.fillStyle = '#e8b04a'; c.fillRect(34, 34, 20, 46);
+      c.fillStyle = '#ffffff'; c.fillRect(0, 90, w, 90);
+      c.fillStyle = '#5fa8c7'; for (let i = 0; i < 4; i++) c.fillRect(8, 100 + i * 18, 48, 10);
+    });
+    g.add(em(plano(0.07, 0.2, folheto), 0.185, 0.27, 0.02));
+    [0.09, 0.15].forEach((x) => {
+      g.add(caixa(0.05, 0.11, 0.05, '#c79a68', x, 0.02, 0.035));
+      g.add(caixa(0.052, 0.012, 0.052, '#eeeeea', x, 0.08, 0.035));
+    });
+    g.add(caixa(0.05, 0.09, 0.05, '#eeeeea', 0.2, -0.04, 0.04));
+    [['#2a5bd7', -0.01], ['#c62828', 0.005], ['#2d2f36', 0.018]].forEach(([cor, dx]) => g.add(em(cilindro(0.004, 0.004, 0.08, cor, 6), 0.2 + dx, 0.07, 0.04)));
+    return { grupo: g };
+  }
   // Coração de fios vermelhos esticados entre preguinhos (arte em fios, low-poly), na parede.
   function coracaoFios() {
     const g = new THREE.Group();
@@ -1370,7 +1533,7 @@ window.UVA_MODELOS = function (THREE) {
     letreiroUVA, poster, quadroBranco, painelPerfurado, arCondicionado,
     portaArmario, lixeiras, martelo, chaveFenda,
     impressora3d, impressoraGrande, laser, caneta3d, computador, mesaVitrine, coracaoFios,
-    armarioBaixo, painelChaveiros, projetor, telaProjecao,
+    armarioBaixo, painelChaveiros, projetor, telaProjecao, certificado, painelSelos,
     arduino, protoboard, kit, drone, oculosVR, cameraFoto, tablet,
     colaBranca, colaQuente, blocoPostit,
     vaso, luminaria, telaTripe,

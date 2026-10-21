@@ -304,3 +304,14 @@ body.editando .rotulo-zona { opacity: 0.35; pointer-events: none; }
 .contato-perfil .perfil.ativo { background: #fff; color: var(--uva); box-shadow: 0 2px 8px rgba(7, 42, 99, 0.14); }
 .contato-perfil .perfil:focus-visible { outline: 3px solid var(--uva); outline-offset: 2px; }
 .contato-explica { font-size: 14px !important; color: var(--suave); }
+
+/* ---------- Card encolhido durante a simulação (celular) ---------- */
+.painel.minimizado { padding: 12px 14px; }
+.painel.minimizado #painel-conteudo > :not(.cab):not(.sim) { display: none; }
+.painel.minimizado .cab { margin-bottom: 0; }
+.painel.minimizado .cab .icone { width: 36px; height: 36px; font-size: 20px; border-radius: 10px; }
+.painel.minimizado .cab h2 { font-size: 16px; }
+.painel.minimizado .sim { margin-top: 8px; padding: 8px 10px; }
+.painel.minimizado .sim .tempo { display: none; }
+.painel.minimizado .sim .btn { padding: 7px 12px; font-size: 13px; }
+#sim-texto { margin-top: 6px; }

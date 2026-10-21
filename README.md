@@ -19,7 +19,7 @@ Versão virtual e interativa do laboratório maker da **Universidade Veiga de Al
 |---|---|
 | Sala 3D navegável | Arrastar gira a sala e a rolagem (ou pinça) aproxima. A parede da frente abaixa para mostrar o interior. |
 | 6 estações | Sustentabilidade, Ferramentas, Fabricação Digital, Eletrônica, Colagem e Ideias, e Vitrine. |
-| 40 objetos clicáveis | Cada um abre um card com descrição, "o que se aprende aqui" e uma dica maker de segurança. |
+| 45 objetos clicáveis | Cada um abre um card com descrição, "o que se aprende aqui" e uma dica maker de segurança. |
 | 5 simulações | Impressora 3D, cortadora a laser, caneta 3D, Arduino e drone trabalhando. |
 | Trilha guiada | Percurso pelas 6 estações, com contador de objetos explorados. |
 | Medidas e hora do dia | Cotas com as medidas reais da sala e ciclo de dia e noite, com sol, sombras e lâmpadas. |
@@ -57,7 +57,7 @@ A equipe comparou o simulador com o espaço físico e indicou correções por me
 
 ### 5. Identidade visual, comunicação e acabamento (21/10)
 
-Entraram o logo do NITeP e os textos da tela de boas-vindas, os contatos do NITeP, o mural de ideias com envio anônimo à equipe e o contato separado para professores e alunos. Os 40 objetos clicáveis foram revisados um por um, e a interface foi ajustada para o celular.
+Entraram o logo do NITeP e os textos da tela de boas-vindas, os selos e certificados recebidos pela universidade e pelo NITeP, os contatos do NITeP, o mural de ideias com envio anônimo à equipe e o contato separado para professores e alunos. Os 40 objetos clicáveis foram revisados um por um, e a interface foi ajustada para o celular.
 
 | Tela de boas-vindas | Mural de ideias e contatos |
 |---|---|
@@ -69,8 +69,8 @@ Entraram o logo do NITeP e os textos da tela de boas-vindas, os contatos do NITe
 |---|---|
 | Medida real da sala | 7,54 × 5,29 m |
 | Fotos usadas como referência | 21 |
-| Versões publicadas no GitHub | 19 |
-| Objetos na sala | 92, sendo 40 clicáveis |
+| Versões publicadas no GitHub | 20 |
+| Objetos na sala | 98, sendo 45 clicáveis |
 | Estações temáticas | 6 |
 | Simulações de máquinas | 5 |
 | Linhas de código (HTML, CSS e JavaScript) | cerca de 3.500 |

@@ -288,13 +288,22 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
       dir.y = Math.max(dir.y, 0.5 * Math.hypot(dir.x, dir.z));
     }
     dir.normalize();
+    // No celular em pé o card ocupa a metade de baixo da tela: a câmera fica um pouco mais longe
+    // e o objeto vai para a parte de cima da imagem, acima do card.
+    const emPe = camera.aspect < 1;
+    if (emPe) dist *= 1.3;
     const pos = centro.clone().add(dir.clone().multiplyScalar(dist));
     const alvo = centro.clone();
     // No computador o card ocupa a direita da tela: desloca o enquadramento para o objeto ficar à esquerda.
     if (camera.aspect > 1.2) {
-      const desvio = V().crossVectors(dir.negate(), V(0, 1, 0)).normalize().multiplyScalar(dist * 0.28);
+      const desvio = V().crossVectors(dir.clone().negate(), V(0, 1, 0)).normalize().multiplyScalar(dist * 0.28);
       pos.add(desvio);
       alvo.add(desvio);
+    } else if (emPe) {
+      const meiaAltura = dist * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+      const baixar = V(0, -meiaAltura * 0.5, 0);
+      pos.add(baixar);
+      alvo.add(baixar);
     }
     voarPara(pos, alvo);
     return { pos, alvo };
@@ -408,7 +417,16 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
   const medirRodape = () => document.documentElement.style.setProperty('--altura-rodape', `${Math.ceil(rodape.getBoundingClientRect().height)}px`);
   if (window.ResizeObserver) new ResizeObserver(medirRodape).observe(rodape);
   medirRodape();
+  // Card encolhido (celular, durante uma simulação): só o título, a barra de progresso e a etapa
+  // ficam visíveis, para a máquina aparecer na tela. "Ver texto" traz o card inteiro de volta.
+  function minimizarPainel(sim) {
+    painel.classList.toggle('minimizado', sim);
+    const b = $('#sim-texto');
+    if (b) b.hidden = !sim;
+    painel.scrollTop = 0;
+  }
   function abrirPainel(html) {
+    minimizarPainel(false);
     conteudo.innerHTML = html;
     painel.hidden = false;
     document.body.classList.add('painel-aberto');
@@ -611,6 +629,7 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
         <div class="barra"><div id="sim-barra"></div></div>
         <p id="sim-passo" class="passo">Clique para ver a máquina trabalhando.</p>
         <p class="tempo">⏱️ Na vida real: <b>${esc(it.sim.tempo)}</b></p>
+        <button class="btn btn-mini" id="sim-texto" type="button" hidden>📖 Ver texto</button>
       </div>`;
     }
     if (it.dica) h += `<div class="dica"><b>🛡️ Dica maker:</b> ${esc(it.dica)}</div>`;
@@ -665,13 +684,14 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
   }
 
   conteudo.addEventListener('click', (ev) => {
-    const alvo = ev.target.closest('[data-item],[data-zona],[data-trilha],[data-adicionar],#sim-btn');
+    const alvo = ev.target.closest('[data-item],[data-zona],[data-trilha],[data-adicionar],#sim-btn,#sim-texto');
     if (!alvo) return;
     if (alvo.dataset.adicionar) adicionarDoCatalogo(alvo.dataset.adicionar);
     else if (alvo.dataset.item) mostrarItem(alvo.dataset.item);
     else if (alvo.dataset.zona) mostrarZona(alvo.dataset.zona);
     else if (alvo.dataset.trilha) passoTrilha(Number(alvo.dataset.trilha));
     else if (alvo.id === 'sim-btn' && aberto) iniciarSim(aberto);
+    else if (alvo.id === 'sim-texto') minimizarPainel(false);
   });
 
   // ---------- Simulações ----------
@@ -681,6 +701,8 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
     r.sim = { inicio: relogio.elapsedTime, dur: r.d.sim.duracao || 8 };
     const btn = $('#sim-btn');
     if (btn) { btn.disabled = true; btn.textContent = '⚙️ Trabalhando…'; }
+    // no celular o card encolhe para a demonstração aparecer
+    if (innerWidth <= 720 && aberto === id) minimizarPainel(true);
   }
   function atualizarUISim(r, p) {
     const barra = $('#sim-barra'), passo = $('#sim-passo');
@@ -701,7 +723,7 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
   const AREA_SALA = { x: 0, z: 0, w: 2 * X, d: 2 * Z, rot: 0 };
   // Colunas e pilares que avançam para dentro da sala.
   const OBSTACULOS = [
-    { x: -0.9, z: -Z + 0.11, w: 0.46, d: 0.24, rot: 0 },
+    { x: -0.75, z: -Z + 0.12, w: 0.4, d: 0.4, rot: 0 },    // coluna turquesa (redonda)
     { x: 0.95, z: Z - 0.125, w: 0.32, d: 0.25, rot: 0 },
     { x: X - 0.09, z: -1.45, w: 0.18, d: 0.3, rot: 0 }
   ];
