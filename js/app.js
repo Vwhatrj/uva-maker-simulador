@@ -431,18 +431,38 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
 
   // ---------- Contato e mural de ideias ----------
   const CONTATO = DADOS.contato;
-  const linkEmail = (assunto, corpo) =>
-    `mailto:${CONTATO.email}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+  // `para` vazio deixa o destinatário em branco (o aluno escreve o e-mail do próprio professor).
+  const linkEmail = (assunto, corpo, para = CONTATO.email) =>
+    `mailto:${para}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+  const botoesPedido = (quem) => CONTATO.assuntos.map((a) => quem === 'professor'
+    ? `<a class="btn" href="${linkEmail(a.assunto, a.professor)}">${a.icone} ${esc(a.rotulo)}</a>`
+    : `<a class="btn" href="${linkEmail(`Pedido ao NITeP: ${a.assunto}`, a.aluno, '')}">${a.icone} ${esc(a.rotulo)}</a>`).join('');
   function htmlContato() {
     return `<h3>📬 Fale com o NITeP</h3>
-      <p>Para usar o espaço, agendar uma visita técnica ou desenvolver um projeto com os nossos materiais, escolha o assunto: o e-mail já sai preenchido.</p>
-      <div class="contato-acoes">${CONTATO.assuntos.map((a) =>
-        `<a class="btn" href="${linkEmail(a.assunto, a.corpo)}">${a.icone} ${esc(a.rotulo)}</a>`).join('')}</div>
+      <p>Os pedidos para usar o espaço, agendar uma visita técnica ou desenvolver um projeto com os nossos materiais são feitos por um(a) professor(a) da UVA.</p>
+      <div class="contato-perfil" role="tablist" aria-label="Quem está pedindo">
+        <button type="button" class="perfil ativo" role="tab" aria-selected="true" data-perfil="professor">👩‍🏫 Sou professor(a)</button>
+        <button type="button" class="perfil" role="tab" aria-selected="false" data-perfil="aluno">🎓 Sou aluno(a)</button>
+      </div>
+      <p class="contato-explica" id="contato-explica">Escolha o assunto: o e-mail para o NITeP já sai preenchido.</p>
+      <div class="contato-acoes" id="contato-acoes">${botoesPedido('professor')}</div>
       <p class="contato-linha">✉️ <b class="selecionavel">${esc(CONTATO.email)}</b>
         <button class="btn btn-mini" id="copiar-email" type="button">Copiar</button></p>
       <p class="contato-linha">📷 Instagram: <a href="https://www.instagram.com/${CONTATO.instagram}/" target="_blank" rel="noopener">@${esc(CONTATO.instagram)}</a></p>`;
   }
   function ligarContato() {
+    const explica = $('#contato-explica'), acoes = $('#contato-acoes');
+    conteudo.querySelectorAll('.contato-perfil .perfil').forEach((b) => b.addEventListener('click', () => {
+      conteudo.querySelectorAll('.contato-perfil .perfil').forEach((o) => {
+        o.classList.toggle('ativo', o === b);
+        o.setAttribute('aria-selected', o === b);
+      });
+      const aluno = b.dataset.perfil === 'aluno';
+      explica.textContent = aluno
+        ? 'Fale primeiro com o seu professor ou a sua professora. Escolha o assunto: o e-mail abre para você escrever o endereço do professor, já pedindo que ele encaminhe ao NITeP.'
+        : 'Escolha o assunto: o e-mail para o NITeP já sai preenchido.';
+      acoes.innerHTML = botoesPedido(aluno ? 'aluno' : 'professor');
+    }));
     const botao = $('#copiar-email');
     if (!botao) return;
     botao.addEventListener('click', () => {

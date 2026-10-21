@@ -32,16 +32,21 @@ window.UVA_DATA = {
     contarVisitas: true
   },
   // Contatos do NITeP (escritos no quadro branco do laboratório). Cada assunto vira um e-mail já preenchido.
+  // Os pedidos ao NITeP são feitos por um(a) professor(a): `professor` vai direto para o NITeP;
+  // `aluno` vai para o professor do aluno (destinatário em branco), pedindo que ele encaminhe.
   contato: {
     email: 'nitep@uva.br',
     instagram: 'nitep_uva',
     assuntos: [
       { icone: '🏫', rotulo: 'Usar o espaço do laboratório', assunto: 'Uso do espaço do UVA Maker',
-        corpo: 'Olá, equipe do NITeP!\n\nGostaria de usar o espaço do laboratório UVA Maker.\n\nNome:\nCurso ou instituição:\nData e horário desejados:\nO que pretendo fazer:\n' },
+        professor: 'Olá, equipe do NITeP!\n\nSou professor(a) da UVA e gostaria de solicitar o uso do espaço do laboratório UVA Maker.\n\nNome do(a) professor(a):\nCurso e disciplina:\nTurma e número de alunos:\nData e horário desejados:\nAtividade prevista:\n',
+        aluno: 'Olá, professor(a)!\n\nGostaria de usar o espaço do laboratório UVA Maker, do NITeP. Como os pedidos são feitos por um professor, o(a) senhor(a) poderia encaminhar esta solicitação para nitep@uva.br?\n\nMeu nome:\nCurso e período:\nData e horário desejados:\nO que pretendo fazer:\n' },
       { icone: '🔎', rotulo: 'Agendar uma visita técnica', assunto: 'Visita técnica ao UVA Maker',
-        corpo: 'Olá, equipe do NITeP!\n\nGostaria de agendar uma visita técnica ao laboratório UVA Maker.\n\nNome:\nCurso ou instituição:\nNúmero de pessoas:\nDatas possíveis:\n' },
+        professor: 'Olá, equipe do NITeP!\n\nSou professor(a) da UVA e gostaria de agendar uma visita técnica ao laboratório UVA Maker.\n\nNome do(a) professor(a):\nCurso e disciplina:\nTurma e número de alunos:\nDatas possíveis:\n',
+        aluno: 'Olá, professor(a)!\n\nGostaria de fazer uma visita técnica ao laboratório UVA Maker, do NITeP. Como os pedidos são feitos por um professor, o(a) senhor(a) poderia encaminhar esta solicitação para nitep@uva.br?\n\nMeu nome:\nCurso e período:\nNúmero de colegas interessados:\nDatas possíveis:\n' },
       { icone: '🤝', rotulo: 'Desenvolver um projeto com a gente', assunto: 'Projeto com o UVA Maker',
-        corpo: 'Olá, equipe do NITeP!\n\nGostaria de desenvolver um projeto usando os materiais e as máquinas do UVA Maker.\n\nNome:\nCurso ou instituição:\nIdeia do projeto:\nMateriais ou máquinas que pretendo usar:\n' }
+        professor: 'Olá, equipe do NITeP!\n\nSou professor(a) da UVA e gostaria de desenvolver um projeto usando os materiais e as máquinas do UVA Maker.\n\nNome do(a) professor(a):\nCurso e disciplina:\nAlunos envolvidos:\nIdeia do projeto:\nMateriais ou máquinas previstos:\n',
+        aluno: 'Olá, professor(a)!\n\nGostaria de desenvolver um projeto com os materiais e as máquinas do laboratório UVA Maker, do NITeP. Como os pedidos são feitos por um professor, o(a) senhor(a) poderia orientar e encaminhar esta proposta para nitep@uva.br?\n\nMeu nome:\nCurso e período:\nIdeia do projeto:\nMateriais ou máquinas que pretendo usar:\n' }
     ]
   },
   zonas: [

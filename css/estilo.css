@@ -296,3 +296,11 @@ body.editando .rotulo-zona { opacity: 0.35; pointer-events: none; }
 .postit-acoes a.btn { text-decoration: none; }
 .postit-status { font-size: 13px !important; color: var(--suave); margin: 8px 0 !important; }
 .modal-caixa .aviso-privacidade { margin: 14px 0 0; font-size: 12px; color: var(--suave); line-height: 1.4; }
+.contato-perfil { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 10px 0 6px; padding: 4px; background: var(--claro); border-radius: 999px; }
+.contato-perfil .perfil {
+  border: 0; border-radius: 999px; padding: 8px 6px; background: transparent; cursor: pointer;
+  font: inherit; font-size: 13px; font-weight: 800; color: var(--suave);
+}
+.contato-perfil .perfil.ativo { background: #fff; color: var(--uva); box-shadow: 0 2px 8px rgba(7, 42, 99, 0.14); }
+.contato-perfil .perfil:focus-visible { outline: 3px solid var(--uva); outline-offset: 2px; }
+.contato-explica { font-size: 14px !important; color: var(--suave); }

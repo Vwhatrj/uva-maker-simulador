@@ -34,7 +34,7 @@ Guilherme está começando em programação e GitHub: explicar passos em linguag
 - `index.html` usa scripts clássicos (não módulos) para funcionar abrindo o arquivo direto no navegador.
 
 ## Contato e mural de ideias
-- Contatos do NITeP (do quadro do laboratório): nitep@uva.br e Instagram @nitep_uva, em `contato` de `js/dados.js`. Botão "✉️ Contato" no rodapé e no card do quadro branco; cada assunto (usar o espaço, visita técnica, projeto) abre um e-mail já preenchido.
+- Contatos do NITeP (do quadro do laboratório): nitep@uva.br e Instagram @nitep_uva, em `contato` de `js/dados.js`. Botão "✉️ Contato" no rodapé e no card do quadro branco; cada assunto (usar o espaço, visita técnica, projeto) abre um e-mail já preenchido. Regra do laboratório: o pedido ao NITeP é feito por um(a) professor(a); "Sou aluno(a)" abre o e-mail para o professor do aluno (destinatário em branco), pedindo que ele encaminhe.
 - Mural de ideias no quadro branco: o post-it fica salvo só no navegador do visitante (`localStorage` `uva-maker-postits`, até 6) e aparece nas vagas do quadro 3D. A equipe só recebe se o visitante clicar em "Enviar para a equipe" (e-mail). Um mural compartilhado entre visitantes precisaria de um banco de dados (ex.: Firebase/Supabase) e moderação.
 
 ## Relatório anônimo (Formulário Google)
