@@ -7,13 +7,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/estilo.css?v=10">
+<link rel="stylesheet" href="css/estilo.css?v=12">
 
 <div id="palco"></div>
 
 <header class="topo">
   <div class="marca">
-    <div class="logo" aria-hidden="true"></div>
+    <img class="logo" src="img/nitep-simbolo.png" width="220" height="122" alt="NITeP – Núcleo de Inovação Tecnológica e Pedagógica da UVA">
     <div>
       <h1><span class="marca-uva">UVA</span> Maker Hacker Space</h1>
       <p>Simulador interativo do laboratório</p>
@@ -75,15 +75,17 @@
 
 <div id="boas-vindas" class="modal">
   <div class="modal-caixa">
-    <div class="logo grande" aria-hidden="true"></div>
+    <img class="logo-grande" src="img/nitep.png" width="520" height="414" alt="NITeP – Núcleo de Inovação Tecnológica e Pedagógica da Universidade Veiga de Almeida">
     <h2>Bem-vindo ao UVA Maker Hacker Space!</h2>
-    <p>Explore, em escala real (7,54 × 5,29 m), o laboratório onde ideias e materiais reaproveitados viram protótipos de verdade.</p>
+    <p>Explore este protótipo virtual do Laboratório Maker, onde ideias e materiais reaproveitados viram protótipos de verdade. Tudo está em escala real (7,54 × 5,29 m).</p>
+    <h3>Orientações para explorar o simulador:</h3>
     <ul>
       <li><b>🖱️ Arraste</b> para girar a sala; use a <b>rolagem</b> (ou pinça) para aproximar. A parede da frente abaixa para você ver dentro.</li>
       <li><b>👆 Clique</b> em qualquer objeto, até nas portas dos armários, para descobrir para que serve e o que se aprende com ele.</li>
       <li><b>▶ Simule</b> a impressora 3D, a cortadora a laser, a caneta 3D, o Arduino e o drone.</li>
       <li><b>✥ Editar layout</b> para mover, girar, adicionar e remover objetos, e <b>☀️</b> para mudar a hora do dia.</li>
     </ul>
+    <p class="modal-convite">Você pode explorar o simulador de duas formas iniciais:</p>
     <div class="modal-acoes">
       <button id="bv-trilha" class="btn primario">🧭 Começar trilha guiada</button>
       <button id="bv-explorar" class="btn">Explorar livremente</button>
@@ -92,9 +94,9 @@
 </div>
 
 <!-- Scripts clássicos: funcionam abrindo o arquivo direto no navegador (sem servidor). -->
-<script src="js/dados.js?v=10"></script>
-<script src="js/modelos.js?v=10"></script>
-<script src="js/app.js?v=10"></script>
+<script src="js/dados.js?v=12"></script>
+<script src="js/modelos.js?v=12"></script>
+<script src="js/app.js?v=12"></script>
 <script type="importmap">
   {
     "imports": {

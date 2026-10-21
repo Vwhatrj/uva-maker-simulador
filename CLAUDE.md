@@ -29,6 +29,7 @@ Guilherme está começando em programação e GitHub: explicar passos em linguag
 - `js/app.js`: cena, paredes em corte, cards, trilha, simulações, cotas, hora do dia e modo "Editar layout".
 - Modo de edição: arrasta objetos com `base`; objetos pequenos (`apoio: 'ambos'`) podem ir para o tampo de móveis com `superficie`; colisão por retângulos girados (SAT) contra irmãos no mesmo apoio e colunas; o que está `sobre` um móvel é filho dele na cena.
 - Layout do usuário: `localStorage` `uva-maker-layout-v2` e arquivo `.json` (`{tipo: "uva-maker-layout", versao: 2, objetos: [{id, tipo, x, y, z, rot, sobre}], removidos: [ids]}`). Para tornar um layout o padrão, gravar as posições do arquivo em `objetos` de `js/dados.js`.
+- `img/nitep.png` (logo completo, na tela de boas-vindas) e `img/nitep-simbolo.png` (só o símbolo, no topo): logo do NITeP enviado pelo usuário em 2026-10-21.
 - `index.html` usa scripts clássicos (não módulos) para funcionar abrindo o arquivo direto no navegador.
 
 ## Pendências

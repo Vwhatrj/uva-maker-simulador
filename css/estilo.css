@@ -40,12 +40,9 @@ button { font: inherit; cursor: pointer; }
   background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px);
   padding: 8px 16px 8px 8px; border-radius: 999px; box-shadow: var(--sombra);
 }
-.logo {
-  width: 38px; height: 38px; border-radius: 50%; margin: 2px;
-  background: radial-gradient(circle at 35% 30%, #7dff86, var(--verde) 55%, #1e8a33);
-  box-shadow: inset -3px -4px 8px rgba(0, 0, 0, 0.15);
-}
-.logo.grande { width: 72px; height: 72px; margin: 0 auto 8px; }
+/* Logo do NITeP: no topo só o símbolo; na boas-vindas o logo completo */
+.logo { width: auto; height: 34px; margin: 2px 2px 2px 8px; display: block; }
+.logo-grande { width: 200px; max-width: 70%; height: auto; margin: 0 auto 12px; display: block; }
 .marca h1 { margin: 0; font-size: 17px; font-weight: 800; color: var(--texto); line-height: 1.1; }
 .marca-uva { color: var(--uva); font-weight: 900; }
 .marca p { margin: 0; font-size: 12px; color: var(--suave); font-weight: 700; }
@@ -188,11 +185,14 @@ button { font: inherit; cursor: pointer; }
 .modal[hidden] { display: none; }
 .modal-caixa {
   background: #fff; border-radius: 24px; padding: 28px; max-width: 480px; width: 100%;
+  max-height: 100%; overflow-y: auto;   /* em telas baixas a caixa rola em vez de cortar */
   box-shadow: var(--sombra); text-align: center;
 }
 .modal-caixa h2 { margin: 0 0 8px; color: var(--uva); font-weight: 900; }
 .modal-caixa p { margin: 0 0 12px; color: #44475a; line-height: 1.5; }
-.modal-caixa ul { text-align: left; padding-left: 0; list-style: none; margin: 0 0 20px; }
+.modal-caixa h3 { margin: 4px 0 8px; text-align: left; font-size: 15px; font-weight: 800; color: var(--texto); }
+.modal-caixa ul { text-align: left; padding-left: 0; list-style: none; margin: 0 0 16px; }
+.modal-caixa .modal-convite { margin: 0 0 10px; font-weight: 800; color: var(--texto); }
 .modal-caixa li { background: var(--claro); border-radius: 12px; padding: 8px 12px; margin-bottom: 6px; font-size: 14px; line-height: 1.4; }
 .modal-acoes { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 
@@ -201,6 +201,9 @@ button { font: inherit; cursor: pointer; }
   .topo { top: 8px; gap: 8px; }
   .marca { padding: 6px 12px 6px 6px; }
   .marca h1 { font-size: 15px; }
+  .logo { height: 28px; margin-left: 6px; }
+  .modal-caixa { padding: 20px; }
+  .logo-grande { width: 130px; margin-bottom: 8px; }
   .zonas { width: 100%; }
   .chip-zona { font-size: 13px; padding: 6px 12px; }
   .painel {
