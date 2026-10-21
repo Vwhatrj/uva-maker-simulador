@@ -22,12 +22,13 @@
 window.UVA_DATA = {
   layoutPadrao: '2026-10-21',
   // Relatório anônimo: post-its e visitas são enviados, sem o visitante ver, para um Formulário Google
-  // (as respostas vão para uma planilha). Com `url` vazia, nada é enviado.
+  // (as respostas vão para uma planilha). Com `url` vazia, nada é enviado. Formulário: "Mural de Simulador do UVA Maker".
+  // Só envia no site publicado: abrindo no próprio computador (localhost ou arquivo) nada vai para a planilha.
   //   url:    'https://docs.google.com/forms/d/e/<ID DO FORMULÁRIO>/formResponse'
   //   campos: o número "entry.123456789" de cada pergunta (sai do "link preenchido" do formulário)
   registro: {
-    url: '',
-    campos: { tipo: '', texto: '', dispositivo: '', pagina: '' },
+    url: 'https://docs.google.com/forms/d/e/1FAIpQLSdeMJkn697lMzh07MkmpDY-JGsIclhzuvdFclJSGD4kEDFSTg/formResponse',
+    campos: { tipo: 'entry.1070221127', texto: 'entry.844053534', dispositivo: 'entry.1579590924', pagina: 'entry.1533800834' },
     contarVisitas: true
   },
   // Contatos do NITeP (escritos no quadro branco do laboratório). Cada assunto vira um e-mail já preenchido.

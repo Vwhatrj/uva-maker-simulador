@@ -40,6 +40,7 @@ Guilherme está começando em programação e GitHub: explicar passos em linguag
 ## Relatório anônimo (Formulário Google)
 - `registro` em `js/dados.js`: com `url` e `campos` preenchidos, cada post-it colado e cada visita (uma por sessão do navegador) são enviados por `fetch` 'no-cors' a um Formulário Google; as respostas vão para a planilha ligada ao formulário. Com `url` vazia fica desligado e o mural volta a oferecer o envio por e-mail.
 - Perguntas do formulário: Tipo ('visita' ou 'post-it'), Texto, Dispositivo ('celular' ou 'computador'), Página. Os `entry.N` saem do "link preenchido" do formulário. O formulário NÃO pode exigir login nem coletar e-mail, senão o envio falha.
+- Ligado em 2026-10-21 com o formulário "Mural de Simulador do UVA Maker" (conta do NITeP). Só envia no site publicado; em localhost ou arquivo local fica desligado (não suja a planilha com testes).
 - Sem dados pessoais; aviso de privacidade aparece na boas-vindas quando o registro está ligado. Limite de um post-it enviado a cada 20 s por navegador.
 
 ## Pendências

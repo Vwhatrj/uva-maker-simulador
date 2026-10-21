@@ -470,7 +470,9 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
   // Envia uma linha para o formulário configurado em DADOS.registro, sem mostrar nada ao visitante.
   // O modo 'no-cors' não deixa ler a resposta: o envio é "dispare e esqueça".
   const REGISTRO = DADOS.registro || {};
-  const registroAtivo = Boolean(REGISTRO.url && REGISTRO.campos && REGISTRO.campos.tipo);
+  // Testes no próprio computador (localhost ou arquivo aberto direto) não entram no relatório.
+  const ehTesteLocal = ['', 'localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+  const registroAtivo = Boolean(REGISTRO.url && REGISTRO.campos && REGISTRO.campos.tipo) && !ehTesteLocal;
   const dispositivo = () => (matchMedia('(pointer: coarse)').matches || innerWidth <= 720 ? 'celular' : 'computador');
   function registrar(tipo, texto = '') {
     if (!registroAtivo) return;
