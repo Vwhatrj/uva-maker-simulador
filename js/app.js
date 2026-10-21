@@ -297,6 +297,7 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
       alvo.add(desvio);
     }
     voarPara(pos, alvo);
+    return pos;
   }
   function visaoGeral() {
     const v = visaoInicial();
@@ -338,7 +339,42 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
   const conteudo = $('#painel-conteudo');
   let trilha = null;          // índice da estação na trilha guiada
 
+  // ---------- Objetos que tapam a vista do item aberto ----------
+  // Enquanto o card está aberto, some com o que estiver entre a câmera e o item (ex.: a lateral
+  // de um armário ou os objetos de uma bancada vizinha). Tudo volta quando o card fecha.
+  let ocultos = [];
+  function mostrarOcultos() {
+    ocultos.forEach((g) => { g.visible = true; });
+    ocultos = [];
+  }
+  function registroDe(o) {
+    for (; o; o = o.parent) if (o.userData.objId && objetos.has(o.userData.objId)) return objetos.get(o.userData.objId);
+    return null;
+  }
+  function ocultarObstrucoes(r, posCamera) {
+    mostrarOcultos();
+    const caixaItem = new THREE.Box3().setFromObject(r.grupo);
+    const { min, max } = caixaItem, meio = (min.y + max.y) / 2;
+    const pontos = [caixaItem.getCenter(V()), V((min.x + max.x) / 2, max.y, (min.z + max.z) / 2),
+      V(min.x, meio, min.z), V(max.x, meio, min.z), V(min.x, meio, max.z), V(max.x, meio, max.z)];
+    const raizes = [...objetos.values()].filter((o) => !o.pai && o !== r).map((o) => o.grupo);
+    const ray = new THREE.Raycaster();
+    pontos.forEach((p) => {
+      const dir = p.clone().sub(posCamera), dist = dir.length();
+      ray.set(posCamera, dir.normalize());
+      ray.far = dist - 0.02;
+      for (const hit of ray.intersectObjects(raizes, true)) {
+        if (!visivel(hit.object)) continue;
+        const outro = registroDe(hit.object);
+        // não esconde o próprio item, o que está dentro dele, nem o móvel onde ele está apoiado
+        if (!outro || outro === r || ehDescendente(outro.grupo, r.grupo) || ehDescendente(r.grupo, outro.grupo)) continue;
+        if (!ocultos.includes(outro.grupo)) { outro.grupo.visible = false; ocultos.push(outro.grupo); }
+      }
+    });
+  }
+
   function soltarAberto() {
+    mostrarOcultos();
     if (!aberto) return;
     const r = objetos.get(aberto);
     if (r) {
@@ -376,7 +412,7 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
     if (r.obj.selecionar) r.obj.selecionar(true);
     marcarVisitado(r);
     medirItem(r);
-    voarAte(r.centro, Math.min(3.4, Math.max(1.5, r.raio * 4)), r.d.parede);
+    ocultarObstrucoes(r, voarAte(r.centro, Math.min(3.4, Math.max(1.5, r.raio * 4)), r.d.parede));
 
     const it = r.d, z = zonaPorId[it.zona] || { id: '', nome: '', icone: '', cor: '#1f5fbf' };
     let h = `<div class="cab" style="--cor:${z.cor}">
