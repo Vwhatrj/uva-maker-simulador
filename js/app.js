@@ -417,14 +417,18 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
   const medirRodape = () => document.documentElement.style.setProperty('--altura-rodape', `${Math.ceil(rodape.getBoundingClientRect().height)}px`);
   if (window.ResizeObserver) new ResizeObserver(medirRodape).observe(rodape);
   medirRodape();
-  // Card encolhido (celular, durante uma simulação): só o título, a barra de progresso e a etapa
-  // ficam visíveis, para a máquina aparecer na tela. "Ver texto" traz o card inteiro de volta.
+  // Card encolhido (celular): só o título (e, numa simulação, a barra de progresso e a etapa) fica visível,
+  // para o objeto aparecer na tela. Encolhe sozinho ao simular e pelo botão "Ver objeto" em qualquer card.
+  const recolher = $('#painel-recolher');
   function minimizarPainel(sim) {
     painel.classList.toggle('minimizado', sim);
     const b = $('#sim-texto');
     if (b) b.hidden = !sim;
+    recolher.textContent = sim ? '📖 Ver texto' : '👁 Ver objeto';
+    recolher.setAttribute('aria-expanded', String(!sim));
     painel.scrollTop = 0;
   }
+  recolher.addEventListener('click', () => minimizarPainel(!painel.classList.contains('minimizado')));
   function abrirPainel(html) {
     minimizarPainel(false);
     conteudo.innerHTML = html;

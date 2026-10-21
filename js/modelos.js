@@ -748,11 +748,18 @@ window.UVA_MODELOS = function (THREE) {
     pivo.add(caixa(0.28, 0.43, 0.02, '#ffffff', -0.14, 0.005, 0, { map: texturaPortaArmario(op.numero) }));
     pivo.add(fechadura(-0.23, 0.22, 0.016));
     g.add(pivo);
-    let alvo = 0, angulo = 0;
+    // Ao abrir, a porta gira bem para o lado e o material desliza para fora do armário, um pouco maior,
+    // para aparecer na frente da porta (no celular a porta aberta cobria o fundo do compartimento).
+    let aberta = 0, t = 0;
     return {
       grupo: g,
-      selecionar(ligado) { alvo = ligado ? 1.9 : 0; },
-      atualizar() { angulo += (alvo - angulo) * 0.12; pivo.rotation.y = angulo; }
+      selecionar(ligado) { aberta = ligado ? 1 : 0; },
+      atualizar() {
+        t += (aberta - t) * 0.12;
+        pivo.rotation.y = t * 2.4;
+        conteudo.position.set(0, 0.01 + t * 0.06, -0.22 + t * 0.42);
+        conteudo.scale.setScalar(1 + t * 0.3);
+      }
     };
   }
 

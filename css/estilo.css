@@ -315,3 +315,13 @@ body.editando .rotulo-zona { opacity: 0.35; pointer-events: none; }
 .painel.minimizado .sim .tempo { display: none; }
 .painel.minimizado .sim .btn { padding: 7px 12px; font-size: 13px; }
 #sim-texto { margin-top: 6px; }
+/* botão "Ver objeto / Ver texto": só no celular, ao lado do X */
+.recolher { display: none; }
+@media (max-width: 720px) {
+  .recolher {
+    display: block; position: absolute; top: 10px; right: 52px; height: 34px; padding: 0 12px;
+    border: 0; border-radius: 999px; background: var(--claro); color: var(--uva); font: inherit; font-size: 12px; font-weight: 800;
+  }
+  .painel .cab { padding-right: 0; margin-top: 32px; }   /* os botões ficam numa linha acima do título */
+  #sim-texto { display: none; }   /* no celular o botão do topo já faz isso */
+}
