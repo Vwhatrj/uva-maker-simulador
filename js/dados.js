@@ -21,6 +21,19 @@
  */
 window.UVA_DATA = {
   layoutPadrao: '2026-10-21',
+  // Contatos do NITeP (escritos no quadro branco do laboratório). Cada assunto vira um e-mail já preenchido.
+  contato: {
+    email: 'nitep@uva.br',
+    instagram: 'nitep_uva',
+    assuntos: [
+      { icone: '🏫', rotulo: 'Usar o espaço do laboratório', assunto: 'Uso do espaço do UVA Maker',
+        corpo: 'Olá, equipe do NITeP!\n\nGostaria de usar o espaço do laboratório UVA Maker.\n\nNome:\nCurso ou instituição:\nData e horário desejados:\nO que pretendo fazer:\n' },
+      { icone: '🔎', rotulo: 'Agendar uma visita técnica', assunto: 'Visita técnica ao UVA Maker',
+        corpo: 'Olá, equipe do NITeP!\n\nGostaria de agendar uma visita técnica ao laboratório UVA Maker.\n\nNome:\nCurso ou instituição:\nNúmero de pessoas:\nDatas possíveis:\n' },
+      { icone: '🤝', rotulo: 'Desenvolver um projeto com a gente', assunto: 'Projeto com o UVA Maker',
+        corpo: 'Olá, equipe do NITeP!\n\nGostaria de desenvolver um projeto usando os materiais e as máquinas do UVA Maker.\n\nNome:\nCurso ou instituição:\nIdeia do projeto:\nMateriais ou máquinas que pretendo usar:\n' }
+    ]
+  },
   zonas: [
     {
       id: 'sustentabilidade', nome: 'Sustentabilidade e Reaproveitamento', curto: 'Sustentabilidade',
@@ -405,8 +418,9 @@ window.UVA_DATA = {
     // ---------- Parede do quadro ----------
     {
       id: 'quadro-branco', modelo: 'quadroBranco', opcoes: { w: 3.0, h: 1.45 }, pos: [-3.77, 0.85, 0], parede: 'quadro', fixo: true,
-      zona: 'colagem', nome: 'Quadro branco e mural de post-its', icone: '🗒️',
-      descricao: 'Quadro para aulas, brainstorms e recados, com um mural de notas autoadesivas.',
+      zona: 'colagem', nome: 'Quadro branco e mural de ideias', icone: '🗒️',
+      descricao: 'Quadro para aulas, brainstorms e recados, com os contatos do NITeP e um mural de ideias. Deixe o seu post-it!',
+      mural: true, contato: true,
       aprender: 'Organizar ideias visualmente faz parte do design thinking e do trabalho em equipe. No quadro está uma aula de dilatação térmica: a física também vira projeto!',
       dica: 'Uma ideia por post-it! Assim dá para agrupar, reorganizar e votar nas melhores.'
     },

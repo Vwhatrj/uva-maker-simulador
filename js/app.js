@@ -421,6 +421,96 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
     ? `<h3>${titulo}</h3><div class="chips">${lista.map((x) => `<span class="chip">${esc(x)}</span>`).join('')}</div>` : '';
   const secao = (titulo, texto) => texto ? `<h3>${titulo}</h3><p>${esc(texto)}</p>` : '';
 
+  // ---------- Contato e mural de ideias ----------
+  const CONTATO = DADOS.contato;
+  const linkEmail = (assunto, corpo) =>
+    `mailto:${CONTATO.email}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+  function htmlContato() {
+    return `<h3>📬 Fale com o NITeP</h3>
+      <p>Para usar o espaço, agendar uma visita técnica ou desenvolver um projeto com os nossos materiais, escolha o assunto: o e-mail já sai preenchido.</p>
+      <div class="contato-acoes">${CONTATO.assuntos.map((a) =>
+        `<a class="btn" href="${linkEmail(a.assunto, a.corpo)}">${a.icone} ${esc(a.rotulo)}</a>`).join('')}</div>
+      <p class="contato-linha">✉️ <b class="selecionavel">${esc(CONTATO.email)}</b>
+        <button class="btn btn-mini" id="copiar-email" type="button">Copiar</button></p>
+      <p class="contato-linha">📷 Instagram: <a href="https://www.instagram.com/${CONTATO.instagram}/" target="_blank" rel="noopener">@${esc(CONTATO.instagram)}</a></p>`;
+  }
+  function ligarContato() {
+    const botao = $('#copiar-email');
+    if (!botao) return;
+    botao.addEventListener('click', () => {
+      const ok = () => { botao.textContent = 'Copiado!'; };
+      const falhou = () => {
+        const texto = conteudo.querySelector('.selecionavel');
+        const sel = window.getSelection(), faixa = document.createRange();
+        faixa.selectNodeContents(texto); sel.removeAllRanges(); sel.addRange(faixa);
+        botao.textContent = 'Use Ctrl+C';
+      };
+      try { navigator.clipboard.writeText(CONTATO.email).then(ok, falhou); } catch (e) { falhou(); }
+    });
+  }
+  function mostrarContato() {
+    soltarAberto();
+    trilha = null;
+    abrirPainel(`<div class="cab" style="--cor:#1f5fbf">
+        <div class="icone">✉️</div>
+        <div><span class="etiqueta">NITeP · UVA Maker</span><h2>Contato</h2></div>
+      </div>${htmlContato()}`);
+    ligarContato();
+  }
+
+  // Post-its dos visitantes: ficam salvos no navegador de cada pessoa e aparecem no quadro 3D.
+  // Para a equipe receber a ideia, o visitante envia por e-mail (o site não tem servidor para guardar).
+  const CHAVE_POSTITS = 'uva-maker-postits';
+  const CORES_POSTIT = ['#ffd166', '#90be6d', '#ff8fab', '#7ec8e3', '#cdb4db'];
+  let postits = [];
+  try { postits = JSON.parse(localStorage.getItem(CHAVE_POSTITS) || '[]').filter((n) => n && typeof n.texto === 'string'); } catch (e) { /* sem armazenamento */ }
+  function aplicarPostits() {
+    const quadro = [...objetos.values()].find((o) => o.d.mural);
+    if (quadro && quadro.obj.definirNotas) quadro.obj.definirNotas(postits);
+  }
+  const emailPostit = (texto) => linkEmail('Ideia para o UVA Maker (simulador)',
+    `Olá, equipe do NITeP!\n\nDeixei esta ideia no mural do simulador do UVA Maker:\n\n"${texto}"\n\nNome (opcional):\n`);
+  function htmlMural() {
+    return `<h3>📝 Deixe sua ideia no mural</h3>
+      <p>Escreva uma ideia, um comentário ou uma sugestão para o laboratório.</p>
+      <textarea id="postit-texto" class="postit-texto" maxlength="90" rows="3" placeholder="Ex.: Que tal uma oficina de Arduino?"></textarea>
+      <div class="postit-cores" role="radiogroup" aria-label="Cor do post-it">${CORES_POSTIT.map((c, i) =>
+        `<button type="button" class="postit-cor${i === 0 ? ' ativa' : ''}" data-cor="${c}" style="--c:${c}" aria-label="Cor ${i + 1}" aria-pressed="${i === 0}"></button>`).join('')}</div>
+      <div class="postit-acoes">
+        <button class="btn primario" id="postit-colar" type="button">📌 Colar no quadro</button>
+        <a class="btn" id="postit-email" href="${emailPostit('')}">✉️ Enviar para a equipe</a>
+      </div>
+      <p class="postit-status" id="postit-status" role="status">O post-it fica no quadro só neste navegador. Para a equipe ler, use "Enviar para a equipe".</p>
+      ${postits.length ? '<button class="btn btn-mini" id="postit-limpar" type="button">Tirar meus post-its do quadro</button>' : ''}`;
+  }
+  function ligarMural() {
+    const texto = $('#postit-texto'), status = $('#postit-status'), email = $('#postit-email');
+    if (!texto) return;
+    let cor = CORES_POSTIT[0];
+    conteudo.querySelectorAll('.postit-cor').forEach((b) => b.addEventListener('click', () => {
+      cor = b.dataset.cor;
+      conteudo.querySelectorAll('.postit-cor').forEach((o) => { o.classList.toggle('ativa', o === b); o.setAttribute('aria-pressed', o === b); });
+    }));
+    texto.addEventListener('input', () => { email.href = emailPostit(texto.value.trim()); });
+    $('#postit-colar').addEventListener('click', () => {
+      const t = texto.value.trim();
+      if (!t) { status.textContent = 'Escreva a sua ideia antes de colar.'; texto.focus(); return; }
+      postits.push({ texto: t, cor, em: new Date().toISOString() });
+      postits = postits.slice(-6);
+      try { localStorage.setItem(CHAVE_POSTITS, JSON.stringify(postits)); } catch (e) { /* sem armazenamento */ }
+      aplicarPostits();
+      status.textContent = 'Colado no quadro! Para a equipe receber, clique em "Enviar para a equipe".';
+    });
+    const limpar = $('#postit-limpar');
+    if (limpar) limpar.addEventListener('click', () => {
+      postits = [];
+      try { localStorage.removeItem(CHAVE_POSTITS); } catch (e) { /* sem armazenamento */ }
+      aplicarPostits();
+      limpar.remove();
+      status.textContent = 'Seus post-its saíram do quadro.';
+    });
+  }
+
   function mostrarItem(id) {
     const r = objetos.get(id);
     if (!r || !r.clicavel) return;
@@ -456,7 +546,11 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
       </div>`;
     }
     if (it.dica) h += `<div class="dica"><b>🛡️ Dica maker:</b> ${esc(it.dica)}</div>`;
+    if (it.mural) h += htmlMural();
+    if (it.contato) h += htmlContato();
     abrirPainel(h);
+    if (it.mural) ligarMural();
+    if (it.contato) ligarContato();
   }
 
   function mostrarZona(zid) {
@@ -880,6 +974,7 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
       cena.updateMatrixWorld(true);
       validos.forEach((o) => { if (o.sobre && o.sobre !== o.id) anexar(objetos.get(o.id), o.sobre); });
     }
+    aplicarPostits();
     atualizarProgresso();
     if (editando) atualizarBarraEdicao();
   }
@@ -993,6 +1088,7 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
     if (medidasVisiveis) avisar('Sala de 7,54 m × 5,29 m · janela de 2,31 × 1,90 m', 3500);
   });
   $('#btn-ajuda').addEventListener('click', () => { $('#boas-vindas').hidden = false; });
+  $('#btn-contato').addEventListener('click', mostrarContato);
   $('#bv-explorar').addEventListener('click', () => { $('#boas-vindas').hidden = true; });
   $('#bv-trilha').addEventListener('click', () => { $('#boas-vindas').hidden = true; iniciarTrilha(); });
 

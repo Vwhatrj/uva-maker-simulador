@@ -154,27 +154,36 @@ window.UVA_MODELOS = function (THREE) {
       c.textAlign = 'center';
       escrever('DILATAÇÃO', 520, 192, '#127a5a', 30);
       escrever('TÉRMICA', 520, 228, '#127a5a', 30);
-      c.textAlign = 'left';
-      escrever('Dilatação Anômala da Água', 560, 330, '#1f3a93', 24);
-      c.strokeStyle = '#333'; c.lineWidth = 2;
-      c.beginPath(); c.moveTo(600, 470); c.lineTo(600, 350); c.moveTo(600, 470); c.lineTo(820, 470); c.stroke();
-      c.strokeStyle = '#c0392b'; c.lineWidth = 3;
-      c.beginPath(); c.moveTo(615, 380); c.quadraticCurveTo(680, 500, 800, 365); c.stroke();
       c.strokeStyle = '#1f3a93'; c.lineWidth = 2;
       c.strokeRect(260, 90, 90, 24);
       c.strokeRect(300, 395, 50, 50); c.strokeRect(318, 380, 50, 50);
-      // mural de post-its
-      const notas = [['Ideia!', '#ffd166'], ['Reciclar', '#90be6d'], ['Testar', '#ff8fab'], ['Errar faz parte', '#7ec8e3'], ['Prototipar', '#f4a261'], ['Compartilhar', '#cdb4db']];
-      notas.forEach(([t, cor], i) => {
-        c.save();
-        c.translate(880 + (i % 2) * 72 + 31, 40 + Math.floor(i / 2) * 82 + 31);
-        c.rotate(((i * 7) % 5 - 2) * 0.05);
-        c.fillStyle = cor; c.fillRect(-31, -31, 62, 62);
-        c.fillStyle = '#333'; c.font = 'bold 12px Arial, sans-serif'; c.textAlign = 'center';
-        const ps = t.split(' ');
-        ps.forEach((p, k) => c.fillText(p, 0, 4 + (k - (ps.length - 1) / 2) * 14));
-        c.restore();
-      });
+      // mural de ideias: vagas tracejadas onde entram os post-its dos visitantes (abaixo da tela de projeção)
+      c.textAlign = 'left';
+      escrever('Mural de ideias:', 680, 160, '#c0392b', 24);
+      c.setLineDash([8, 6]); c.strokeStyle = '#9aa3ad'; c.lineWidth = 2;
+      VAGAS_MURAL.forEach(([x, y]) => c.strokeRect(x - 38, y - 38, 76, 76));
+      c.setLineDash([]);
+      c.textAlign = 'center';
+      VAGAS_MURAL.forEach(([x, y]) => { escrever('seu', x, y - 4, '#9aa3ad', 16); escrever('post-it', x, y + 16, '#9aa3ad', 16); });
+      // contatos, como no quadro de verdade
+      c.textAlign = 'left';
+      c.save(); c.translate(600, 410); c.rotate(-0.25);
+      escrever('Contatos:', 0, 0, '#c0392b', 26);
+      c.fillStyle = '#c0392b'; c.fillRect(0, 8, 118, 2);
+      c.restore();
+      escrever('nitep@uva.br', 730, 405, '#1f3a93', 36);
+      escrever('Insta: @nitep_uva', 650, 465, '#1f3a93', 34);
+    });
+  }
+  // Centro (em pixels da textura do quadro, 1024 x 500) de cada vaga do mural de ideias.
+  const VAGAS_MURAL = [[735, 215], [845, 215], [955, 215], [735, 305], [845, 305], [955, 305]];
+  function texturaPostit(texto, cor) {
+    return textura(128, 128, (c, w, h) => {
+      c.fillStyle = 'rgba(0,0,0,0.15)'; c.fillRect(6, 8, w - 8, h - 8);
+      c.fillStyle = cor; c.fillRect(2, 2, w - 8, h - 8);
+      c.fillStyle = '#2b2d33'; c.font = 'bold 15px "Segoe Print", "Comic Sans MS", Arial, sans-serif'; c.textAlign = 'center';
+      const linhas = quebrarTexto(c, texto, w - 24).slice(0, 6);
+      linhas.forEach((l, i) => c.fillText(l, w / 2 - 3, h / 2 - 3 + (i - (linhas.length - 1) / 2) * 18));
     });
   }
 
@@ -537,7 +546,21 @@ window.UVA_MODELOS = function (THREE) {
     g.add(caixa(w + 0.06, h + 0.06, 0.03, '#c0c4c8', 0, -0.03, 0.015));
     g.add(em(plano(w, h, texturaQuadro()), 0, h / 2, 0.032));
     g.add(caixa(w * 0.6, 0.03, 0.07, '#c0c4c8', 0, -0.05, 0.05));
-    return { grupo: g };
+    // post-its dos visitantes nas vagas do mural (os 6 mais recentes)
+    const notas = new THREE.Group();
+    g.add(notas);
+    return {
+      grupo: g,
+      definirNotas(lista) {
+        notas.children.slice().forEach((m) => { m.material.map.dispose(); m.material.dispose(); m.geometry.dispose(); notas.remove(m); });
+        lista.slice(-VAGAS_MURAL.length).forEach((n, i) => {
+          const [px, py] = VAGAS_MURAL[i];
+          const m = em(plano(0.21, 0.21, texturaPostit(n.texto, n.cor)), -w / 2 + (px / 1024) * w, h - (py / 500) * h, 0.036);
+          m.rotation.z = ((i * 7) % 5 - 2) * 0.04;
+          notas.add(m);
+        });
+      }
+    };
   }
   // Dois painéis perfurados cinza-escuros (0,92 x 0,56 m cada, medida estimada pelas fotos),
   // com as ferramentas na posição das fotos. Origem: centro da borda de baixo dos painéis.

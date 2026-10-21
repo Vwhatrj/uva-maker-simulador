@@ -33,6 +33,10 @@ Guilherme está começando em programação e GitHub: explicar passos em linguag
 - `img/nitep.png` (logo completo, na tela de boas-vindas) e `img/nitep-simbolo.png` (só o símbolo, no topo): logo do NITeP enviado pelo usuário em 2026-10-21.
 - `index.html` usa scripts clássicos (não módulos) para funcionar abrindo o arquivo direto no navegador.
 
+## Contato e mural de ideias
+- Contatos do NITeP (do quadro do laboratório): nitep@uva.br e Instagram @nitep_uva, em `contato` de `js/dados.js`. Botão "✉️ Contato" no rodapé e no card do quadro branco; cada assunto (usar o espaço, visita técnica, projeto) abre um e-mail já preenchido.
+- Mural de ideias no quadro branco: o post-it fica salvo só no navegador do visitante (`localStorage` `uva-maker-postits`, até 6) e aparece nas vagas do quadro 3D. A equipe só recebe se o visitante clicar em "Enviar para a equipe" (e-mail). Um mural compartilhado entre visitantes precisaria de um banco de dados (ex.: Firebase/Supabase) e moderação.
+
 ## Pendências
 - Vitrine: as 6 peças de exemplo (lhama, raposa etc.) foram retiradas em 2026-10-15 porque não tinham autoria real. Só adicionar peças novas com autor e objetivo confirmados (campo `projeto` em `js/dados.js`). As fotos mostram maquetes de arquitetura, tendas amarelas e esculturas de madeira nas prateleiras.
 - Onde ficam de verdade os insumos (papel, E.V.A., Lego...): hoje estão nas portas do armário 25-36.

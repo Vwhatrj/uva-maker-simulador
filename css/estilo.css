@@ -264,3 +264,26 @@ body.editando .rotulo-zona { opacity: 0.35; pointer-events: none; }
   .painel-luz { flex: 1; }
   .painel-luz input[type="range"] { flex: 1; width: auto; min-width: 0; }
 }
+
+/* ---------- Contato e mural de ideias ---------- */
+.contato-acoes { display: grid; gap: 6px; margin: 8px 0 10px; }
+.contato-acoes .btn { text-decoration: none; text-align: left; }
+.contato-linha { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px !important; }
+.contato-linha a { color: var(--uva); font-weight: 800; }
+.selecionavel { user-select: all; }
+.btn-mini { padding: 4px 10px; font-size: 12px; }
+.postit-texto {
+  width: 100%; box-sizing: border-box; margin-top: 6px; padding: 10px; resize: vertical;
+  font: inherit; font-size: 15px; border: 2px solid var(--borda); border-radius: 12px; background: #fffdf3;
+}
+.postit-texto:focus { outline: none; border-color: var(--uva); }
+.postit-cores { display: flex; gap: 8px; margin: 8px 0; }
+.postit-cor {
+  width: 30px; height: 30px; border-radius: 6px; border: 2px solid transparent; background: var(--c);
+  cursor: pointer; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+.postit-cor.ativa { border-color: var(--texto); transform: scale(1.1); }
+.postit-cor:focus-visible { outline: 3px solid var(--uva); outline-offset: 2px; }
+.postit-acoes { display: flex; gap: 8px; flex-wrap: wrap; }
+.postit-acoes a.btn { text-decoration: none; }
+.postit-status { font-size: 13px !important; color: var(--suave); margin: 8px 0 !important; }
