@@ -72,8 +72,10 @@ button { font: inherit; cursor: pointer; }
 .rotulo-zona:hover { transform: scale(1.08); }
 
 /* ---------- Painel lateral ---------- */
+/* --altura-rodape é medida pelo app: o painel começa sempre acima do rodapé, mesmo quando ele quebra em duas linhas */
 .painel {
-  position: fixed; top: calc(84px + env(safe-area-inset-top, 0px)); right: var(--margem-dir); bottom: calc(84px + env(safe-area-inset-bottom, 0px)); width: min(390px, calc(100vw - 32px));
+  position: fixed; top: calc(84px + env(safe-area-inset-top, 0px)); right: var(--margem-dir);
+  bottom: calc(var(--altura-rodape, 70px) + 26px + env(safe-area-inset-bottom, 0px)); width: min(390px, calc(100vw - 32px));
   overflow-y: auto; background: var(--fundo-card); border-radius: var(--raio);
   box-shadow: var(--sombra); padding: 20px 20px 24px;
   transform: translateX(24px); opacity: 0; transition: transform 0.25s, opacity 0.25s;
@@ -207,12 +209,18 @@ button { font: inherit; cursor: pointer; }
   .zonas { width: 100%; }
   .chip-zona { font-size: 13px; padding: 6px 12px; }
   .painel {
-    top: auto; left: var(--margem-esq); right: var(--margem-dir); bottom: calc(76px + env(safe-area-inset-bottom, 0px)); width: auto; max-height: 55vh;
+    top: auto; left: var(--margem-esq); right: var(--margem-dir); width: auto;
+    max-height: calc(100% - var(--altura-rodape, 70px) - 150px);
     transform: translateY(24px);
   }
+  /* com um card aberto, o contador e o relógio saem do caminho da leitura */
+  body.painel-aberto .rodape-esq { display: none; }
   .rotulo-zona { font-size: 11px; padding: 4px 8px; }
-  .progresso { min-width: 0; flex: 1; }
+  .progresso { min-width: 118px; flex: 0 0 auto; white-space: nowrap; padding: 8px 12px; }
   .btn { padding: 9px 12px; font-size: 13px; }
+  /* botões do rodapé numa grade de 6 colunas iguais: nenhum fica fora da tela */
+  .acoes { width: 100%; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+  .acoes .btn { padding: 7px 2px; font-size: 11px; line-height: 1.2; border-radius: 14px; min-height: 44px; }
   .lista-itens { grid-template-columns: 1fr; }
 }
 
@@ -287,3 +295,4 @@ body.editando .rotulo-zona { opacity: 0.35; pointer-events: none; }
 .postit-acoes { display: flex; gap: 8px; flex-wrap: wrap; }
 .postit-acoes a.btn { text-decoration: none; }
 .postit-status { font-size: 13px !important; color: var(--suave); margin: 8px 0 !important; }
+.modal-caixa .aviso-privacidade { margin: 14px 0 0; font-size: 12px; color: var(--suave); line-height: 1.4; }

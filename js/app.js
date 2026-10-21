@@ -402,15 +402,23 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
     }
     aberto = null;
   }
+  // O painel fica sempre acima do rodapé: a altura real do rodapé (que muda quando os botões quebram
+  // em duas linhas) vai para a variável CSS --altura-rodape.
+  const rodape = $('.rodape');
+  const medirRodape = () => document.documentElement.style.setProperty('--altura-rodape', `${Math.ceil(rodape.getBoundingClientRect().height)}px`);
+  if (window.ResizeObserver) new ResizeObserver(medirRodape).observe(rodape);
+  medirRodape();
   function abrirPainel(html) {
     conteudo.innerHTML = html;
     painel.hidden = false;
+    document.body.classList.add('painel-aberto');
     painel.scrollTop = 0;
     requestAnimationFrame(() => painel.classList.add('aberto'));
   }
   function fecharPainel() {
     painel.classList.remove('aberto');
     painel.hidden = true;
+    document.body.classList.remove('painel-aberto');
     soltarAberto();
     trilha = null;
   }
@@ -458,8 +466,34 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
     ligarContato();
   }
 
+  // ---------- Relatório anônimo (Formulário Google) ----------
+  // Envia uma linha para o formulário configurado em DADOS.registro, sem mostrar nada ao visitante.
+  // O modo 'no-cors' não deixa ler a resposta: o envio é "dispare e esqueça".
+  const REGISTRO = DADOS.registro || {};
+  const registroAtivo = Boolean(REGISTRO.url && REGISTRO.campos && REGISTRO.campos.tipo);
+  const dispositivo = () => (matchMedia('(pointer: coarse)').matches || innerWidth <= 720 ? 'celular' : 'computador');
+  function registrar(tipo, texto = '') {
+    if (!registroAtivo) return;
+    const c = REGISTRO.campos, corpo = new URLSearchParams();
+    corpo.append(c.tipo, tipo);
+    if (c.texto) corpo.append(c.texto, texto.slice(0, 300));
+    if (c.dispositivo) corpo.append(c.dispositivo, dispositivo());
+    if (c.pagina) corpo.append(c.pagina, location.hostname || 'arquivo local');
+    fetch(REGISTRO.url, { method: 'POST', mode: 'no-cors', body: corpo }).catch(() => { /* sem internet: segue sem registrar */ });
+  }
+  let ultimoEnvio = 0;
+  function registrarVisita() {
+    if (!registroAtivo || !REGISTRO.contarVisitas) return;
+    try {
+      if (sessionStorage.getItem('uva-maker-visita')) return;   // uma vez por sessão do navegador
+      sessionStorage.setItem('uva-maker-visita', '1');
+    } catch (e) { return; }
+    registrar('visita');
+  }
+
   // Post-its dos visitantes: ficam salvos no navegador de cada pessoa e aparecem no quadro 3D.
-  // Para a equipe receber a ideia, o visitante envia por e-mail (o site não tem servidor para guardar).
+  // Com o relatório ligado, cada post-it colado também vai (anônimo) para a planilha da equipe;
+  // sem ele, o visitante pode mandar a ideia por e-mail.
   const CHAVE_POSTITS = 'uva-maker-postits';
   const CORES_POSTIT = ['#ffd166', '#90be6d', '#ff8fab', '#7ec8e3', '#cdb4db'];
   let postits = [];
@@ -478,9 +512,11 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
         `<button type="button" class="postit-cor${i === 0 ? ' ativa' : ''}" data-cor="${c}" style="--c:${c}" aria-label="Cor ${i + 1}" aria-pressed="${i === 0}"></button>`).join('')}</div>
       <div class="postit-acoes">
         <button class="btn primario" id="postit-colar" type="button">📌 Colar no quadro</button>
-        <a class="btn" id="postit-email" href="${emailPostit('')}">✉️ Enviar para a equipe</a>
+        ${registroAtivo ? '' : `<a class="btn" id="postit-email" href="${emailPostit('')}">✉️ Enviar para a equipe</a>`}
       </div>
-      <p class="postit-status" id="postit-status" role="status">O post-it fica no quadro só neste navegador. Para a equipe ler, use "Enviar para a equipe".</p>
+      <p class="postit-status" id="postit-status" role="status">${registroAtivo
+        ? 'Seu post-it vai para o mural e, de forma anônima, para a equipe do NITeP. Não escreva dados pessoais.'
+        : 'O post-it fica no quadro só neste navegador. Para a equipe ler, use "Enviar para a equipe".'}</p>
       ${postits.length ? '<button class="btn btn-mini" id="postit-limpar" type="button">Tirar meus post-its do quadro</button>' : ''}`;
   }
   function ligarMural() {
@@ -491,7 +527,7 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
       cor = b.dataset.cor;
       conteudo.querySelectorAll('.postit-cor').forEach((o) => { o.classList.toggle('ativa', o === b); o.setAttribute('aria-pressed', o === b); });
     }));
-    texto.addEventListener('input', () => { email.href = emailPostit(texto.value.trim()); });
+    if (email) texto.addEventListener('input', () => { email.href = emailPostit(texto.value.trim()); });
     $('#postit-colar').addEventListener('click', () => {
       const t = texto.value.trim();
       if (!t) { status.textContent = 'Escreva a sua ideia antes de colar.'; texto.focus(); return; }
@@ -499,7 +535,17 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
       postits = postits.slice(-6);
       try { localStorage.setItem(CHAVE_POSTITS, JSON.stringify(postits)); } catch (e) { /* sem armazenamento */ }
       aplicarPostits();
-      status.textContent = 'Colado no quadro! Para a equipe receber, clique em "Enviar para a equipe".';
+      if (registroAtivo) {
+        // no máximo um envio a cada 20 s, para ninguém lotar a planilha da equipe
+        const agora = Date.now();
+        if (agora - ultimoEnvio < 20000) { status.textContent = 'Colado no quadro! Espere alguns segundos para mandar outra ideia à equipe.'; return; }
+        ultimoEnvio = agora;
+        registrar('post-it', t);
+        texto.value = '';
+      }
+      status.textContent = registroAtivo
+        ? 'Colado no quadro e enviado para a equipe do NITeP. Obrigado pela ideia!'
+        : 'Colado no quadro! Para a equipe receber, clique em "Enviar para a equipe".';
     });
     const limpar = $('#postit-limpar');
     if (limpar) limpar.addEventListener('click', () => {
@@ -1112,6 +1158,9 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
   }
   aplicarEstado(salvo);
   if (layoutAntigo) avisar('A sala foi atualizada. O layout salvo neste navegador era de uma versão anterior e voltou ao padrão.', 7000);
+  registrarVisita();
+  const avisoPrivacidade = $('#aviso-privacidade');
+  if (avisoPrivacidade) avisoPrivacidade.hidden = !registroAtivo;
   definirHora(10);
 
   // ---------- Laço principal ----------

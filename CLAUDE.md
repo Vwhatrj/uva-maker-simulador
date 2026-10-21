@@ -37,6 +37,11 @@ Guilherme está começando em programação e GitHub: explicar passos em linguag
 - Contatos do NITeP (do quadro do laboratório): nitep@uva.br e Instagram @nitep_uva, em `contato` de `js/dados.js`. Botão "✉️ Contato" no rodapé e no card do quadro branco; cada assunto (usar o espaço, visita técnica, projeto) abre um e-mail já preenchido.
 - Mural de ideias no quadro branco: o post-it fica salvo só no navegador do visitante (`localStorage` `uva-maker-postits`, até 6) e aparece nas vagas do quadro 3D. A equipe só recebe se o visitante clicar em "Enviar para a equipe" (e-mail). Um mural compartilhado entre visitantes precisaria de um banco de dados (ex.: Firebase/Supabase) e moderação.
 
+## Relatório anônimo (Formulário Google)
+- `registro` em `js/dados.js`: com `url` e `campos` preenchidos, cada post-it colado e cada visita (uma por sessão do navegador) são enviados por `fetch` 'no-cors' a um Formulário Google; as respostas vão para a planilha ligada ao formulário. Com `url` vazia fica desligado e o mural volta a oferecer o envio por e-mail.
+- Perguntas do formulário: Tipo ('visita' ou 'post-it'), Texto, Dispositivo ('celular' ou 'computador'), Página. Os `entry.N` saem do "link preenchido" do formulário. O formulário NÃO pode exigir login nem coletar e-mail, senão o envio falha.
+- Sem dados pessoais; aviso de privacidade aparece na boas-vindas quando o registro está ligado. Limite de um post-it enviado a cada 20 s por navegador.
+
 ## Pendências
 - Vitrine: as 6 peças de exemplo (lhama, raposa etc.) foram retiradas em 2026-10-15 porque não tinham autoria real. Só adicionar peças novas com autor e objetivo confirmados (campo `projeto` em `js/dados.js`). As fotos mostram maquetes de arquitetura, tendas amarelas e esculturas de madeira nas prateleiras.
 - Onde ficam de verdade os insumos (papel, E.V.A., Lego...): hoje estão nas portas do armário 25-36.
