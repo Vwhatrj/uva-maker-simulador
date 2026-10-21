@@ -15,8 +15,12 @@
  *   `parede` (vira o objeto de frente para a sala), `rot`, `sobre` (id do móvel onde está apoiado),
  *   `preso` (parte de outro objeto, como as portas do armário), `fixo` (preso na parede, não se move)
  *   e campos de card próprios, que substituem os do catálogo.
+ *
+ * `layoutPadrao`: data da última mudança nas posições de `objetos`. TROQUE sempre que mexer em posições:
+ *   layouts salvos no navegador com outra data são descartados (senão misturam posições antigas e novas).
  */
 window.UVA_DATA = {
+  layoutPadrao: '2026-10-21',
   zonas: [
     {
       id: 'sustentabilidade', nome: 'Sustentabilidade e Reaproveitamento', curto: 'Sustentabilidade',

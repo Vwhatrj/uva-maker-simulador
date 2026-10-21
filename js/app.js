@@ -297,7 +297,7 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
       alvo.add(desvio);
     }
     voarPara(pos, alvo);
-    return pos;
+    return { pos, alvo };
   }
   function visaoGeral() {
     const v = visaoInicial();
@@ -351,8 +351,22 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
     for (; o; o = o.parent) if (o.userData.objId && objetos.has(o.userData.objId)) return objetos.get(o.userData.objId);
     return null;
   }
-  function ocultarObstrucoes(r, posCamera) {
+  function ocultarObstrucoes(r, { pos: posCamera, alvo }) {
     mostrarOcultos();
+    // Coluna que aparece na imagem mais perto da câmera do que o item: some também (ocupa metade da tela).
+    const vista = camera.clone();
+    vista.position.copy(posCamera);
+    vista.lookAt(alvo);
+    vista.updateMatrixWorld();
+    const distItem = posCamera.distanceTo(new THREE.Box3().setFromObject(r.grupo).getCenter(V())) + 0.3;
+    sala.colunas.forEach((c) => {
+      const p = c.getWorldPosition(V());
+      p.y = Math.min(Math.max(p.y, alvo.y - 0.5), alvo.y + 0.5);   // compara na altura do item
+      const ndc = p.clone().project(vista);
+      // margem além da borda (|x| até 1,6): o centro da coluna pode estar fora da imagem e o corpo dela não
+      // compara pela superfície da coluna (raio de ~0,2 m), não pelo centro
+      if (Math.abs(ndc.x) < 1.6 && ndc.z < 1 && posCamera.distanceTo(p) - 0.2 < distItem) { c.visible = false; ocultos.push(c); }
+    });
     const caixaItem = new THREE.Box3().setFromObject(r.grupo);
     const { min, max } = caixaItem, meio = (min.y + max.y) / 2;
     const pontos = [caixaItem.getCenter(V()), V((min.x + max.x) / 2, max.y, (min.z + max.z) / 2),
@@ -363,11 +377,16 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
       const dir = p.clone().sub(posCamera), dist = dir.length();
       ray.set(posCamera, dir.normalize());
       ray.far = dist - 0.02;
+      // as colunas pintadas também podem tapar a vista
+      for (const hit of ray.intersectObjects(sala.colunas, false)) {
+        if (visivel(hit.object) && !ocultos.includes(hit.object)) { hit.object.visible = false; ocultos.push(hit.object); }
+      }
       for (const hit of ray.intersectObjects(raizes, true)) {
         if (!visivel(hit.object)) continue;
         const outro = registroDe(hit.object);
         // não esconde o próprio item, o que está dentro dele, nem o móvel onde ele está apoiado
         if (!outro || outro === r || ehDescendente(outro.grupo, r.grupo) || ehDescendente(r.grupo, outro.grupo)) continue;
+        if (outro.d.preso) continue;   // partes de outro objeto (portas do armário) ficam: um buraco parece defeito
         if (!ocultos.includes(outro.grupo)) { outro.grupo.visible = false; ocultos.push(outro.grupo); }
       }
     });
@@ -839,7 +858,7 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
       lista.push({ id: r.id, tipo: r.d.tipo, x: cm(p.x), y: cm(p.y), z: cm(p.z), rot: Math.round(rotacaoMundo(r.grupo) * 1000) / 1000, sobre: r.pai || null });
     });
     const removidos = DADOS.objetos.filter((o) => !objetos.has(o.id)).map((o) => o.id);
-    return { tipo: 'uva-maker-layout', versao: 2, salvoEm: new Date().toISOString(), objetos: lista, removidos };
+    return { tipo: 'uva-maker-layout', versao: 2, padrao: DADOS.layoutPadrao, salvoEm: new Date().toISOString(), objetos: lista, removidos };
   }
   function aplicarEstado(estado) {
     limparTudo();
@@ -898,7 +917,9 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
       }
       selecionar(null);
       aplicarEstado(dados);
-      salvarLayout(`Layout "${arquivo.name}" aberto.`);
+      salvarLayout(dados.padrao === DADOS.layoutPadrao
+        ? `Layout "${arquivo.name}" aberto.`
+        : `Layout "${arquivo.name}" aberto. Atenção: ele foi feito antes da última atualização da sala, então alguns objetos podem ficar em posições antigas.`);
     };
     leitor.readAsText(arquivo);
   }
@@ -987,7 +1008,14 @@ window.UVA_APP = function (THREE, OrbitControls, CSS2DRenderer, CSS2DObject) {
   // ---------- Início ----------
   let salvo = null;
   try { salvo = JSON.parse(localStorage.getItem(CHAVE_LAYOUT) || 'null'); } catch (e) { /* sem armazenamento */ }
+  // Layout salvo antes da última atualização da sala: descarta, para não misturar posições antigas e novas.
+  const layoutAntigo = salvo && salvo.padrao !== DADOS.layoutPadrao;
+  if (layoutAntigo) {
+    salvo = null;
+    try { localStorage.removeItem(CHAVE_LAYOUT); } catch (e) { /* sem armazenamento */ }
+  }
   aplicarEstado(salvo);
+  if (layoutAntigo) avisar('A sala foi atualizada. O layout salvo neste navegador era de uma versão anterior e voltou ao padrão.', 7000);
   definirHora(10);
 
   // ---------- Laço principal ----------

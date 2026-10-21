@@ -239,9 +239,15 @@ window.UVA_MODELOS = function (THREE) {
     nova('quadro', 2 * Z, creme, V(-X, 0, 0), Math.PI / 2, V(-1, 0, 0));
 
     // colunas pintadas: azul-turquesa (atrás da mesa de projetos), amarela (entre as prateleiras) e rosa (canto da janela)
-    cinza.grupo.add(em(cilindro(0.2, 0.2, H, '#5ec4dc', 32), -0.75, H / 2, 0.12));
-    azul.grupo.add(caixa(0.32, H, 0.25, '#f2c94c', -0.95, 0, 0.125));
-    janela.grupo.add(caixa(0.3, H, 0.3, '#e0568c', -1.45, 0, 0.15));   // entre o armário 25-36 e a janela
+    // (o app esconde uma coluna quando ela tapa a vista de um objeto aberto)
+    const colunas = [
+      em(cilindro(0.2, 0.2, H, '#5ec4dc', 32), -0.75, H / 2, 0.12),
+      caixa(0.32, H, 0.25, '#f2c94c', -0.95, 0, 0.125),
+      caixa(0.3, H, 0.3, '#e0568c', -1.45, 0, 0.15)   // entre o armário 25-36 e a janela
+    ];
+    cinza.grupo.add(colunas[0]);
+    azul.grupo.add(colunas[1]);
+    janela.grupo.add(colunas[2]);
 
     // Moldura, vidro e porta ficam em grupos próprios que somem quando a parede abaixa
     // (achatados junto com a parede, as peças se sobreporiam e piscariam).
@@ -342,7 +348,7 @@ window.UVA_MODELOS = function (THREE) {
     g.add(fora);
     janela.anexos.push(fora);
 
-    return { grupo: g, paredes };
+    return { grupo: g, paredes, colunas };
   }
 
   // ---------- Mobiliário ----------
